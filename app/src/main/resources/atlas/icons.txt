@@ -1,0 +1,148 @@
+# https://github.com/heathensoft
+
+# GL_NEAREST = 9728
+# GL_LINEAR  = 9729
+# GL_NEAREST_MIPMAP_NEAREST = 9984
+# GL_LINEAR_MIPMAP_NEAREST  = 9985
+# GL_NEAREST_MIPMAP_LINEAR  = 9986
+# GL_LINEAR_MIPMAP_LINEAR   = 9987
+
+# GL_REPEAT = 10497
+# GL_CLAMP_TO_EDGE = 33071
+# GL_CLAMP_TO_BORDER = 33069
+# GL_MIRRORED_REPEAT = 33648
+
+# Atlas: <name> <width> <height> <sprites>
+# Texture: <minFilter> <magFilter> <textureWrap> <mipMap> <srgb>
+# Region: <x> <y> <width> <height> <name>
+
+A: icons 1024 1024 127
+T: 9987 9729 33071 1 0
+
+R: 949 0 72 72 sharp_arrow_upward_white_36dp
+R: 876 0 72 72 sharp_arrow_right_white_36dp
+R: 803 0 72 72 sharp_arrow_left_white_36dp
+R: 730 0 72 72 sharp_arrow_forward_white_36dp
+R: 657 0 72 72 sharp_arrow_forward_ios_white_36dp
+R: 584 0 72 72 sharp_arrow_drop_up_white_36dp
+R: 511 0 72 72 sharp_arrow_drop_down_white_36dp
+R: 438 0 72 72 sharp_arrow_downward_white_36dp
+R: 365 0 72 72 sharp_arrow_back_white_36dp
+R: 292 0 72 72 sharp_arrow_back_ios_white_36dp
+R: 219 0 72 72 sharp_arrow_back_ios_new_white_36dp
+R: 146 0 72 72 sharp_apps_white_36dp
+R: 73 0 72 72 sharp_add_circle_outline_white_36dp
+R: 0 0 72 72 sharp_account_balance_white_36dp
+R: 949 73 72 72 sharp_content_cut_white_36dp
+R: 876 73 72 72 sharp_content_copy_white_36dp
+R: 803 73 72 72 sharp_construction_white_36dp
+R: 730 73 72 72 sharp_color_lens_white_36dp
+R: 657 73 72 72 sharp_colorize_white_36dp
+R: 584 73 72 72 sharp_close_white_36dp
+R: 511 73 72 72 sharp_chevron_right_white_36dp
+R: 438 73 72 72 sharp_chevron_left_white_36dp
+R: 365 73 72 72 sharp_check_white_36dp
+R: 292 73 72 72 sharp_check_circle_outline_white_36dp
+R: 219 73 72 72 sharp_cached_white_36dp
+R: 146 73 72 72 sharp_bug_report_white_36dp
+R: 73 73 72 72 sharp_brush_white_36dp
+R: 0 73 72 72 sharp_audio_file_white_36dp
+R: 949 146 72 72 sharp_fast_forward_white_36dp
+R: 876 146 72 72 sharp_expand_more_white_36dp
+R: 803 146 72 72 sharp_expand_less_white_36dp
+R: 730 146 72 72 sharp_equalizer_white_36dp
+R: 657 146 72 72 sharp_edit_white_36dp
+R: 584 146 72 72 sharp_edit_note_white_36dp
+R: 511 146 72 72 sharp_east_white_36dp
+R: 438 146 72 72 sharp_download_white_36dp
+R: 365 146 72 72 sharp_description_white_36dp
+R: 292 146 72 72 sharp_delete_forever_white_36dp
+R: 219 146 72 72 sharp_crop_white_36dp
+R: 146 146 72 72 sharp_create_new_folder_white_36dp
+R: 73 146 72 72 sharp_content_paste_white_36dp
+R: 0 146 72 72 sharp_content_paste_go_white_36dp
+R: 949 219 72 72 sharp_groups_white_36dp
+R: 876 219 72 72 sharp_grade_white_36dp
+R: 803 219 72 72 sharp_get_app_white_36dp
+R: 730 219 72 72 sharp_fullscreen_white_36dp
+R: 657 219 72 72 sharp_fullscreen_exit_white_36dp
+R: 584 219 72 72 sharp_format_list_bulleted_white_36dp
+R: 511 219 72 72 sharp_format_color_fill_white_36dp
+R: 438 219 72 72 sharp_folder_white_36dp
+R: 365 219 72 72 sharp_first_page_white_36dp
+R: 292 219 72 72 sharp_filter_white_36dp
+R: 219 219 72 72 sharp_file_download_done_white_36dp
+R: 146 219 72 72 sharp_file_copy_white_36dp
+R: 73 219 72 72 sharp_favorite_white_36dp
+R: 0 219 72 72 sharp_fast_rewind_white_36dp
+R: 949 292 72 72 sharp_minimize_white_36dp
+R: 876 292 72 72 sharp_menu_white_36dp
+R: 803 292 72 72 sharp_man_white_36dp
+R: 730 292 72 72 sharp_manage_accounts_white_36dp
+R: 657 292 72 72 sharp_login_white_36dp
+R: 584 292 72 72 sharp_library_add_white_36dp
+R: 511 292 72 72 sharp_last_page_white_36dp
+R: 438 292 72 72 sharp_info_white_36dp
+R: 365 292 72 72 sharp_image_white_36dp
+R: 292 292 72 72 sharp_home_white_36dp
+R: 219 292 72 72 sharp_history_white_36dp
+R: 146 292 72 72 sharp_highlight_off_white_36dp
+R: 73 292 72 72 sharp_highlight_alt_white_36dp
+R: 0 292 72 72 sharp_help_outline_white_36dp
+R: 949 365 72 72 sharp_power_settings_new_white_36dp
+R: 876 365 72 72 sharp_play_arrow_white_36dp
+R: 803 365 72 72 sharp_photo_camera_white_36dp
+R: 730 365 72 72 sharp_person_white_36dp
+R: 657 365 72 72 sharp_person_add_white_36dp
+R: 584 365 72 72 sharp_pause_white_36dp
+R: 511 365 72 72 sharp_not_interested_white_36dp
+R: 438 365 72 72 sharp_notifications_white_36dp
+R: 365 365 72 72 sharp_note_add_white_36dp
+R: 292 365 72 72 sharp_north_white_36dp
+R: 219 365 72 72 sharp_north_west_white_36dp
+R: 146 365 72 72 sharp_north_east_white_36dp
+R: 73 365 72 72 sharp_more_vert_white_36dp
+R: 0 365 72 72 sharp_more_horiz_white_36dp
+R: 949 438 72 72 sharp_shuffle_white_36dp
+R: 876 438 72 72 sharp_settings_white_36dp
+R: 803 438 72 72 sharp_send_white_36dp
+R: 730 438 72 72 sharp_search_white_36dp
+R: 657 438 72 72 sharp_science_white_36dp
+R: 584 438 72 72 sharp_save_white_36dp
+R: 511 438 72 72 sharp_reorder_white_36dp
+R: 438 438 72 72 sharp_remove_circle_outline_white_36dp
+R: 365 438 72 72 sharp_refresh_white_36dp
+R: 292 438 72 72 sharp_redo_white_36dp
+R: 219 438 72 72 sharp_question_mark_white_36dp
+R: 146 438 72 72 sharp_question_answer_white_36dp
+R: 73 438 72 72 sharp_public_white_36dp
+R: 0 438 72 72 sharp_psychology_white_36dp
+R: 949 511 72 72 sharp_tune_white_36dp
+R: 876 511 72 72 sharp_trending_up_white_36dp
+R: 803 511 72 72 sharp_text_snippet_white_36dp
+R: 730 511 72 72 sharp_subject_white_36dp
+R: 657 511 72 72 sharp_subdirectory_arrow_left_white_36dp
+R: 584 511 72 72 sharp_stop_white_36dp
+R: 511 511 72 72 sharp_star_rate_white_36dp
+R: 438 511 72 72 sharp_star_outline_white_36dp
+R: 365 511 72 72 sharp_star_half_white_36dp
+R: 292 511 72 72 sharp_south_white_36dp
+R: 219 511 72 72 sharp_south_west_white_36dp
+R: 146 511 72 72 sharp_south_east_white_36dp
+R: 73 511 72 72 sharp_skip_previous_white_36dp
+R: 0 511 72 72 sharp_skip_next_white_36dp
+R: 949 584 72 72 sharp_zoom_in_white_36dp
+R: 876 584 72 72 sharp_wysiwyg_white_36dp
+R: 803 584 72 72 sharp_woman_white_36dp
+R: 730 584 72 72 sharp_west_white_36dp
+R: 657 584 72 72 sharp_wb_sunny_white_36dp
+R: 584 584 72 72 sharp_volume_up_white_36dp
+R: 511 584 72 72 sharp_volume_off_white_36dp
+R: 438 584 72 72 sharp_volume_down_white_36dp
+R: 365 584 72 72 sharp_visibility_white_36dp
+R: 292 584 72 72 sharp_visibility_off_white_36dp
+R: 219 584 72 72 sharp_view_headline_white_36dp
+R: 146 584 72 72 sharp_video_file_white_36dp
+R: 73 584 72 72 sharp_upload_white_36dp
+R: 0 584 72 72 sharp_undo_white_36dp
+R: 0 657 72 72 sharp_zoom_out_white_36dp
