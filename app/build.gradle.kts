@@ -1,20 +1,8 @@
 plugins {
-    java
-}
-
-group = "no.hiof.set.g6"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
+    id("no.hiof.set.g6.common-conventions")
 }
 
 dependencies {
     implementation(project(":database"))
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
