@@ -1,6 +1,14 @@
 ## Software Engineering & Testing - Group 6 Project Repo
 
-Test...
+### Prosjekt Struktur
+
+***Foreløpig. Mulig slå sammen datatype / database senere***
+
+* DataType-Modulen: Kode som de andre Modulene behøver for å representere enheter i systemet. Som F.eks. en Bruker eller en Lås osv. (Sprint 1) 
+* Database-Modulen: Kode for kommunikasjon med Database (Sprint 2.)
+* App-Modulen: Kode for brukergrensenitt (Simmulerer en Mobil App)
+
+
 
 ### Oppsett
 
