@@ -22,7 +22,7 @@ En Sprint med Backlogg over Oppgaver som skal utføres er satt opp som et "Proje
 2. Legg dere til med et grovt estimat og dra Oppgaven over til "In Progress"
 2. Lag en ny branch med et passende navn til Oppgaven
 3. Programmer denne funksjonaliten.
-4. commit det dere gjør til den nye branchen etterhvert som dere jobber med .
+4. commit det dere gjør til den nye branchen etterhvert som dere jobber med den.
 5. Når dere er ferdig pusher dere endringene dere har gjort over på dev-branchen.
 6. Her kan det oppstå konfliker (Men vi tar det som det kommer)
 7. Så kan dere slette branchen dere er på.
