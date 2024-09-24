@@ -5,24 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UserAccount implements DataType {
+public final class UserAccount implements G6DataType {
     
     public int id;
     public String firstName;
     public String lastName;
     public String email;
-    private final Address address;
-    private final List<String> phoneNumbers;
+    private final HomeAddress address;          // If you change the class, never let this be null
+    private final List<String> phoneNumbers;    // If you change the class, never let this be null
     
     public UserAccount() {
         this.firstName = "";
         this.lastName = "";
         this.email = "";
-        this.address = new Address();
+        this.address = new HomeAddress();
         this.phoneNumbers = new ArrayList<>();
     }
     
-    public Address getAddress() { return address; }
+    public HomeAddress getAddress() { return address; }
     
     public List<String> getPhoneNumbers() { return phoneNumbers; }
     

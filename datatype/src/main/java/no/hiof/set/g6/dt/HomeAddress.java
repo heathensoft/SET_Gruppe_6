@@ -1,7 +1,7 @@
 package no.hiof.set.g6.dt;
 
 
-public final class Address implements DataType {
+public final class HomeAddress implements G6DataType {
  
  public String country;
  public String state;
@@ -10,12 +10,12 @@ public final class Address implements DataType {
  public int houseNumber;
  public int postalCode;
  
- public Address(String country,
-                String state,
-                String city,
-                String streetAddress,
-                int houseNumber,
-                int postalCode) {
+ public HomeAddress(String country,
+                    String state,
+                    String city,
+                    String streetAddress,
+                    int houseNumber,
+                    int postalCode) {
   this.country = country;
   this.state = state;
   this.city = city;
@@ -24,7 +24,7 @@ public final class Address implements DataType {
   this.postalCode = postalCode;
  }
  
- public Address() {}
+ public HomeAddress() {}
  
  public boolean anyValueIsNull() {
   return country == null || state == null || city == null || streetAddress == null;
