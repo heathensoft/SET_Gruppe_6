@@ -1,7 +1,7 @@
 package no.hiof.set.g6.dt;
 
 
-public final class Address { // Ren data type. Verdier kan være hva som helst
+public final class Address implements DataType {
  
  public String country;
  public String state;
