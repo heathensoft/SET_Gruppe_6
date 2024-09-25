@@ -35,9 +35,5 @@ public final class UserAccount implements G6DataType {
     
     public List<String> getPhoneNumbers() { return phoneNumbers; }
     
-    public boolean anyValueIsNull() {
-        return firstName == null || lastName == null || email == null;
-    }
-    
     
 }

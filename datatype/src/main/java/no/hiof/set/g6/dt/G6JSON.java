@@ -11,18 +11,28 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Utility Klasse for å konvertere data typer til JSON format og tilbake til java objekter igjen.
+ * JSON er et lesbart tekst format som vi antagelig vil bruke for å sende data via. internett, blåtann osv.
+ *
+ * Vi utvider etterhvert som vi legger til flere konseptuelle datatyper eller endrer eksisterende:
+ *
+ * Version 1.0: Kan konvertere HomeAddress og UserAccount
+ * Version X.X: ... nye datatyper eller endringer
+ *
+ *
+ *
+ *
  * Metodene i denne klassen er fine å kjøre tester på
  */
 
 
-public class G6JSONUtil {
+public class G6JSON {
     
-    public static final int VERSION_VALUE = 1;
-    public static final String VERSION_STRING = "G6Json-version";
+    public static final int VERSION_MAJOR_VALUE = 1;
+    public static final int VERSION_MINOR_VALUE = 0;
     
-    
-    public static final String JSON_ARRAY_ADDRESS = "Address List";
-    public static final String JSON_ARRAY_USERACC = "User Account List";
+    public static final String VERSION_MAJOR_STRING = "G6Json-version-major";
+    public static final String VERSION_MINOR_STRING = "G6Json-version-minor";
     
     public static final String JSON_ADDRESS_COUNTRY_STRING = "Country";
     public static final String JSON_ADDRESS_STATE_STRING = "State";
@@ -37,62 +47,16 @@ public class G6JSONUtil {
     public static final String JSON_USERACC_ADDRESS_STRING = "Address";
     public static final String JSON_USERACC_PHONENUMBERS_STRING = "Phone-Numbers";
     
-    public enum SupportedObject {
-        HOME_ADDRESS("Home Address Array", HomeAddress.class),
-        USER_ACCOUNT("User Account Array", UserAccount.class);
-        public final String header;
-        public final Class<?> clazz;
-        final static SupportedObject[] all = values();
-        SupportedObject(String header, Class<?> clazz) {
-            this.header = header;
-            this.clazz = clazz;
-        }
-    }
-    
     /**
-     * Convert G6DataType to JSON format.
-     * @param object object to convert
-     * @return JSONObject or null if the object is null or cannot be converted.
+     * @param string json-formatted string
+     * @return a JSONObject
+     * @throws ParseException if the string is not recognised as Json-format
      */
-    public static JSONObject toJSON(Object object) {
-        if (object instanceof G6DataType dataType) return datatypeToJSON(dataType);
-        // It's possible to add classes other than G6DataType later
-        // ...
-        // ...
-        return null;
+    public static JSONObject parse(String string) throws ParseException {
+        string = string == null ? "" : string;
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(string);
     }
-    
-    /**
-     * @param collection a collection of objects to convert to JSON-Format
-     * @return a JSONArray of converted objects of same Class.
-     * Null elements are ignored.
-     * The JSONArray will be empty if collection is null or empty.
-     * The JSONArray will be empty if collection contains objects of more than one Class
-     * The JSONArray will be empty if the collection contain objects that cannot be converted
-     */
-    @SuppressWarnings("unchecked")
-    public static JSONArray toJSONArray(Collection<Object> collection) {
-        List<Object> list = listOfNonNull(collection); // Empty list if collection == null
-        JSONArray jsonArray = new JSONArray();
-        if (allObjectsShareClass(list)) {
-          for (Object obj : list) {
-              JSONObject jsonObject = toJSON(obj);
-              if (jsonObject == null) break; // if this is null, all objects cannot be converted
-              jsonArray.add(jsonObject);
-          }
-        } return jsonArray;
-    }
-    
-    private static JSONObject datatypeToJSON(G6DataType object) {
-        if (object instanceof HomeAddress address) return homeAddressToJSON(address);
-        if (object instanceof UserAccount userAccount) return userAccountToJSON(userAccount);
-        // Legg til flere etterhvert som vi lager nye datatyper:
-        // ...
-        // ...
-        return null;
-    }
-    
-    
     
     /**
      * @return A JSONObject for HomeAddress or null if object is null.
@@ -180,6 +144,9 @@ public class G6JSONUtil {
         } return null;
     }
     
+    /**
+     * @throws Exception if the jsonObject is null or does not convert to UserAccount
+     */
     public static UserAccount userAccountFromJSON(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
         
@@ -189,6 +156,7 @@ public class G6JSONUtil {
         Object emailObject = jsonObject.get(JSON_USERACC_EMAIL_STRING);
         Object addressObject = jsonObject.get(JSON_USERACC_ADDRESS_STRING);
         Object phoneNumbersObject = jsonObject.get(JSON_USERACC_PHONENUMBERS_STRING);
+        
         if (anyObjectIsNull(
                 idObject,
                 firstNameObject,
@@ -204,6 +172,7 @@ public class G6JSONUtil {
             String email = (String) emailObject;
             HomeAddress homeAddress = homeAddressFromJSON((JSONObject) addressObject);
             List<String> phoneNumbers = castAndAdd((JSONArray) phoneNumbersObject,new ArrayList<>(), String.class);
+            
             UserAccount userAccount = new UserAccount(id,firstName,lastName,email);
             userAccount.getPhoneNumbers().addAll(phoneNumbers);
             userAccount.getAddress().set(homeAddress);
@@ -228,30 +197,6 @@ public class G6JSONUtil {
         } return list;
     }
     
-    private static void validateHeader(JSONObject jsonObject) throws Exception {
-        if (jsonObject == null) throw new Exception("JSONObject is null");
-        
-    }
-    
-    //private static boolean validateHeader(JSONObject jsonObject) {
-    //    if (jsonObject != null) {
-    //        Object versionObject = jsonObject.get(VERSION_STRING);
-    //        if (versionObject instanceof Integer version) {
-    //            return version == VERSION_VALUE;
-    //        }
-    //    } return false;
-    //}
-    
-    /**
-     * @param string json-formatted string
-     * @return a JSONObject
-     * @throws ParseException if the string cannot be parsed
-     */
-    private static JSONObject stringToJSONObject(String string) throws ParseException {
-        string = string == null ? "" : string;
-        JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(string);
-    }
     
     /**
      * Null Objects are not allowed.
@@ -301,10 +246,8 @@ public class G6JSONUtil {
         } return false;
     }
     
-    @SuppressWarnings("unchecked")
+    
     public static void main(String[] args) throws Exception {
-        
-        
         
         HomeAddress address = new HomeAddress(
                 "Norge",
@@ -313,33 +256,13 @@ public class G6JSONUtil {
                 "Gate 34b",
                 1706
         );
-        
         UserAccount account = new UserAccount(300,"Geir","Seter","geir@hotmail.com");
         account.getAddress().set(address);
         account.getPhoneNumbers().add("123456789");
         account.getPhoneNumbers().add("987654321");
-        
         JSONObject jsonObject = userAccountToJSON(account);
         System.out.println(jsonObject);
         account = userAccountFromJSON(jsonObject);
-        
-        boolean b = anyObjectIsNull();
-        System.out.println(b);
-        
-        JSONObject test = new JSONObject();
-        test.put("T",4);
-        String s = test.toString();
-        
-        JSONParser parser = new JSONParser();
-        Object o = parser.parse(s);
-        
-        account = new UserAccount();
-        account.getPhoneNumbers().add("123456789");
-        account.getPhoneNumbers().add("222256789");
-        
-        jsonObject = toJSON(account);
-        System.out.println(jsonObject.toString());
-        
         
         ArrayList<Object> arrayList = new ArrayList<>();
         System.out.println();
@@ -352,104 +275,7 @@ public class G6JSONUtil {
         arrayList.clear();
         System.out.println(allObjectsShareClass(arrayList)); // true
         
-        
-        List<Object> accounts = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            UserAccount a = new UserAccount();
-            a.getPhoneNumbers().add("123456789");
-            a.firstName = "LOL";
-            a.lastName = "LMFAO";
-            a.email = "abs@gmial.com";
-            a.id = i;
-            a.getAddress().city = "Fredrikstad";
-            accounts.add(a);
-        }
-        
-        JSONArray array = toJSONArray(accounts);
-        
-        System.out.println(array);
-        
-        accounts.add(null);
-        
-        array = toJSONArray(accounts);
-        
-        System.out.println(array);
-        
-        accounts.add(new Object());
-        
-        array = toJSONArray(accounts);
-        
-        System.out.println(array);
-        
     }
-    
-    /*
-    public enum SUPPORTED_DATA_TYPE {
-        HOME_ADDRESS("Home Address Array", HomeAddress.class),
-        USER_ACCOUNT("User Account Array", UserAccount.class);
-        public final String header;
-        public final Class<?> clazz;
-        final static SUPPORTED_DATA_TYPE[] all = values();
-        SUPPORTED_DATA_TYPE(String header, Class<?> clazz) {
-            this.header = header;
-            this.clazz = clazz;
-        }
-    }
-    
-    public static final class Wrapper {
-        private SUPPORTED_DATA_TYPE dataType;
-        private JSONObject object;
-        private int numObjects;
-        
-        
-        public Wrapper(Object obj, SUPPORTED_DATA_TYPE dataType) throws Exception {
-            if (obj == null || obj.getClass() != dataType.clazz) throw new Exception("Unsupported Datatype");
-            List<Object> list = new ArrayList<>(1);
-            list.add(obj);
-            JSONArray jsonArray = toJSONArray(list); // Never null
-            this.numObjects = jsonArray.size();
-            this.dataType = dataType;
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(dataType.header,jsonArray);
-            jsonObject.put(JSON_CONVERTER_VERSION_STRING,JSON_CONVERTER_VERSION);
-        }
-        
-        public Wrapper(Collection<Object> collection, SUPPORTED_DATA_TYPE dataType) throws Exception {
-            JSONArray jsonArray = toJSONArray(collection);
-            //if (!supports(clazz)) throw new Exception("Unsupported Datatype");
-            
-        }
-        
-    }
-    
-    
-    
-    public static boolean supports(Object object) {
-        return (object instanceof G6DataType dataType) && supports(dataType);
-    }
-    
-    private static boolean supports(G6DataType dataType) {
-        if (dataType != null) {
-            for (SUPPORTED_DATA_TYPE sdt : SUPPORTED_DATA_TYPE.all) {
-                if (sdt.clazz == dataType.getClass()) {
-                    return true;
-                }
-            }
-        } return false;
-    }
-    
-    public static boolean supports(Class<?> clazz) {
-        if (clazz != null) {
-            for (SUPPORTED_DATA_TYPE sdt : SUPPORTED_DATA_TYPE.all) {
-                if (sdt.clazz == clazz) {
-                    return true;
-                }
-            }
-        } return false;
-    }
-    
-     */
-    
     
     
 }
