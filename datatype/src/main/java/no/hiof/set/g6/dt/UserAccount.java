@@ -14,6 +14,15 @@ public final class UserAccount implements G6DataType {
     private final HomeAddress address;          // If you change the class, never let this be null
     private final List<String> phoneNumbers;    // If you change the class, never let this be null
     
+    public UserAccount(int id, String firstName, String lastName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = new HomeAddress();
+        this.phoneNumbers = new ArrayList<>();
+    }
+    
     public UserAccount() {
         this.firstName = "";
         this.lastName = "";
