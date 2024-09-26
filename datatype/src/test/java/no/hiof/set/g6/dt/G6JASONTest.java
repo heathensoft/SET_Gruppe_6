@@ -2,6 +2,7 @@ package no.hiof.set.g6.dt;
 
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -62,6 +63,24 @@ public class G6JASONTest {
         Assertions.assertEquals(3,list.size());
     }
     //---------------------------------------------------------------------------
+    
+    @Test
+    @DisplayName("Assert every method that converts JSONObject to DataType throws E when arg. is null")
+    public void assertJsonToDataTypesThrowsE_nullArg() {
+        Assertions.assertThrows(Exception.class,() -> G6JSON.userAccountFromJSON(null));
+        Assertions.assertThrows(Exception.class,() -> G6JSON.homeAddressFromJSON(null));
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    @DisplayName("Assert every method that converts JSONObject to DataType throws E when arg. is inconvertible")
+    public void assertJsonToDataTypesThrowsE_inconvertible() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("Key",new Object());
+        Assertions.assertThrows(Exception.class,() -> G6JSON.userAccountFromJSON(jsonObject));
+        Assertions.assertThrows(Exception.class,() -> G6JSON.homeAddressFromJSON(jsonObject));
+    }
+    
     
     
     
