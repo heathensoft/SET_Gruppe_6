@@ -17,7 +17,8 @@ Derfor tenker vi at vi fokuserer på kommunikasjon mellom en enkel Bruker App og
 ## Sprints 
 
 
-### Sprint 1
+
+### [Sprint 1](https://github.com/users/heathensoft/projects/4)
 
 ***Oppsett og forberedning***
 
@@ -61,7 +62,7 @@ Eksempel: Json Simple
 [![IMAGE ALT TEXT](https://img.youtube.com/vi/ywLKpHw1MjQ/0.jpg)](https://www.youtube.com/watch?v=ywLKpHw1MjQ "click to watch")
 
 
-### Sprint 2
+### [Sprint 2](https://github.com/users/heathensoft/projects/5)
 
 ***Grov plan***
 

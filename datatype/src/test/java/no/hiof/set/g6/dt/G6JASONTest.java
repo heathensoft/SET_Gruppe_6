@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Pain pepeHands
- */
 
 
 public class G6JASONTest {
