@@ -16,6 +16,7 @@ Derfor tenker vi at vi fokuserer på kommunikasjon mellom en enkel Bruker App og
 
 ## Sprints 
 
+
 ### Sprint 1
 
 ***Oppsett og forberedning***
@@ -49,6 +50,12 @@ Siden vi har begrenset med tid velger vi å ikke finne opp hjulet på nytt her. 
 ***Så i Sprint 1 er fokuset først og fremst på prosjekt struktur. Da det gjør at vi slipper å refaktorere og gjøre om på dette senere.
 Fra der lager vi noen få klasser for datatyper og implementerer metoder for å serialisere / deserialisere disse. Og til sist kjøre tester.***
 
+***Ressurser***
+
+Eksempel: Json Simple
+
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/ywLKpHw1MjQ/0.jpg)](https://www.youtube.com/watch?v=ywLKpHw1MjQ "click to watch")
+
 
 ### Sprint 2
 
@@ -67,15 +74,16 @@ Mye kommer også ann på hva vi kommer til å gå igjennom i forelesning, slik a
 
 Eksempler: Server / Klient kommunikasjon
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/-xKgxqG411c/0.jpg)](https://www.youtube.com/watch?v=-xKgxqG411c "click to watch")
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/hIc_9Wbn704/0.jpg)](https://www.youtube.com/watch?v=hIc_9Wbn704 "click to watch")
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/-xKgxqG411c/0.jpg)](https://www.youtube.com/watch?v=-xKgxqG411c "click to watch")
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/hIc_9Wbn704/0.jpg)](https://www.youtube.com/watch?v=hIc_9Wbn704 "click to watch")
 
 Eksempler: Java Database Connectivity
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/9ntKSLLDeSs/0.jpg)](https://www.youtube.com/watch?v=9ntKSLLDeSs "click to watch")
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/7v2OnUti2eM/0.jpg)](https://www.youtube.com/watch?v=7v2OnUti2eM "click to watch")
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/9ntKSLLDeSs/0.jpg)](https://www.youtube.com/watch?v=9ntKSLLDeSs "click to watch")
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/7v2OnUti2eM/0.jpg)](https://www.youtube.com/watch?v=7v2OnUti2eM "click to watch")
 
 
+## Organisering / Workflow
 
 ### Prosjekt Struktur
 
@@ -86,11 +94,10 @@ Eksempler: Java Database Connectivity
 * App-Modulen: Kode for brukergrensenitt (Simmulerer en Mobil App)
 
 
-
 ### Oppsett
 
 Hvis noe er uklart eller dere ikke får det til. Se slides fra forelesningen om Version Control, eller
-spør hverandre på Discord. 
+spør meg / hverandre på Discord. 
 
 1. [Gå til Dev-Branchen på Github](https://github.com/heathensoft/SET_Gruppe_6/tree/dev)
 2. Trykk på "Code" knappen og kopier URL under Clone
@@ -105,15 +112,14 @@ En Sprint med Backlogg over Oppgaver som skal utføres er satt opp som et "Proje
 ***Slik jeg forstår det til nå:*** (Vi finner ut av ting mens vi holder på)
 
 1. Velg en Oppgave fra sprint backloggen som dere vil utføre
-2. Legg dere til med et grovt estimat og dra Oppgaven over til "In Progress"
+2. Legg dere til og dra Oppgaven over til "In Progress"
 2. Lag en ny branch med et passende navn til Oppgaven
-3. Programmer denne funksjonaliten.
+3. Programmer oppgaven.
 4. commit det dere gjør til den nye branchen etterhvert som dere jobber med den.
 5. Når dere er ferdig pusher dere endringene dere har gjort over på dev-branchen.
-6. Her kan det oppstå konfliker (Men vi tar det som det kommer)
-7. Så kan dere slette branchen dere er på.
-8. Pull fra dev-branchen (Slik at dere får med endringer andre har gjort imellomtiden)
-8. Repeter
+6. Her kan det oppstå konfliker (Men vi tar det som det kommer :)
+7. Pull fra dev-branchen (Slik at dere får med endringer andre har gjort imellomtiden)
+9. Repeter
 
 Ikke tenk på testing enda hvis dere er usikre. Dere kan godt sette opp tester før dere pusher også, men vi bruker nok hovedsaklig dev-branchen for testing.
 
