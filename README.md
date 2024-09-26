@@ -52,6 +52,10 @@ Fra der lager vi noen få klasser for datatyper og implementerer metoder for å 
 
 ***Ressurser***
 
+Gradle Tutorial
+
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/-dtcEMLNmn0/0.jpg)](https://www.youtube.com/watch?v=-dtcEMLNmn0 "click to watch")
+
 Eksempel: Json Simple
 
 [![IMAGE ALT TEXT](https://img.youtube.com/vi/ywLKpHw1MjQ/0.jpg)](https://www.youtube.com/watch?v=ywLKpHw1MjQ "click to watch")
