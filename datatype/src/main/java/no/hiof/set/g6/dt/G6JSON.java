@@ -187,10 +187,9 @@ public class G6JSON {
      * Cast and Add content of JSONArray to the list
      * @param clazz class uses for casting objects
      * @return the provided list
-     * @throws ClassCastException If the content of the JSONArray can't be cast to T
      * @throws IllegalStateException If any argument is null
      */
-    public static <T> List<T> castAndAdd(JSONArray jsonArray, List<T> list, Class<T> clazz) throws ClassCastException, IllegalStateException {
+    public static <T> List<T> castAndAdd(JSONArray jsonArray, List<T> list, Class<T> clazz) throws IllegalStateException {
         if (anyObjectIsNull(jsonArray,list,clazz)) throw new IllegalStateException("Provided one ore more null argument");
         for (Object object : jsonArray) {
             list.add(clazz.cast(object));

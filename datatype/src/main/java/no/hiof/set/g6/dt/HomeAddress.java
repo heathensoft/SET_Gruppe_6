@@ -22,7 +22,12 @@ public class HomeAddress {
         this.postalCode = postalCode;
     }
     
-    public HomeAddress() {}
+    public HomeAddress() {
+        this.country = "";
+        this.state = "";
+        this.city = "";
+        this.streetAddress = "";
+    }
     
     public void set(HomeAddress address) {
         if (address == null) {
@@ -39,4 +44,5 @@ public class HomeAddress {
             this.postalCode = address.postalCode;
         }
     }
+    
 }
