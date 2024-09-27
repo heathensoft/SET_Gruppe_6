@@ -13,16 +13,12 @@ import java.util.List;
 /**
  * Utility Klasse for å konvertere data typer til JSON format og tilbake til java objekter igjen.
  * JSON er et lesbart tekst format som vi antagelig vil bruke for å sende data via. internett, blåtann osv.
- *
  * Vi utvider etterhvert som vi legger til flere konseptuelle datatyper eller endrer eksisterende:
  *
  * Version 1.0: Kan konvertere HomeAddress og UserAccount
  * Version X.X: ... nye datatyper eller endringer
  *
- *
- *
- *
- * Metodene i denne klassen er fine å kjøre tester på
+ * Metodene i denne klassen er fine å kjøre tester på. Bare pass på å vedlikeholde testene
  */
 
 
