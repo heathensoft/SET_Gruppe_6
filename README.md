@@ -1,5 +1,10 @@
 # Software Engineering & Testing - Group 6 Project Repo
 
+
+* **Mahmad**
+* **Leander**
+* **Frederik**
+
 ### Hovedfokus i prosjektet (Teknisk implementasjon)
 
 
