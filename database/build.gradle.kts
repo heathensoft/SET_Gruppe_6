@@ -5,6 +5,6 @@ plugins {
 
 dependencies {
     api(project(":datatype"))
-    //implementation(files("path til driver filen her"))
+    implementation(files("lib/mysql-connector-j-9.0.0.jar"))
 }
 
