@@ -20,6 +20,11 @@ dependencies {
     // Tried and tested. Well documented
     implementation("io.netty:netty-all:4.1.113.Final")
 
+    // Database Connection Pooling Library
+    // Not necessary, but it would improve performance with multiple "Clients"
+    // https://commons.apache.org/proper/commons-dbcp/
+    implementation(files("lib/commons-dbcp2-2.12.0.jar"))
+
 
 }
 
