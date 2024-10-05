@@ -36,7 +36,6 @@ public class G6JSON {
     public static final String JSON_ADDRESS_STREET_STRING = "Street Address";
     public static final String JSON_ADDRESS_POSTALCODE_STRING = "Postal Code";
     
-    public static final String JSON_USERACC_ID_STRING = "User-ID";
     public static final String JSON_USERACC_FIRSTNAME_STRING = "First Name";
     public static final String JSON_USERACC_LASTNAME_STRING = "Last Name";
     public static final String JSON_USERACC_EMAIL_STRING = "E-Mail";
@@ -114,7 +113,6 @@ public class G6JSON {
     @SuppressWarnings("unchecked")
     public static JSONObject userAccountToJSON(UserAccount object) {
         if (object != null) {
-            int id = object.id;
             String firstName = object.firstName == null ? "null" : object.firstName;
             String lastName = object.lastName == null ? "null" : object.lastName;
             String email = object.email == null ? "null" : object.email;
@@ -129,7 +127,6 @@ public class G6JSON {
             {
                 JSONArray jsonArray = new JSONArray();
                 jsonArray.addAll(phoneNumbers);
-                jsonObject.put(JSON_USERACC_ID_STRING,id);
                 jsonObject.put(JSON_USERACC_FIRSTNAME_STRING,firstName);
                 jsonObject.put(JSON_USERACC_LASTNAME_STRING,lastName);
                 jsonObject.put(JSON_USERACC_EMAIL_STRING,email);
@@ -146,7 +143,6 @@ public class G6JSON {
     public static UserAccount userAccountFromJSON(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
         
-        Object idObject = jsonObject.get(JSON_USERACC_ID_STRING);
         Object firstNameObject = jsonObject.get(JSON_USERACC_FIRSTNAME_STRING);
         Object lastNameObject = jsonObject.get(JSON_USERACC_LASTNAME_STRING);
         Object emailObject = jsonObject.get(JSON_USERACC_EMAIL_STRING);
@@ -154,7 +150,6 @@ public class G6JSON {
         Object phoneNumbersObject = jsonObject.get(JSON_USERACC_PHONENUMBERS_STRING);
         
         if (anyObjectIsNull(
-                idObject,
                 firstNameObject,
                 lastNameObject,
                 emailObject,
@@ -162,14 +157,14 @@ public class G6JSON {
                 phoneNumbersObject
         )) throw new Exception("JSON to UserAccount: Missing one or more fields");
         try {
-            Integer id = (Integer) idObject;
+            
             String firstName = (String) firstNameObject;
             String lastName = (String) lastNameObject;
             String email = (String) emailObject;
             HomeAddress homeAddress = homeAddressFromJSON((JSONObject) addressObject);
             List<String> phoneNumbers = castAndAdd((JSONArray) phoneNumbersObject,new ArrayList<>(), String.class);
             
-            UserAccount userAccount = new UserAccount(id,firstName,lastName,email);
+            UserAccount userAccount = new UserAccount(firstName,lastName,email);
             userAccount.getPhoneNumbers().addAll(phoneNumbers);
             userAccount.getAddress().set(homeAddress);
             return userAccount;
@@ -251,7 +246,7 @@ public class G6JSON {
                 "Gate 34b",
                 1706
         );
-        UserAccount account = new UserAccount(300,"Geir","Seter","geir@hotmail.com");
+        UserAccount account = new UserAccount("Geir","Seter","geir@hotmail.com");
         account.getAddress().set(address);
         account.getPhoneNumbers().add("123456789");
         account.getPhoneNumbers().add("987654321");
