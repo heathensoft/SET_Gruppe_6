@@ -27,7 +27,7 @@ public class Server {
     }
     
     public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
@@ -45,6 +45,8 @@ public class Server {
     
     
     private static final class ServerHandler extends ChannelInboundHandlerAdapter {
+        
+        
         
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

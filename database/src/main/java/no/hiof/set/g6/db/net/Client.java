@@ -26,6 +26,12 @@ public class Client {
         send(object,"localhost",8080);
     }
     
+    public void connectToServer() {
+    
+    }
+    
+    
+    
     public static void send(JSONObject object, String host, int port) throws Exception {
         try {
             EventLoopGroup group = new NioEventLoopGroup();
@@ -37,7 +43,6 @@ public class Client {
                 b.handler(new ClientInitializer());
                 ChannelFuture f = b.connect().sync();
                 
-                Thread.sleep(5000);
                 if (f.isSuccess()) {
                     f.channel().writeAndFlush(object)
                             .addListener((ChannelFutureListener)
@@ -47,7 +52,7 @@ public class Client {
                                                                  : "sending failed"));
                 }
                 
-                Thread.sleep(5000);
+                
                 f.channel().closeFuture().sync();
             } finally {
                 group.shutdownGracefully().sync();

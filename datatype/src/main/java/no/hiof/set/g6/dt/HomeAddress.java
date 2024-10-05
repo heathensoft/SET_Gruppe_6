@@ -2,7 +2,7 @@ package no.hiof.set.g6.dt;
 
 
 
-public class HomeAddress {
+public class HomeAddress implements G6DataType {
     
     public String country;
     public String state;
