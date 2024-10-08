@@ -13,8 +13,15 @@ public class MyJDBC {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS");
 
             while(resultSet.next()){
-                System.out.println(resultSet.getString("username"));
-                System.out.println(resultSet.getString("password"));
+                System.out.println(resultSet.getString("first_name"));
+                System.out.println(resultSet.getString("last_name"));
+                System.out.println(resultSet.getString("email"));
+                System.out.println(resultSet.getString("phone_number"));
+                System.out.println(resultSet.getString("address"));
+                System.out.println(resultSet.getString("role"));
+                System.out.println(resultSet.getString("date_registered"));
+                System.out.println();
+
             }
 
         } catch(SQLException e){
