@@ -13,7 +13,6 @@ public class LocalUser implements G6DataType {
     public LocalPermission localPermission;
     private final UserAccount userAccount;
     
-    
     public LocalUser() {
         userName = "";
         localPermission = LocalPermission.NONE;

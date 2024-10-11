@@ -250,6 +250,7 @@ public class G6JSON {
         account.getAddress().set(address);
         account.getPhoneNumbers().add("123456789");
         account.getPhoneNumbers().add("987654321");
+        
         JSONObject jsonObject = userAccountToJSON(account);
         System.out.println(jsonObject);
         account = userAccountFromJSON(jsonObject);
