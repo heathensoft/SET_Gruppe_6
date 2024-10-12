@@ -15,7 +15,7 @@ public class ServerPacket {
     private final Channel channel;
     private final JSONObject message;
     
-    protected ServerPacket(Channel channel, JSONObject message) {
+    public ServerPacket(Channel channel, JSONObject message) {
         this.channel = channel;
         this.message = message;
     }
