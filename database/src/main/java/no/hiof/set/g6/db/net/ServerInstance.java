@@ -68,6 +68,7 @@ public final class ServerInstance extends NetworkInterface<ServerPacket> {
     @Override
     public void sendMessage(ServerPacket response) throws Exception {
         if (response == null) throw new IllegalStateException("Request is Null"); // Runtime Exception
+        if (!createdSuccessfully()) throw new IllegalStateException("Invalid ServerInstance");
         JSONObject jsonObject = response.get();
         Channel channel = response.channel();
         if (anyObjectNull(jsonObject,channel)) {
