@@ -9,8 +9,8 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import no.hiof.set.g6.db.net.ny.handlers.JsonObjectToStringConverter;
-import no.hiof.set.g6.db.net.ny.handlers.StringToJsonObjectConverter;
+import no.hiof.set.g6.db.net.naive.JsonObjectToStringConverter;
+import no.hiof.set.g6.db.net.naive.StringToJsonObjectConverter;
 
 /**
  * Bygger en SocketChannel (TCP) "pipeline". En rekke med steg som dataen må gå igjennom

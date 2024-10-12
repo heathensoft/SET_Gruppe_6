@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.ny.handlers;
+package no.hiof.set.g6.db.net.net;
 
 
 import io.netty.channel.ChannelHandlerContext;
@@ -12,12 +12,10 @@ import java.nio.BufferOverflowException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-/**
- * Sending requests to the Server is done through ClientHandler.
- */
 
 
-public class ClientHandler extends SimpleChannelInboundHandler<JSONObject> {
+@Deprecated
+public class ClientHandlerOld extends SimpleChannelInboundHandler<JSONObject> {
     
     private ChannelHandlerContext ctx;
     private BlockingQueue<Promise<JSONObject>> queue = new ArrayBlockingQueue<>(16);
