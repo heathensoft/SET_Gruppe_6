@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.net;
+package no.hiof.set.g6.db.net;
 
 
 import io.netty.channel.ChannelHandlerContext;
