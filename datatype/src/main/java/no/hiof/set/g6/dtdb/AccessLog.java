@@ -2,24 +2,21 @@ package no.hiof.set.g6.dtdb;
 
 import java.sql.Timestamp;
 
-public class AccessLog {
-    private int logId;
-    private Users user;  // Foreign key reference to Users
-    private Locks lock;  // Foreign key reference to Locks
-    private String action;
-    private java.sql.Timestamp timestamp;
+public class AccessLog implements G6DataType {
+    private int logId;                // corresponds to log_id INT
+    private LocalUser localUser;      // corresponds to local_user_id INT (Foreign Key)
+    private Locks locks;                // corresponds to lock_id INT (Foreign Key)
+    private String action;            // corresponds to action ENUM('Locked', 'Unlocked')
+    private Timestamp timestamp;      // corresponds to timestamp DATETIME
 
-    public AccessLog(int logId, Users user, Locks lock, String action, java.sql.Timestamp timestamp) {
+    // Constructors, Getters, and Setters
+    public AccessLog(int logId, LocalUser localUser, Locks locks, String action, Timestamp timestamp) {
         this.logId = logId;
-        this.user = user;
-        this.lock = lock;
+        this.localUser = localUser;
+        this.locks = locks;
         this.action = action;
         this.timestamp = timestamp;
     }
-
-
-    //Har generert gettere og settere
-    public AccessLog() {}
 
     public int getLogId() {
         return logId;
@@ -29,20 +26,20 @@ public class AccessLog {
         this.logId = logId;
     }
 
-    public Users getUser() {
-        return user;
+    public LocalUser getLocalUser() {
+        return localUser;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setLocalUser(LocalUser localUser) {
+        this.localUser = localUser;
     }
 
     public Locks getLock() {
-        return lock;
+        return locks;
     }
 
-    public void setLock(Locks lock) {
-        this.lock = lock;
+    public void setLock(Locks locks) {
+        this.locks = locks;
     }
 
     public String getAction() {

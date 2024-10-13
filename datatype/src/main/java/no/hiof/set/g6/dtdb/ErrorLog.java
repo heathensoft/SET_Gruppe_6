@@ -2,24 +2,22 @@ package no.hiof.set.g6.dtdb;
 
 import java.sql.Timestamp;
 
-public class ErrorLog {
-    private int errorId;
-    private Hubs hub;     // Foreign key reference to Hubs
-    private Locks lock;   //Foreign key reference to Locks
-    private String errorType;
-    private java.sql.Timestamp timestamp;
+public class ErrorLog implements G6DataType {
+    private int errorId;              // corresponds to error_id INT
+    private Hubs hubs;                  // corresponds to hub_id INT (Foreign Key)
+    private Locks locks;                // corresponds to lock_id INT (nullable Foreign Key)
+    private String errorType;         // corresponds to error_type VARCHAR(255)
+    private Timestamp timestamp;      // corresponds to timestamp DATETIME
 
-    public ErrorLog(int errorId, Hubs hub, Locks lock, String errorType, java.sql.Timestamp timestamp) {
+    // Constructors, Getters, and Setters
+    public ErrorLog(int errorId, Hubs hubs, Locks locks, String errorType, Timestamp timestamp) {
         this.errorId = errorId;
-        this.hub = hub;
-        this.lock = lock;
+        this.hubs = hubs;
+        this.locks = locks;
         this.errorType = errorType;
         this.timestamp = timestamp;
     }
 
-    public ErrorLog() {}
-
-    //Har generert gettere og settere
     public int getErrorId() {
         return errorId;
     }
@@ -29,19 +27,19 @@ public class ErrorLog {
     }
 
     public Hubs getHub() {
-        return hub;
+        return hubs;
     }
 
-    public void setHub(Hubs hub) {
-        this.hub = hub;
+    public void setHub(Hubs hubs) {
+        this.hubs = hubs;
     }
 
     public Locks getLock() {
-        return lock;
+        return locks;
     }
 
-    public void setLock(Locks lock) {
-        this.lock = lock;
+    public void setLock(Locks locks) {
+        this.locks = locks;
     }
 
     public String getErrorType() {

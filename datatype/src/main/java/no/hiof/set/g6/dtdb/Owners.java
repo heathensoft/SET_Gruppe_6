@@ -2,22 +2,18 @@ package no.hiof.set.g6.dtdb;
 
 import java.sql.Timestamp;
 
-public class Owners {
-    private int ownerId;
-    private Users user; // Foreign key reference to Users
-    private Hubs hub;   // Foreign key reference to Hubs
-    private java.sql.Timestamp purchaseDate;
+public class Owners implements G6DataType {
+    private int ownerId;         // corresponds to owner_id INT
+    private LocalUser localUser; // corresponds to local_user_id INT (Foreign Key)
+    private Timestamp purchaseDate; // corresponds to purchase_date DATETIME
 
-    public Owners(int ownerId, Users user, Hubs hub, java.sql.Timestamp purchaseDate) {
+    // Constructors, Getters, and Setters
+    public Owners(int ownerId, LocalUser localUser, Timestamp purchaseDate) {
         this.ownerId = ownerId;
-        this.user = user;
-        this.hub = hub;
+        this.localUser = localUser;
         this.purchaseDate = purchaseDate;
     }
 
-    public Owners() {}
-
-    //Har generert gettere og settere
     public int getOwnerId() {
         return ownerId;
     }
@@ -26,20 +22,12 @@ public class Owners {
         this.ownerId = ownerId;
     }
 
-    public Users getUser() {
-        return user;
+    public LocalUser getLocalUser() {
+        return localUser;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-    public Hubs getHub() {
-        return hub;
-    }
-
-    public void setHub(Hubs hub) {
-        this.hub = hub;
+    public void setLocalUser(LocalUser localUser) {
+        this.localUser = localUser;
     }
 
     public Timestamp getPurchaseDate() {
@@ -50,4 +38,3 @@ public class Owners {
         this.purchaseDate = purchaseDate;
     }
 }
-
