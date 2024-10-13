@@ -3,6 +3,7 @@ package no.hiof.set.g6.db.net;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import no.hiof.set.g6.db.net.ny.LogEntry;
 import org.json.simple.JSONObject;
 
 /**

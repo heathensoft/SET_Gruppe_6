@@ -9,6 +9,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import no.hiof.set.g6.db.net.ny.LogEntry;
 import no.hiof.set.g6.dt.G6JSON;
 import org.json.simple.JSONObject;
 

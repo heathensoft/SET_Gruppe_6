@@ -20,6 +20,10 @@ public class ServerPacket {
         this.message = message;
     }
     
+    public ServerPacket response(JSONObject message) {
+        return new ServerPacket(channel,message);
+    }
+    
     public Channel channel() { return channel; }
     
     public JSONObject get() { return message; }

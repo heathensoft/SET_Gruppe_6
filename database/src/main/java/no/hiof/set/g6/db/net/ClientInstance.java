@@ -5,6 +5,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import no.hiof.set.g6.db.net.ny.LogEntry;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;

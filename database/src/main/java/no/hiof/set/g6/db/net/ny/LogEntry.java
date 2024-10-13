@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net;
+package no.hiof.set.g6.db.net.ny;
 
 
 /**
@@ -11,13 +11,14 @@ public final class LogEntry {
     
     public enum Type {
         DEBUG("[DEBUG] "),
-        INFO("[INFO] "),
-        WARN("[WARN] "),
+        INFO( "[INFO ] "),
+        WARN( "[WARN ] "),
         ERROR("[ERROR] ");
         final String prefix;
         Type(String prefix) {
             this.prefix = prefix;
-        } public String toString() {
+        }
+        public String toString() {
             return prefix;
         }
     }
@@ -41,15 +42,12 @@ public final class LogEntry {
     public static LogEntry debug(String message) {
         return new LogEntry(Type.DEBUG,message);
     }
-    
     public static LogEntry info(String message) {
         return new LogEntry(Type.INFO,message);
     }
-    
     public static LogEntry warn(String message) {
         return new LogEntry(Type.WARN,message);
     }
-    
     public static LogEntry error(String message) {
         return new LogEntry(Type.ERROR,message);
     }

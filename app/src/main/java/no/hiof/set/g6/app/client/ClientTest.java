@@ -3,7 +3,7 @@ package no.hiof.set.g6.app.client;
 
 import io.github.heathensoft.jlib.lwjgl.window.*;
 import no.hiof.set.g6.db.net.ClientInstance;
-import no.hiof.set.g6.db.net.LogEntry;
+import no.hiof.set.g6.db.net.ny.LogEntry;
 import org.json.simple.JSONObject;
 import org.lwjgl.glfw.GLFW;
 import org.tinylog.Logger;

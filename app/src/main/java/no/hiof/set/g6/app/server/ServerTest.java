@@ -2,7 +2,7 @@ package no.hiof.set.g6.app.server;
 
 
 import io.github.heathensoft.jlib.lwjgl.window.*;
-import no.hiof.set.g6.db.net.LogEntry;
+import no.hiof.set.g6.db.net.ny.LogEntry;
 import no.hiof.set.g6.db.net.ServerInstance;
 import no.hiof.set.g6.db.net.ServerPacket;
 import org.json.simple.JSONObject;
@@ -93,7 +93,7 @@ public class ServerTest extends Application {
         network.collectIncoming(request_list);
         for (ServerPacket packet : request_list) {
             Logger.info(packet.get());
-            ServerPacket response = new ServerPacket(packet.channel(),this.response);
+            ServerPacket response = packet.response(this.response);
             try { network.sendMessage(response);
             } catch (Exception e) {
                 Logger.warn(e);
