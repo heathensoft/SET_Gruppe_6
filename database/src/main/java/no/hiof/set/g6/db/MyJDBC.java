@@ -13,11 +13,8 @@ public class MyJDBC {
         String username = "root";
         String password = "HeiHei123";
 
-        String query = "SELECT LocalUser.user_name, UserAccount.first_name, UserAccount.last_name, LocalUser.role " +
-                "FROM LocalUser " +
-                "JOIN UserAccount ON LocalUser.account_id = UserAccount.account_id " +
-                "JOIN Hubs ON LocalUser.hub_id = Hubs.hub_id " +
-                "WHERE Hubs.hub_id = ?";
+        // Spørring som henter brukernavn og rolle for brukere basert på en bestemt hub_id
+        String query = "SELECT user_name, role FROM LocalUser WHERE hub_id = ?";
 
         List<LocalUser> userList = new ArrayList<>();
 
@@ -51,7 +48,6 @@ public class MyJDBC {
 
         return userList;  // Returnerer listen med brukere
     }
-
 
     //Bare en test main metode, eksempel på hvordan metoden kan bli kalt.
     public static void main(String[] args) {
