@@ -1,6 +1,7 @@
 package no.hiof.set.g6.app.client;
 
 
+import io.github.heathensoft.jlib.common.text.Ascii;
 import io.github.heathensoft.jlib.lwjgl.window.*;
 import io.netty.channel.ChannelFuture;
 import no.hiof.set.g6.db.net.ClientInstance;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 
 
-public class ClientTest extends Application {
+public class ClientTest extends Application implements TextProcessor {
     
     public static void main(String[] args) {
         Engine.get().run(new ClientTest(),args);
@@ -29,10 +30,10 @@ public class ClientTest extends Application {
     private static final int SCREEN_HEIGHT_PIXELS = 400;
     private static final int PORT = 8080;
     
-    private ClientInstance clientInstance;
-    private G6Packet request;
-    private List<LogEntry> log;
-    private List<G6Packet> response_list;
+    private ClientInstance client;
+    private List<LogEntry> logs;
+    private List<G6Packet> incoming;
+    private Ascii.Buffer text;
     
     protected void engine_init(List<Resolution> supported, BootConfiguration config, String[] args) {
         supported.add(new Resolution(SCREEN_WIDTH_PIXELS,SCREEN_HEIGHT_PIXELS));
@@ -48,72 +49,49 @@ public class ClientTest extends Application {
         config.window_title = "Client Application";
     }
     
-    @SuppressWarnings("unchecked")
+   
     protected void on_start(Resolution resolution) throws Exception {
-        response_list = new ArrayList<>(32);
-        log = new ArrayList<>(32);
+        Engine.get().input().keys().setTextProcessor(this);
         
-        JSONObject payload = new JSONObject();
-        payload.put("request","This is a request from a Client Application");
-        request = new G6Packet(payload);
+        incoming = new ArrayList<>(32);
+        logs = new ArrayList<>(32);
+        text = new Ascii.Buffer(256);
+        client = new ClientInstance();
         
-        clientInstance = new ClientInstance();
-        ChannelFuture connect = clientInstance.connectToHost("localhost",PORT);
+        ChannelFuture connect = client.connectToHost("localhost",PORT);
         logNetworkConnection();
         if (!connect.isSuccess()) {
-            clientInstance.shutDownAndWait();
+            client.shutDownAndWait();
             logNetworkConnection();
             Engine.get().exit();
         }
     }
     
     protected void on_update(float delta) {
-        
         Keyboard keys = Engine.get().input().keys();
-        
-        if(keys.just_pressed(GLFW.GLFW_KEY_S))
-        {
-            if (clientInstance.isConnected()) {
-                boolean valid = clientInstance.sendPacket(request);
-            } else Logger.info("not connected to server");
-        }
-        else if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE))
-        {
+        if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
             Engine.get().exit();
-        }
-        
-        collectIncoming();
+        } collectIncoming();
         logNetworkConnection();
-        
     }
     
-    protected void on_render(float frame_time, float alpha) {
+    protected void on_render(float frame_time, float alpha) { }
     
-    }
-    
-    protected void on_exit() {
-        try { clientInstance.shutDown();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    protected void resolution_request(Resolution resolution) throws Exception {
-    
-    }
+    protected void on_exit() { client.shutDown(); }
+    protected void resolution_request(Resolution resolution) throws Exception { }
     
     private void collectIncoming() {
-        response_list.clear();
-        clientInstance.collectIncomingPackets(response_list);
-        for (G6Packet packet : response_list) {
+        incoming.clear();
+        client.collectIncomingPackets(incoming);
+        for (G6Packet packet : incoming) {
             Logger.info(packet);
         }
     }
     
     private void logNetworkConnection() {
-        log.clear();
-        clientInstance.eventLog().read(log);
-        for (LogEntry entry : log) {
+        logs.clear();
+        client.eventLog().read(logs);
+        for (LogEntry entry : logs) {
             switch (entry.type) {
                 case DEBUG -> Logger.debug(entry.message);
                 case INFO -> Logger.info(entry.message);
@@ -121,5 +99,24 @@ public class ClientTest extends Application {
                 case ERROR -> Logger.error(entry.message);
             }
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public void keyPress(int key, int mods, boolean repeat) {
+        if (key == GLFW.GLFW_KEY_ENTER) {
+            if (!text.isEmpty() && client.isConnected()) {
+                String string = text.toString();
+                JSONObject request = new JSONObject();
+                request.put("Message",string);
+                client.sendPacket(new G6Packet(request));
+                text.clear();
+            }
+        }
+    }
+    
+    @Override
+    public void charPress(byte character) {
+        text.append(character);
     }
 }

@@ -20,17 +20,15 @@ import java.util.List;
 
 public class ServerTest extends Application {
     
-    public static void main(String[] args) {
-        Engine.get().run(new ServerTest(),args);
-    }
+    public static void main(String[] args) { Engine.get().run(new ServerTest(),args); }
     
     private static final int SCREEN_WIDTH_PIXELS = 400;
     private static final int SCREEN_HEIGHT_PIXELS = 400;
     private static final int PORT = 8080;
     
     private ServerInstance server;
-    private List<LogEntry> log;
-    private List<G6Packet> request_list;
+    private List<LogEntry> logs;
+    private List<G6Packet> incoming;
     
     protected void engine_init(List<Resolution> supported, BootConfiguration config, String[] args) {
         supported.add(new Resolution(SCREEN_WIDTH_PIXELS,SCREEN_HEIGHT_PIXELS));
@@ -40,73 +38,49 @@ public class ServerTest extends Application {
         config.windowed_mode = true;
         config.resizable_window = false;
         config.vsync_enabled = true;
-        config.antialiasing = false;
         config.limit_fps = false;
         config.target_ups = 60;
         config.window_title = "Server Application";
     }
     
     protected void on_start(Resolution resolution) throws Exception {
-        request_list = new ArrayList<>(32);
-        log = new ArrayList<>(32);
-        
-        
+        incoming = new ArrayList<>(32);
+        logs = new ArrayList<>(32);
         server = new ServerInstance(PORT);
-        
-        
     }
     
     protected void on_update(float delta) {
-        
         Keyboard keys = Engine.get().input().keys();
-        if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE))
-        {
+        if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
             Engine.get().exit();
-        }
-        
-        handleClientRequests();
+        } handleClientRequests();
         logNetworkConnection();
-        
     }
     
-    protected void on_render(float frame_time, float alpha) {
-    
-    }
-    
-    protected void on_exit() {
-        try { server.shutDown();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    protected void resolution_request(Resolution resolution) throws Exception {
-    
-    }
+    protected void on_render(float frame_time, float alpha) { }
+    protected void on_exit() { server.shutDown(); }
+    protected void resolution_request(Resolution resolution) throws Exception {}
     
     @SuppressWarnings("unchecked")
     private void handleClientRequests() {
-        request_list.clear();
-        server.collectIncomingPackets(request_list);
-        for (G6Packet packet : request_list) {
+        server.collectIncomingPackets(incoming);
+        for (G6Packet packet : incoming) {
             Logger.info(packet);
             JSONObject payload = new JSONObject();
-            payload.put("response"," " + server.numPacketsReceived());
-            G6Packet response = packet.response(payload);
-            server.sendPacket(response);
-        }
+            payload.put("response", server.numCollectedPackets());
+            server.sendPacket(packet.response(payload));
+        } incoming.clear();
     }
     
     private void logNetworkConnection() {
-        log.clear();
-        server.eventLog().read(log);
-        for (LogEntry entry : log) {
+        server.eventLog().read(logs);
+        for (LogEntry entry : logs) {
             switch (entry.type) {
                 case DEBUG -> Logger.debug(entry.message);
                 case INFO -> Logger.info(entry.message);
                 case WARN -> Logger.warn(entry.message);
                 case ERROR -> Logger.error(entry.message);
             }
-        }
+        } logs.clear();
     }
 }
