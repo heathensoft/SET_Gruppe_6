@@ -10,7 +10,9 @@ import org.lwjgl.glfw.GLFW;
 import org.tinylog.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Frederik Dahl
@@ -22,6 +24,7 @@ public class ServerTest extends Application {
     
     public static void main(String[] args) { Engine.get().run(new ServerTest(),args); }
     
+    private static final String MESSAGE_KEY = "MESSAGE";
     private static final int SCREEN_WIDTH_PIXELS = 400;
     private static final int SCREEN_HEIGHT_PIXELS = 400;
     private static final int PORT = 8080;
@@ -29,6 +32,7 @@ public class ServerTest extends Application {
     private ServerInstance server;
     private List<LogEntry> logs;
     private List<G6Packet> incoming;
+    private Map<String,String> database;
     
     protected void engine_init(List<Resolution> supported, BootConfiguration config, String[] args) {
         supported.add(new Resolution(SCREEN_WIDTH_PIXELS,SCREEN_HEIGHT_PIXELS));
@@ -47,6 +51,8 @@ public class ServerTest extends Application {
         incoming = new ArrayList<>(32);
         logs = new ArrayList<>(32);
         server = new ServerInstance(PORT);
+        database = new HashMap<>(128);
+        loadDatabase();
     }
     
     protected void on_update(float delta) {
@@ -54,7 +60,7 @@ public class ServerTest extends Application {
         if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
             Engine.get().exit();
         } handleClientRequests();
-        logNetworkConnection();
+        logNetworkConnection(LogEntry.Type.INFO);
     }
     
     protected void on_render(float frame_time, float alpha) { }
@@ -65,22 +71,37 @@ public class ServerTest extends Application {
     private void handleClientRequests() {
         server.collectIncomingPackets(incoming);
         for (G6Packet packet : incoming) {
-            Logger.info(packet);
-            JSONObject payload = new JSONObject();
-            payload.put("response", server.numCollectedPackets());
-            server.sendPacket(packet.response(payload));
+            JSONObject payload = packet.get();
+            if (payload != null) {
+                Object str = payload.get(MESSAGE_KEY);
+                if (str instanceof String) {
+                    Logger.info(str);
+                    str = database.get(str);
+                    if (str != null) {
+                        payload = new JSONObject();
+                        payload.put(MESSAGE_KEY, str);
+                        server.sendPacket(packet.response(payload));
+                    }
+                }
+            }
         } incoming.clear();
     }
     
-    private void logNetworkConnection() {
+    private void logNetworkConnection(LogEntry.Type filter) {
         server.eventLog().read(logs);
         for (LogEntry entry : logs) {
-            switch (entry.type) {
-                case DEBUG -> Logger.debug(entry.message);
-                case INFO -> Logger.info(entry.message);
-                case WARN -> Logger.warn(entry.message);
-                case ERROR -> Logger.error(entry.message);
-            }
+            if (entry.severity() >= filter.ordinal())
+                switch (entry.type) {
+                    case DEBUG -> Logger.debug(entry.message);
+                    case INFO -> Logger.info(entry.message);
+                    case WARN -> Logger.warn(entry.message);
+                    case ERROR -> Logger.error(entry.message);
+                }
         } logs.clear();
+    }
+    
+    private void loadDatabase() {
+        database.put("Mamma","Mia");
+        database.put("Hello","World!");
     }
 }

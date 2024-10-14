@@ -26,6 +26,7 @@ public class ClientTest extends Application implements TextProcessor {
         Engine.get().run(new ClientTest(),args);
     }
     
+    private static final String MESSAGE_KEY = "MESSAGE";
     private static final int SCREEN_WIDTH_PIXELS = 400;
     private static final int SCREEN_HEIGHT_PIXELS = 400;
     private static final int PORT = 8080;
@@ -59,10 +60,10 @@ public class ClientTest extends Application implements TextProcessor {
         client = new ClientInstance();
         
         ChannelFuture connect = client.connectToHost("localhost",PORT);
-        logNetworkConnection();
+        logNetworkConnection(LogEntry.Type.INFO);
         if (!connect.isSuccess()) {
             client.shutDownAndWait();
-            logNetworkConnection();
+            logNetworkConnection(LogEntry.Type.DEBUG);
             Engine.get().exit();
         }
     }
@@ -72,43 +73,47 @@ public class ClientTest extends Application implements TextProcessor {
         if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
             Engine.get().exit();
         } collectIncoming();
-        logNetworkConnection();
+        logNetworkConnection(LogEntry.Type.INFO);
     }
     
     protected void on_render(float frame_time, float alpha) { }
-    
     protected void on_exit() { client.shutDown(); }
     protected void resolution_request(Resolution resolution) throws Exception { }
     
     private void collectIncoming() {
-        incoming.clear();
         client.collectIncomingPackets(incoming);
         for (G6Packet packet : incoming) {
-            Logger.info(packet);
-        }
+            JSONObject payload = packet.get();
+            if (payload != null) {
+                Object str = payload.get(MESSAGE_KEY);
+                if (str instanceof String) {
+                    Logger.info(str);
+                }
+            }
+        } incoming.clear();
     }
     
-    private void logNetworkConnection() {
-        logs.clear();
+    private void logNetworkConnection(LogEntry.Type filter) {
         client.eventLog().read(logs);
         for (LogEntry entry : logs) {
-            switch (entry.type) {
+            if (entry.severity() >= filter.ordinal())
+                switch (entry.type) {
                 case DEBUG -> Logger.debug(entry.message);
                 case INFO -> Logger.info(entry.message);
                 case WARN -> Logger.warn(entry.message);
                 case ERROR -> Logger.error(entry.message);
             }
-        }
+        } logs.clear();
     }
     
     @SuppressWarnings("unchecked")
     @Override
     public void keyPress(int key, int mods, boolean repeat) {
-        if (key == GLFW.GLFW_KEY_ENTER) {
+        if (key == GLFW.GLFW_KEY_ENTER &! repeat) {
             if (!text.isEmpty() && client.isConnected()) {
                 String string = text.toString();
                 JSONObject request = new JSONObject();
-                request.put("Message",string);
+                request.put(MESSAGE_KEY,string);
                 client.sendPacket(new G6Packet(request));
                 text.clear();
             }
