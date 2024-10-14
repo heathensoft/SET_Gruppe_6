@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.ny;
+package no.hiof.set.g6.db.net;
 
 
 /**

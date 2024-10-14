@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.ny;
+package no.hiof.set.g6.db.net;
 
 
 import io.netty.channel.Channel;
@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 
 
 public class G6Packet {
- 
+    
     private final Channel channel;
     private final JSONObject payload;
     
@@ -33,4 +33,5 @@ public class G6Packet {
     
     public Channel channel() { return channel; }
     
+    public String toString() { return payload == null ? "EMPTY PACKET" : payload.toString(); }
 }

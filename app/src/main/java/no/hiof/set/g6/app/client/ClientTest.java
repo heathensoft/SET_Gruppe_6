@@ -2,8 +2,10 @@ package no.hiof.set.g6.app.client;
 
 
 import io.github.heathensoft.jlib.lwjgl.window.*;
+import io.netty.channel.ChannelFuture;
 import no.hiof.set.g6.db.net.ClientInstance;
-import no.hiof.set.g6.db.net.ny.LogEntry;
+import no.hiof.set.g6.db.net.G6Packet;
+import no.hiof.set.g6.db.net.LogEntry;
 import org.json.simple.JSONObject;
 import org.lwjgl.glfw.GLFW;
 import org.tinylog.Logger;
@@ -27,10 +29,10 @@ public class ClientTest extends Application {
     private static final int SCREEN_HEIGHT_PIXELS = 400;
     private static final int PORT = 8080;
     
-    private ClientInstance network;
-    private JSONObject request;
+    private ClientInstance clientInstance;
+    private G6Packet request;
     private List<LogEntry> log;
-    private List<JSONObject> response_list;
+    private List<G6Packet> response_list;
     
     protected void engine_init(List<Resolution> supported, BootConfiguration config, String[] args) {
         supported.add(new Resolution(SCREEN_WIDTH_PIXELS,SCREEN_HEIGHT_PIXELS));
@@ -50,10 +52,16 @@ public class ClientTest extends Application {
     protected void on_start(Resolution resolution) throws Exception {
         response_list = new ArrayList<>(32);
         log = new ArrayList<>(32);
-        request = new JSONObject();
-        request.put("request","This is a request from a Client Application");
-        network = new ClientInstance("localhost",PORT);
-        if (!network.createdSuccessfully()) {
+        
+        JSONObject payload = new JSONObject();
+        payload.put("request","This is a request from a Client Application");
+        request = new G6Packet(payload);
+        
+        clientInstance = new ClientInstance();
+        ChannelFuture connect = clientInstance.connectToHost("localhost",PORT);
+        logNetworkConnection();
+        if (!connect.isSuccess()) {
+            clientInstance.shutDownAndWait();
             logNetworkConnection();
             Engine.get().exit();
         }
@@ -62,12 +70,16 @@ public class ClientTest extends Application {
     protected void on_update(float delta) {
         
         Keyboard keys = Engine.get().input().keys();
-        if(keys.just_pressed(GLFW.GLFW_KEY_S)) {
-            try { network.sendMessage(request);
-            } catch (Exception e) { Logger.warn(e);}
-        } else if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
+        
+        if(keys.just_pressed(GLFW.GLFW_KEY_S))
+        {
+            if (clientInstance.isConnected()) {
+                boolean valid = clientInstance.sendPacket(request);
+            } else Logger.info("not connected to server");
+        }
+        else if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE))
+        {
             Engine.get().exit();
-            return;
         }
         
         collectIncoming();
@@ -80,7 +92,7 @@ public class ClientTest extends Application {
     }
     
     protected void on_exit() {
-        try { network.shutDown();
+        try { clientInstance.shutDown();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,15 +104,15 @@ public class ClientTest extends Application {
     
     private void collectIncoming() {
         response_list.clear();
-        network.collectIncoming(response_list);
-        for (JSONObject message : response_list) {
-            Logger.info(message);
+        clientInstance.collectIncomingPackets(response_list);
+        for (G6Packet packet : response_list) {
+            Logger.info(packet);
         }
     }
     
     private void logNetworkConnection() {
         log.clear();
-        network.collectLogs(log);
+        clientInstance.eventLog().read(log);
         for (LogEntry entry : log) {
             switch (entry.type) {
                 case DEBUG -> Logger.debug(entry.message);

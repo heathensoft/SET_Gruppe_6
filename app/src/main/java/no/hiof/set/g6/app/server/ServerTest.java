@@ -2,9 +2,9 @@ package no.hiof.set.g6.app.server;
 
 
 import io.github.heathensoft.jlib.lwjgl.window.*;
-import no.hiof.set.g6.db.net.ny.LogEntry;
+import no.hiof.set.g6.db.net.G6Packet;
+import no.hiof.set.g6.db.net.LogEntry;
 import no.hiof.set.g6.db.net.ServerInstance;
-import no.hiof.set.g6.db.net.ServerPacket;
 import org.json.simple.JSONObject;
 import org.lwjgl.glfw.GLFW;
 import org.tinylog.Logger;
@@ -28,10 +28,9 @@ public class ServerTest extends Application {
     private static final int SCREEN_HEIGHT_PIXELS = 400;
     private static final int PORT = 8080;
     
-    private ServerInstance network;
-    private JSONObject response;
+    private ServerInstance server;
     private List<LogEntry> log;
-    private List<ServerPacket> request_list;
+    private List<G6Packet> request_list;
     
     protected void engine_init(List<Resolution> supported, BootConfiguration config, String[] args) {
         supported.add(new Resolution(SCREEN_WIDTH_PIXELS,SCREEN_HEIGHT_PIXELS));
@@ -47,25 +46,22 @@ public class ServerTest extends Application {
         config.window_title = "Server Application";
     }
     
-    @SuppressWarnings("unchecked")
     protected void on_start(Resolution resolution) throws Exception {
         request_list = new ArrayList<>(32);
         log = new ArrayList<>(32);
-        response = new JSONObject();
-        response.put("response","This is a response from a Server Application");
-        network = new ServerInstance(PORT);
-        if (!network.createdSuccessfully()) {
-            logNetworkConnection();
-            Engine.get().exit();
-        }
+        
+        
+        server = new ServerInstance(PORT);
+        
+        
     }
     
     protected void on_update(float delta) {
         
         Keyboard keys = Engine.get().input().keys();
-        if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
+        if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE))
+        {
             Engine.get().exit();
-            return;
         }
         
         handleClientRequests();
@@ -78,7 +74,7 @@ public class ServerTest extends Application {
     }
     
     protected void on_exit() {
-        try { network.shutDown();
+        try { server.shutDown();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,22 +84,22 @@ public class ServerTest extends Application {
     
     }
     
+    @SuppressWarnings("unchecked")
     private void handleClientRequests() {
         request_list.clear();
-        network.collectIncoming(request_list);
-        for (ServerPacket packet : request_list) {
-            Logger.info(packet.get());
-            ServerPacket response = packet.response(this.response);
-            try { network.sendMessage(response);
-            } catch (Exception e) {
-                Logger.warn(e);
-            }
+        server.collectIncomingPackets(request_list);
+        for (G6Packet packet : request_list) {
+            Logger.info(packet);
+            JSONObject payload = new JSONObject();
+            payload.put("response"," " + server.numPacketsReceived());
+            G6Packet response = packet.response(payload);
+            server.sendPacket(response);
         }
     }
     
     private void logNetworkConnection() {
         log.clear();
-        network.collectLogs(log);
+        server.eventLog().read(log);
         for (LogEntry entry : log) {
             switch (entry.type) {
                 case DEBUG -> Logger.debug(entry.message);

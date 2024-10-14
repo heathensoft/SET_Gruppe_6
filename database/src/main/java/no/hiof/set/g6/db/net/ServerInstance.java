@@ -2,168 +2,126 @@ package no.hiof.set.g6.db.net;
 
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import no.hiof.set.g6.db.net.ny.LogEntry;
-import org.json.simple.JSONObject;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Frederik Dahl
- * 12/10/2024
+ * 14/10/2024
  */
 
 
-public final class ServerInstance extends NetworkInterface<ServerPacket> {
+public class ServerInstance extends AppInterface {
     
     private final Set<Channel> channels;
     private final EventLoopGroup masterGroup;
     private final EventLoopGroup workerGroup;
-    private Channel socketChannel;
+    private final Channel socketChannel;
     
-    public ServerInstance(int port) {
+    
+    public ServerInstance(int port) throws Exception {
+        super(128);
         channels = new HashSet<>(128);
         masterGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
-        incoming_queue_cap = 64;
         try {
-            log(LogEntry.info("Creating ServerInstance"));
+            eventLog.write(LogEntry.info("creating new ServerInstance"));
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(masterGroup,workerGroup);
             serverBootstrap.channel(NioServerSocketChannel.class);
             serverBootstrap.option(ChannelOption.SO_BACKLOG,32);
             serverBootstrap.childOption(ChannelOption.SO_KEEPALIVE,true);
             serverBootstrap.childHandler(this);
-            log(LogEntry.info("Attempting to bind server to port: " + port));
+            eventLog.write(LogEntry.info("attempting to bind server to port: " + port));
             ChannelFuture future = serverBootstrap.bind(port).sync();
             if (future.isSuccess()) {
                 socketChannel = future.channel();
-                log(LogEntry.info("Server Running!"));
-            } else throw new Exception("Unable to bind");
-        } catch (Exception e1) {
-            log(LogEntry.error(e1.getMessage()));
-            try { shutDown();
-            } catch (Exception e2) {
-                log(LogEntry.error(e2.getMessage()));
-            }
+                eventLog.write(LogEntry.info("server running!"));
+            } else throw new Exception("unable to bind");
+        } catch (Exception e) {
+            shutDownAndWait();
+            throw e;
         }
     }
     
+    
     @Override
-    public boolean createdSuccessfully() {
-        return socketChannel != null;
+    public boolean sendPacket(G6Packet packet) {
+        
+        if (packet == null) {
+            throw new IllegalStateException("null argument packet");
+        } eventLog.write(LogEntry.debug("server attempting to send packet"));
+        boolean failed = false;
+        
+        if (!isConnected()) {
+            eventLog.write(LogEntry.warn("server socket channel is disconnected"));
+            failed = true;
+        }
+        else if (packet.get() == null) {
+            eventLog.write(LogEntry.warn("attempted to send packet without contents"));
+            failed = true;
+        }
+        else if (!packet.assignedToChannel()) {
+            eventLog.write(LogEntry.warn("packet not assigned to a client"));
+            failed = true;
+        }
+        else
+        {
+            boolean recognized;
+            synchronized (channels) {
+                recognized = channels.contains(packet.channel());
+            } if (!recognized) {
+                eventLog.write(LogEntry.warn("packet assigned to unknown channel"));
+                failed = true;
+            }
+        }
+        
+        if (failed) {
+            incrementFailedOutGoing();
+            return false;
+        }
+        
+        Channel channel = packet.channel();
+        channel.writeAndFlush(packet.get()).addListener(future -> {
+            if (future.isSuccess()) {
+                eventLog.write(LogEntry.debug("packet sent over channel: " + channel));
+                incrementPacketsSent();
+            } else { eventLog.write(LogEntry.warn("failed to send packet to: " + channel));
+                incrementFailedOutGoing();
+            }
+        });
+        return true;
     }
     
     @Override
-    public void shutDown() throws Exception {
-        log(LogEntry.info("Shutting down Server Workgroups.."));
+    public boolean isConnected() {
+        return socketChannel.isActive();
+    }
+    
+    @Override
+    public void shutDownAndWait() throws Exception {
+        eventLog.write(LogEntry.info("shutting down server.."));
         masterGroup.shutdownGracefully().sync();
         workerGroup.shutdownGracefully().sync();
+        eventLog.write(LogEntry.info("server is shut down"));
     }
     
     @Override
-    public void sendMessage(ServerPacket response) throws Exception {
-        if (response == null) throw new IllegalStateException("Request is Null"); // Runtime Exception
-        if (!createdSuccessfully()) throw new IllegalStateException("Invalid ServerInstance");
-        JSONObject jsonObject = response.get();
-        Channel channel = response.channel();
-        if (anyObjectNull(jsonObject,channel)) {
-            throw new IllegalStateException("ServerPacket contains null elements");
-        } boolean channel_registered;
-        synchronized (channels) {
-            channel_registered = channels.contains(channel);
-        } if (channel_registered) {
-            if (channel.isActive()) {
-                channel.writeAndFlush(jsonObject).addListener(future -> {
-                    // Triggered from a Worker Thread
-                    synchronized (this) {
-                        if (future.isSuccess()) {
-                            log(LogEntry.debug("Server sent Response To Client"));
-                            num_messages_sent++;
-                        } else {
-                            log(LogEntry.warn("Server failed to send Response To Client"));
-                            num_failed_outgoing++;
-                        }
-                    }
-                });
-            } else {
-                removeChannel(channel);
-                synchronized (this) { num_failed_outgoing++; }
-                log(LogEntry.warn("Server failed to send Response To Client"));
-                throw new IOException("Client not connected to Server");
-            }
-        } else {
-            synchronized (this) { num_failed_outgoing++; }
-            log(LogEntry.warn("Server failed to send Response To Client"));
-            throw new IOException("Client not connected to Server");
-        }
-    }
-    
-    @Override
-    protected void onMessageReceived(ServerPacket request) throws Exception {
-        synchronized (channels) {
-            if (channels.add(request.channel()))
-                log(LogEntry.debug("new channel registered by server"));
-        } attemptAddMessage(request);
-    }
-    
-    @Override
-    protected ChannelHandler createPipeLineTail() throws Exception {
-        return new ServerHandler(this);
-    }
-    
-    /**
-     * Will remove reference to client channel from server instance.
-     * Will discard stored pending requests from the channel.
-     * Any requests already picked up by the Server application will not be sent.
-     * (Will fail to send back response,(Throws Exception) )
-     * @param channel the channel to remove
-     */
-    void removeChannel(Channel channel) {
-        log(LogEntry.debug("removeChannel: " + channel.id()));
-        boolean removed;
-        synchronized (channels) {
-            removed = channels.remove(channel);
-        } if (removed) {
-            discardStoredRequests(channel);
-            attemptClose(channel);
-        }
-    }
-    
-    /**
-     * Dispose lingering requests
-     * @param channel the channel to purge
-     */
-    private synchronized void discardStoredRequests(Channel channel) {
-        final LinkedList<ServerPacket> l = incoming;
-        final Channel c = channel;
-        int discarded = num_discarded_incoming;
-        for(int i = l.size() - 1; i >= 0; --i) {
-            if(l.get(i).get().equals(c)) {
-                num_discarded_incoming++;
-                l.remove(i);
-            }
-        } discarded = num_failed_outgoing - discarded;
-        log(LogEntry.debug("Discarded " + discarded + " incoming requests"));
-    }
-    
-    /**
-     * Will close the channel if not closed already
-     * @param channel the channel to close
-     */
-    private void attemptClose(Channel channel) {
-        log(LogEntry.debug("Called close(channel)"));
-        if (channel.isActive()) {
-            channel.close().addListener(future -> {
-                if (future.isSuccess()) log(LogEntry.info("channel closed: " + channel.id()));
-                else log(LogEntry.warn("unable to close channel for some reason"));
-            });
-        }
+    public void shutDown() {
+        eventLog.write(LogEntry.info("shutting down server.."));
+        masterGroup.shutdownGracefully().addListener(future -> {
+            if (future.isSuccess()) eventLog.write(LogEntry.info("server master group shut down"));
+            else eventLog.write(LogEntry.warn("server master group failed to shut down"));
+        }); workerGroup.shutdownGracefully().addListener(future -> {
+            if (future.isSuccess()) eventLog.write(LogEntry.info("server worker group shut down"));
+            else eventLog.write(LogEntry.warn("server worker group failed to shut down"));
+        });
     }
     
     public int numRegisteredChannels() {
@@ -173,10 +131,60 @@ public final class ServerInstance extends NetworkInterface<ServerPacket> {
         } return size;
     }
     
-    private boolean anyObjectNull(Object ...objects) {
-        if (objects == null) throw new IllegalStateException("");
-        for (Object o : objects) if (o == null) return true;
-        return false;
+    @Override
+    protected void onChannelActive(Channel channel) throws Exception {
+        if (channel != null) {
+            synchronized (channels) {
+                if (channels.add(channel)) {
+                    eventLog.write(LogEntry.debug("opened connection to: " + channel));
+                }
+            }
+        }
     }
     
+    @Override
+    protected void onChannelInactive(Channel channel) throws Exception {
+        if (channel != null) {
+            synchronized (channels) {
+                if (channels.remove(channel)) {
+                    eventLog.write(LogEntry.debug("lost connection to: " + channel));
+                    eventLog.write(LogEntry.debug("discarding earlier requests"));
+                    discardStoredRequests(channel);
+                    if (channel.isActive()) { // should not be
+                        channel.close();
+                    }
+                }
+            }
+        }
+    }
+    
+    @Override
+    protected void onPacketReceived(G6Packet packet) throws Exception {
+        Channel c = packet.channel();
+        boolean recognized_channel;
+        synchronized (channels) {
+            recognized_channel = channels.contains(c);
+        } if (recognized_channel) {
+            synchronized (this) {
+                num_received++;
+                incoming.addFirst(packet);
+                eventLog.write(LogEntry.debug("packet stored in incoming queue"));
+                while (incoming.size() > incoming_packets_capacity) {
+                    eventLog.write(LogEntry.warn("packet storage limit reached"));
+                    eventLog.write(LogEntry.info("discarding packet from: " + c));
+                    num_discarded_incoming++;
+                }
+            }
+        }
+    }
+    
+    
+    private synchronized void discardStoredRequests(Channel channel) {
+        final LinkedList<G6Packet> l = incoming;
+        for(int i = l.size() - 1; i >= 0; --i) {
+            if(l.get(i).get().equals(channel)) {
+                num_discarded_incoming++;
+            }
+        }
+    }
 }

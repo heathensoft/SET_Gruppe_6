@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.ny;
+package no.hiof.set.g6.db.net;
 
 
 import io.netty.channel.Channel;
@@ -49,7 +49,8 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     
     public synchronized void collectIncomingPackets(List<G6Packet> dst) {
         while (!incoming.isEmpty()) {
-            dst.add(incoming.removeLast());
+            G6Packet packet = incoming.removeLast();
+            dst.add(packet);
             num_collected++;
         }
     }
@@ -57,29 +58,32 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     public EventLog eventLog() { return eventLog; }
     
     public int incomingPacketsCapacity() { return incoming_packets_capacity; }
-    
     public synchronized int numFailedOutgoing() { return num_failed_outgoing; }
-    
     public synchronized int numDiscardedIncoming() { return num_discarded_incoming; }
-    
     public synchronized int numPacketsReceived() { return num_received; }
-    
     public synchronized int numPacketsSent() { return num_sent; }
-    
     public synchronized int numCollectedPackets() { return num_collected; }
+    protected synchronized void incrementFailedOutGoing() { num_failed_outgoing++; }
+    protected synchronized void incrementDiscardedIncoming() { num_discarded_incoming++; }
+    protected synchronized void incrementPacketsReceived() { num_received++; }
+    protected synchronized void incrementPacketsSent() { num_sent++; }
+    protected synchronized void incrementCollectedPackets(int count) { num_collected += count; }
     
     
-    public abstract void send(G6Packet packet) throws Exception;
+    /**
+     * Attempt to send packet.
+     * @param packet packet
+     * @return returns true if the packet is valid
+     */
+    public abstract boolean sendPacket(G6Packet packet);
     
-    public abstract void sendToAll(G6Packet packet) throws Exception;
+    public abstract boolean isConnected();
     
-    public abstract boolean createdSuccessfully();
-    
+    /**Shut down and block until complete*/
     public abstract void shutDownAndWait() throws Exception;
     
+    /**Shut down in the background*/
     public abstract void shutDown();
-    
-    
     
     protected abstract void onPacketReceived(G6Packet packet) throws Exception;
     
