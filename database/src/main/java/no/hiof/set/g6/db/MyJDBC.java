@@ -5,59 +5,73 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MyJDBC {
 
-    // Metode for å hente ut alle brukere i ett spesifikt system
-    public static List<LocalUser> getUsersByHubId(int hubId) {
-        String url = "jdbc:mysql://127.0.0.1:3306/login_schema";
-        String username = "root";
-        String password = "HeiHei123";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/Teknologiprosjekt";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "HeiHei123";
 
-        // Spørring som henter brukernavn og rolle for brukere basert på en bestemt hub_id
-        String query = "SELECT user_name, role FROM LocalUser WHERE hub_id = ?";
+    // Metode for å hente all informasjon om brukere med hub_id = 1
+    public static List<String> getAllUserInfo() {
+        String query = """
+            SELECT LocalUser.user_name, UserAccount.first_name, UserAccount.last_name, UserAccount.email,
+                           HomeAddress.country, HomeAddress.state, HomeAddress.city, HomeAddress.street_address, HomeAddress.postal_code,
+                           LocalUser.role
+                    FROM LocalUser \s
+                    JOIN UserAccount ON LocalUser.account_id = UserAccount.account_id\s
+                    JOIN HomeAddress ON UserAccount.address_id = HomeAddress.address_id
+                    WHERE LocalUser.hub_id = 1;
+                    
+        """;
 
-        List<LocalUser> userList = new ArrayList<>();
+        List<String> userInfoList = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            // Sett parameteren for hubId
-            statement.setInt(1, hubId);
-
-            // Kjøre spørringen
+            // Kjører spørringen
             ResultSet resultSet = statement.executeQuery();
 
-            // Hent ut og lagre brukerinformasjon i LocalUser-objekter
+            // Henter ut og lagrer informasjonen som JSON-strukturer i listen
             while (resultSet.next()) {
                 String userName = resultSet.getString("user_name");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String email = resultSet.getString("email");
+                String country = resultSet.getString("country");
+                String state = resultSet.getString("state");
+                String city = resultSet.getString("city");
+                String streetAddress = resultSet.getString("street_address");
+                int postalCode = resultSet.getInt("postal_code");
                 String roleStr = resultSet.getString("role");
                 LocalUser.Role role = LocalUser.Role.valueOf(roleStr.toUpperCase());
 
-                // Opprett LocalUser-objekt
-                LocalUser user = new LocalUser();
-                user.setUserName(userName);
-                user.setRole(role);
+                // Bygger opp en streng med all informasjon
+                String userInfo = String.format(
+                        "{ \"userName\": \"%s\", \"firstName\": \"%s\", \"lastName\": \"%s\", \"email\": \"%s\", \"country\": \"%s\", \"state\": \"%s\", \"city\": \"%s\", \"streetAddress\": \"%s\", \"postalCode\": %d, \"role\": \"%s\" }",
+                        userName, firstName, lastName, email, country, state, city, streetAddress, postalCode, role
+                );
 
-                // Legg til brukeren i listen
-                userList.add(user);
+                // Legger til informasjonen i listen
+                userInfoList.add(userInfo);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return userList;  // Returnerer listen med brukere
+        return userInfoList;  // Returnerer listen
     }
 
-    //Bare en test main metode, eksempel på hvordan metoden kan bli kalt.
+    // Testmetode for å demonstrere hvordan man henter ut all brukerinformasjon
     public static void main(String[] args) {
-        // Henter brukere for en spesifikk hub_id
-        List<LocalUser> users = getUsersByHubId(1);  // Endre til ønsket hub_id
+        // Henter all informasjon om brukere
+        List<String> userInfoList = getAllUserInfo();
 
-        // Iterer gjennom listen og printer ut brukerinformasjon
-        for (LocalUser user : users) {
-            System.out.println("UserName: " + user.getUserName() +
-                    ", Role: " + user.getRole());
+        // Printer ut all brukerinformasjon
+        for (String userInfo : userInfoList) {
+            System.out.println(userInfo);
         }
     }
 }
