@@ -22,6 +22,8 @@ public class LocalUser {
         this.role = role;
     }
 
+    public LocalUser() {}
+
     public int getLocalUserId() {
         return localUserId;
     }
