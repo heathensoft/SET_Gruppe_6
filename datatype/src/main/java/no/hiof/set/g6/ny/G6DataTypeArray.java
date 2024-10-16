@@ -71,7 +71,7 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
                 clear();
                 for (Object object : jsonArray) {
                     JSONObject jsonArrayObject = (JSONObject) object;
-                    list.add(clazz.cast())
+                    //list.add(clazz.cast())
                 }
             }
             
