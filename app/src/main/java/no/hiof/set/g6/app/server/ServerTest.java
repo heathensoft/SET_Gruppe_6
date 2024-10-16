@@ -2,9 +2,9 @@ package no.hiof.set.g6.app.server;
 
 
 import io.github.heathensoft.jlib.lwjgl.window.*;
-import no.hiof.set.g6.db.net.G6Packet;
-import no.hiof.set.g6.db.net.LogEntry;
-import no.hiof.set.g6.db.net.ServerInstance;
+import no.hiof.set.g6.db.net.core.JsonPacket;
+import no.hiof.set.g6.db.net.util.LogEntry;
+import no.hiof.set.g6.db.net.core.ServerInstance;
 import org.json.simple.JSONObject;
 import org.lwjgl.glfw.GLFW;
 import org.tinylog.Logger;
@@ -31,7 +31,7 @@ public class ServerTest extends Application {
     
     private ServerInstance server;
     private List<LogEntry> logs;
-    private List<G6Packet> incoming;
+    private List<JsonPacket> incoming;
     private Map<String,String> database;
     
     protected void engine_init(List<Resolution> supported, BootConfiguration config, String[] args) {
@@ -70,7 +70,7 @@ public class ServerTest extends Application {
     @SuppressWarnings("unchecked")
     private void handleClientRequests() {
         server.collectIncomingPackets(incoming);
-        for (G6Packet packet : incoming) {
+        for (JsonPacket packet : incoming) {
             JSONObject payload = packet.get();
             if (payload != null) {
                 Object str = payload.get(MESSAGE_KEY);

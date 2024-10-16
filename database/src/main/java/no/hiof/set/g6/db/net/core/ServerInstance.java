@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net;
+package no.hiof.set.g6.db.net.core;
 
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -8,6 +8,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import no.hiof.set.g6.db.net.util.LogEntry;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ import java.util.*;
  */
 
 
-public class ServerInstance extends AppInterface {
+public final class ServerInstance extends AppInterface {
     
     private final Set<Channel> channels;
     private final EventLoopGroup masterGroup;
@@ -52,7 +53,7 @@ public class ServerInstance extends AppInterface {
     
     
     @Override
-    public boolean sendPacket(G6Packet packet) {
+    public boolean sendPacket(JsonPacket packet) {
         
         if (packet == null) {
             throw new IllegalStateException("null argument packet");
@@ -159,7 +160,7 @@ public class ServerInstance extends AppInterface {
     }
     
     @Override
-    protected void onPacketReceived(G6Packet packet) throws Exception {
+    protected void onPacketReceived(JsonPacket packet) throws Exception {
         Channel c = packet.channel();
         boolean recognized_channel;
         synchronized (channels) {
@@ -180,7 +181,7 @@ public class ServerInstance extends AppInterface {
     
     
     private synchronized void discardStoredRequests(Channel channel) {
-        final LinkedList<G6Packet> l = incoming;
+        final LinkedList<JsonPacket> l = incoming;
         for(int i = l.size() - 1; i >= 0; --i) {
             if(l.get(i).get().equals(channel)) {
                 num_discarded_incoming++;

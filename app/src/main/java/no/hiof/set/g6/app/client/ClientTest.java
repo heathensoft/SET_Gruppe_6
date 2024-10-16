@@ -4,9 +4,9 @@ package no.hiof.set.g6.app.client;
 import io.github.heathensoft.jlib.common.text.Ascii;
 import io.github.heathensoft.jlib.lwjgl.window.*;
 import io.netty.channel.ChannelFuture;
-import no.hiof.set.g6.db.net.ClientInstance;
-import no.hiof.set.g6.db.net.G6Packet;
-import no.hiof.set.g6.db.net.LogEntry;
+import no.hiof.set.g6.db.net.core.ClientInstance;
+import no.hiof.set.g6.db.net.core.JsonPacket;
+import no.hiof.set.g6.db.net.util.LogEntry;
 import org.json.simple.JSONObject;
 import org.lwjgl.glfw.GLFW;
 import org.tinylog.Logger;
@@ -33,7 +33,7 @@ public class ClientTest extends Application implements TextProcessor {
     
     private ClientInstance client;
     private List<LogEntry> logs;
-    private List<G6Packet> incoming;
+    private List<JsonPacket> incoming;
     private Ascii.Buffer text;
     
     protected void engine_init(List<Resolution> supported, BootConfiguration config, String[] args) {
@@ -82,7 +82,7 @@ public class ClientTest extends Application implements TextProcessor {
     
     private void collectIncoming() {
         client.collectIncomingPackets(incoming);
-        for (G6Packet packet : incoming) {
+        for (JsonPacket packet : incoming) {
             JSONObject payload = packet.get();
             if (payload != null) {
                 Object str = payload.get(MESSAGE_KEY);
@@ -114,7 +114,7 @@ public class ClientTest extends Application implements TextProcessor {
                 String string = text.toString();
                 JSONObject request = new JSONObject();
                 request.put(MESSAGE_KEY,string);
-                client.sendPacket(new G6Packet(request));
+                client.sendPacket(new JsonPacket(request));
                 text.clear();
             }
         }

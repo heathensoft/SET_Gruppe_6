@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net;
+package no.hiof.set.g6.db.net.core;
 
 
 import io.netty.channel.Channel;
@@ -10,21 +10,21 @@ import org.json.simple.JSONObject;
  */
 
 
-public class G6Packet {
+public class JsonPacket {
     
     private final Channel channel;
     private final JSONObject payload;
     
-    public G6Packet(JSONObject payload) { this(payload,null); }
+    public JsonPacket(JSONObject payload) { this(payload,null); }
     
-    public G6Packet(JSONObject payload, Channel channel) {
+    public JsonPacket(JSONObject payload, Channel channel) {
         this.channel = channel;
         this.payload = payload;
     }
     
     /** Creates new packet with a reference to this channel*/
-    public G6Packet response(JSONObject payload) {
-        return new G6Packet(payload,channel);
+    public JsonPacket response(JSONObject payload) {
+        return new JsonPacket(payload,channel);
     }
     
     public boolean assignedToChannel() { return channel != null; }

@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net;
+package no.hiof.set.g6.db.net.core;
 
 
 import io.netty.channel.Channel;
@@ -12,6 +12,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import no.hiof.set.g6.db.net.util.EventLog;
 import no.hiof.set.g6.dt.G6JSON;
 import org.json.simple.JSONObject;
 
@@ -32,7 +33,7 @@ import java.util.List;
 
 public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     
-    protected final LinkedList<G6Packet> incoming = new LinkedList<>();
+    protected final LinkedList<JsonPacket> incoming = new LinkedList<>();
     protected final EventLog eventLog = new EventLog();
     
     protected int num_sent;
@@ -47,9 +48,9 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
         this.incoming_packets_capacity = incoming_packet_capacity;
     }
     
-    public synchronized void collectIncomingPackets(List<G6Packet> dst) {
+    public synchronized void collectIncomingPackets(List<JsonPacket> dst) {
         while (!incoming.isEmpty()) {
-            G6Packet packet = incoming.removeLast();
+            JsonPacket packet = incoming.removeLast();
             dst.add(packet);
             num_collected++;
         }
@@ -75,7 +76,7 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
      * @param packet packet
      * @return returns true if the packet is valid
      */
-    public abstract boolean sendPacket(G6Packet packet);
+    public abstract boolean sendPacket(JsonPacket packet);
     
     public abstract boolean isConnected();
     
@@ -85,7 +86,7 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     /**Shut down in the background*/
     public abstract void shutDown();
     
-    protected abstract void onPacketReceived(G6Packet packet) throws Exception;
+    protected abstract void onPacketReceived(JsonPacket packet) throws Exception;
     
     protected void onPipelineException(Channel channel) { /*...*/}
     
@@ -110,7 +111,7 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new StringEncoder());
         pipeline.addLast(new StringToObjectConverter());
         pipeline.addLast(new ObjectToStringConverter());
-        pipeline.addLast(new G6Handler(this));
+        pipeline.addLast(new PacketHandler(this));
     }
     
     private static final class ObjectToStringConverter extends MessageToMessageEncoder<JSONObject> {

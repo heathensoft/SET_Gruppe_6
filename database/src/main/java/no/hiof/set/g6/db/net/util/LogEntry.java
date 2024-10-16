@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net;
+package no.hiof.set.g6.db.net.util;
 
 
 /**
@@ -7,7 +7,7 @@ package no.hiof.set.g6.db.net;
  */
 
 
-public final class LogEntry {
+public class LogEntry {
     
     public enum Type {
         DEBUG("[DEBUG] "),

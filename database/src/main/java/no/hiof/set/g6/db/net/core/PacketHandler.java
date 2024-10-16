@@ -1,9 +1,11 @@
-package no.hiof.set.g6.db.net;
+package no.hiof.set.g6.db.net.core;
 
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import no.hiof.set.g6.db.net.util.EventLog;
+import no.hiof.set.g6.db.net.util.LogEntry;
 import org.json.simple.JSONObject;
 
 /**
@@ -14,16 +16,16 @@ import org.json.simple.JSONObject;
  */
 
 
-public class G6Handler extends SimpleChannelInboundHandler<JSONObject> {
+public class PacketHandler extends SimpleChannelInboundHandler<JSONObject> {
 
     private final AppInterface interface_;
     
-    G6Handler(AppInterface interface_) { this.interface_ = interface_; }
+    PacketHandler(AppInterface interface_) { this.interface_ = interface_; }
     
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JSONObject msg) throws Exception {
         final Channel cha = ctx.channel();
-        G6Packet packet = new G6Packet(msg,cha);
+        JsonPacket packet = new JsonPacket(msg,cha);
         interface_.eventLog().write(LogEntry.debug("packet received from: " + cha));
         interface_.onPacketReceived(packet);
     }
