@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
  */
 
 
-public abstract class G6Datatype implements G6Serializable {
+public abstract class G6Datatype implements G6Serializable, Comparable<G6Datatype> {
     
     
     public G6Datatype(JSONObject object) throws Exception {
@@ -18,6 +18,8 @@ public abstract class G6Datatype implements G6Serializable {
     
     public G6Datatype() { }
     
-    
-    
+    @Override
+    public int compareTo(G6Datatype other) {
+        return 0;
+    }
 }

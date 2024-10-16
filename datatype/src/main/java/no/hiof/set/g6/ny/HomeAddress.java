@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
  */
 
 
-public class HomeAddress extends G6Datatype implements Comparable<HomeAddress> {
+public class HomeAddress extends G6Datatype {
     
     public static final String JSON_KEY_COUNTRY = "Country";
     public static final String JSON_KEY_STATE = "State";
@@ -107,11 +107,9 @@ public class HomeAddress extends G6Datatype implements Comparable<HomeAddress> {
     }
     
     @Override
-    public int compareTo(HomeAddress o) {
-        int comp;
-        if (o == null) {
-            comp = 0;
-        } else {
+    public int compareTo(G6Datatype other) {
+        if (other instanceof HomeAddress o) {
+            int comp;
             HomeAddress t = this;
             {
                 String t_country = t.country == null ? "" : t.country;
@@ -128,7 +126,7 @@ public class HomeAddress extends G6Datatype implements Comparable<HomeAddress> {
                 String o_city = o.city == null ? "" : o.city;
                 comp = t_city.compareTo(o_city);
             }
-        }
-        return comp;
+            return comp;
+        } return 0;
     }
 }

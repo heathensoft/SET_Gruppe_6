@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
  */
 
 
-public class UserAccount extends G6Datatype implements Comparable<UserAccount> {
+public class UserAccount extends G6Datatype {
     
     public static final String JSON_KEY_FIRST_NAME = "First Name";
     public static final String JSON_KEY_LAST_NAME = "Last Name";
@@ -93,11 +93,9 @@ public class UserAccount extends G6Datatype implements Comparable<UserAccount> {
     }
     
     @Override
-    public int compareTo(UserAccount o) { // used to sort a list of accounts for display
-        int comp;
-        if (o == null) {
-            comp = 0;
-        } else {
+    public int compareTo(G6Datatype other) { // used to sort a list of accounts for display
+        if (other instanceof UserAccount o) {
+            int comp;
             UserAccount t = this;
             {
                 String t_first_name = t.firstName == null ? "" : t.firstName;
@@ -112,7 +110,7 @@ public class UserAccount extends G6Datatype implements Comparable<UserAccount> {
             if (comp == 0) {
                 comp = t.address.compareTo(o.address);
             }
-        }
-        return comp;
+            return comp;
+        } return 0;
     }
 }
