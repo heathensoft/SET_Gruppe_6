@@ -44,7 +44,6 @@ public class UserAccount extends G6Datatype implements Comparable<UserAccount> {
     @Override
     public void fromJson(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
-        
         Object firstNameObject = jsonObject.get(JSON_KEY_FIRST_NAME);
         Object lastNameObject = jsonObject.get(JSON_KEY_LAST_NAME);
         Object emailObject = jsonObject.get(JSON_KEY_EMAIL);
@@ -58,7 +57,6 @@ public class UserAccount extends G6Datatype implements Comparable<UserAccount> {
                 addressObject,
                 phoneNumberObject
         )) throw new Exception("JSON to UserAccount: Missing one or more fields");
-        
         try {
             String firstName = (String) firstNameObject;
             String lastName = (String) lastNameObject;
@@ -95,8 +93,7 @@ public class UserAccount extends G6Datatype implements Comparable<UserAccount> {
     }
     
     @Override
-    public int compareTo(UserAccount o) {
-        // used to sort a list of accounts for display
+    public int compareTo(UserAccount o) { // used to sort a list of accounts for display
         int comp;
         if (o == null) {
             comp = 0;
