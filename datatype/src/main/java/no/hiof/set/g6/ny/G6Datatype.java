@@ -5,7 +5,6 @@ import org.json.simple.JSONObject;
 
 /**
  * The Base Class of all our Datatypes.
- *
  * It's important that all G6Datatypes got an empty constructor !!!
  * (Why? Because we are using java reflection to create new Datatype Instances)
  *
@@ -34,7 +33,7 @@ public abstract class G6Datatype implements G6Serializable, Comparable<G6Datatyp
         }
     }
     
-    /** Datatype does not to override this */
+    /* Datatype does not have to override this (Sorting purposes)*/
     @Override
     public int compareTo(G6Datatype other) { return 0; }
 }

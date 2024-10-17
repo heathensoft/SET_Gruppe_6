@@ -4,37 +4,27 @@ package no.hiof.set.g6.ny;
 import org.json.simple.JSONObject;
 
 /**
- * @author Frederik Dahl
- * 16/10/2024
+ * @author Mahmad
  */
 
 
 public class HomeAddress extends G6Datatype {
     
+    public static final String JSON_KEY_ID = "Address ID";
     public static final String JSON_KEY_COUNTRY = "Country";
     public static final String JSON_KEY_STATE = "State";
     public static final String JSON_KEY_CITY = "City";
     public static final String JSON_KEY_STREET = "Street Address";
     public static final String JSON_KEY_POSTAL_CODE = "Postal Code";
     
-    public String country;
-    public String state;
-    public String city;
-    public String street;
-    public int postalCode;
+    public int addressID;   // corresponds to address_id INT
+    public String country;  // corresponds to country VARCHAR(100)
+    public String state;    // corresponds to state VARCHAR(100)
+    public String city;     // corresponds to city VARCHAR(100)
+    public String street;   // corresponds to street_address VARCHAR(255)
+    public int postalCode;  // corresponds to postal_code INT
     
-    public HomeAddress(String country,
-                       String state,
-                       String city,
-                       String street,
-                       int postalCode) {
-        this.country = country;
-        this.state = state;
-        this.city = city;
-        this.street = street;
-        this.postalCode = postalCode;
-    }
-    
+    // Constructors, Getters, and Setters
     public HomeAddress() {
         this.country = "";
         this.state = "";
@@ -49,24 +39,28 @@ public class HomeAddress extends G6Datatype {
             this.city = "null";
             this.street = "null";
             this.postalCode = 0;
+            this.addressID = 0;
         } else {
             this.country = address.country;
             this.state = address.state;
             this.city = address.city;
             this.street = address.street;
             this.postalCode = address.postalCode;
+            this.addressID = address.addressID;
         }
     }
     
     @Override
     public void fromJson(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
+        Object addressIDObject = jsonObject.get(JSON_KEY_ID);
         Object countryObject = jsonObject.get(JSON_KEY_COUNTRY);
         Object stateObject = jsonObject.get(JSON_KEY_STATE);
         Object cityObject = jsonObject.get(JSON_KEY_CITY);
         Object streetObject = jsonObject.get(JSON_KEY_STREET);
         Object postalCodeObject = jsonObject.get(JSON_KEY_POSTAL_CODE);
         if (JsonUtils.anyObjectIsNull(
+                addressIDObject,
                 countryObject,
                 stateObject,
                 cityObject,
@@ -74,11 +68,14 @@ public class HomeAddress extends G6Datatype {
                 postalCodeObject
         )) throw new Exception("JSON to HomeAddress: Missing one or more fields");
         try {
+            Integer addressID = (Integer) addressIDObject;
             String country = (String) countryObject;
             String state = (String) stateObject;
             String city = (String) cityObject;
             String street = (String) streetObject;
             Integer postalCode = (Integer) postalCodeObject;
+            
+            this.addressID = addressID;
             this.country = country;
             this.state = state;
             this.city = city;
@@ -97,7 +94,9 @@ public class HomeAddress extends G6Datatype {
         String city = this.city == null ? "null" : this.city;
         String street = this.street == null ? "null" : this.street;
         int postalCode = this.postalCode;
+        int addressID = this.addressID;
         JSONObject jsonObject = new JSONObject(); {
+            jsonObject.put(JSON_KEY_ID,addressID);
             jsonObject.put(JSON_KEY_COUNTRY,country);
             jsonObject.put(JSON_KEY_STATE,state);
             jsonObject.put(JSON_KEY_CITY,city);
@@ -105,6 +104,8 @@ public class HomeAddress extends G6Datatype {
             jsonObject.put(JSON_KEY_POSTAL_CODE,postalCode);
         } return jsonObject;
     }
+    
+    // Just for sorting purposes
     
     @Override
     public int compareTo(G6Datatype other) {

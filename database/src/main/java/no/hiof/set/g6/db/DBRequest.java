@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.request;
+package no.hiof.set.g6.db;
 
 
 import no.hiof.set.g6.ny.G6Serializable;

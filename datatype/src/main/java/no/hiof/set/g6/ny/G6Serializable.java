@@ -12,13 +12,13 @@ import org.json.simple.JSONObject;
 public interface G6Serializable {
     
     /**
-     * Set the object fields to values provided by the jsonObject
+     * Set the objects fields to values provided by the jsonObject
      * @throws Exception if the jsonObject is null or does not translate to this
      */
     void fromJson(JSONObject jsonObject) throws Exception;
     
     /**
-     * Serialize the object to Json format
+     * Convert the object to Json Object
      * @return JsonObject
      */
     JSONObject toJson();

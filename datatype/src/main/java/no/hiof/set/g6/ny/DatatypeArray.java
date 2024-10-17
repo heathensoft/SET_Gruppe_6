@@ -7,8 +7,7 @@ import org.json.simple.JSONObject;
 import java.util.*;
 
 /**
- * @author Frederik Dahl
- * 16/10/2024
+ *
  */
 
 
@@ -26,6 +25,7 @@ public class DatatypeArray<T extends G6Datatype> implements G6Serializable, Iter
         class_map = new HashMap<>();
         class_map.put(HomeAddress.class,"Home Address");
         class_map.put(UserAccount.class,"User Account");
+        class_map.put(LocalUser.class,"Local User");
     }
     
     private final List<T> list;

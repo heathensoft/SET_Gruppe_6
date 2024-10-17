@@ -9,8 +9,6 @@ import java.util.EmptyStackException;
 /**
  * Utility class for G6 packets.
  *
- * @author Frederik Dahl
- * 16/10/2024
  */
 
 
