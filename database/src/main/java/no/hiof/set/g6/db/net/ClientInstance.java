@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.core;
+package no.hiof.set.g6.db.net;
 
 
 import io.netty.bootstrap.Bootstrap;
@@ -8,7 +8,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import no.hiof.set.g6.db.net.util.LogEntry;
 
 import java.net.InetSocketAddress;
 

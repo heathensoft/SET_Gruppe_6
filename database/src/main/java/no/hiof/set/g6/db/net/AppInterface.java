@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.core;
+package no.hiof.set.g6.db.net;
 
 
 import io.netty.channel.Channel;
@@ -12,7 +12,6 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import no.hiof.set.g6.db.net.util.EventLog;
 import no.hiof.set.g6.dt.G6JSON;
 import org.json.simple.JSONObject;
 

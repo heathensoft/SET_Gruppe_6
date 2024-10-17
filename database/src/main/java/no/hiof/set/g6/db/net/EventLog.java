@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.util;
+package no.hiof.set.g6.db.net;
 
 
 import java.util.LinkedList;

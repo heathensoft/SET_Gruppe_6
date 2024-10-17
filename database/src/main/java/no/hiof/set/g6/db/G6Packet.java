@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net.util;
+package no.hiof.set.g6.db;
 
 
 import no.hiof.set.g6.ny.JsonUtils;
@@ -15,28 +15,6 @@ import java.util.EmptyStackException;
 
 
 public class G6Packet {
-    
-    private static int next;
-    private static final IntQueue id_pool;
-    
-    static {
-        final int initial_cap = 256;
-        id_pool = new IntQueue(initial_cap);
-        for (int i = 0; i < initial_cap; i++) {
-            id_pool.enqueue(next++);
-        }
-    }
-    
-    /**Obtain Unique packet ID from ID pool*/
-    public static int obtainID() {
-        if (id_pool.isEmpty()) return next++;
-        return id_pool.dequeue();
-    }
-    
-    /**Return Unique packet ID to ID pool */
-    public static void returnID(int id) {
-        id_pool.enqueue(id);
-    }
     
     public enum Type {
         
@@ -73,10 +51,10 @@ public class G6Packet {
     /**The Container JsonObject for G6 Packets
      * Used on both ends of a connection to identify a Packet and it's Content*/
     public static final class Wrapper {
-        
         public static final String JSON_KEY_ID = "Packet ID";
         public static final String JSON_KEY_TYPE = "Packet Type";
         public static final String JSON_KEY_CONTENT = "Packet Content";
+        public static final String JSON_KEY_MESSAGE = "Message";
         
         private int id;
         private Type type;
@@ -86,46 +64,97 @@ public class G6Packet {
         public int packetID() { return id; }
         public Type packetType() { return type; }
         public JSONObject packetContent() { return content; }
-        
-        @SuppressWarnings("unchecked")
-        public static JSONObject wrap(JSONObject content, Type type, int packet_id) {
-            if (content == null || type == null) throw new IllegalStateException("null arg wrap");
-            JSONObject payload = new JSONObject();
-            payload.put(JSON_KEY_ID,packet_id);
-            payload.put(JSON_KEY_TYPE,type.ordinal());
-            payload.put(JSON_KEY_CONTENT,content);
-            return payload;
-        }
-        
-        public static Wrapper unwrap(JSONObject payload) throws Exception {
-            if (payload == null) throw new IllegalStateException("null arg unwrap");
-            Wrapper wrapper;
-            Object idObject = payload.get(JSON_KEY_ID);
-            Object typeObject = payload.get(JSON_KEY_TYPE);
-            Object contentObject = payload.get(JSON_KEY_CONTENT);
-            if (JsonUtils.anyObjectIsNull(
-                    idObject,
-                    typeObject,
-                    contentObject
-            )) throw new Exception("Unable to unwrap packet, missing fields");
-            try {
-                Integer type_ordinal = (Integer) typeObject;
-                Type packet_type = Type.getByOrdinal(type_ordinal);
-                if (packet_type == null) {
-                    throw new Exception("Invalid packet type");
-                } Integer packet_id = (Integer) idObject;
-                JSONObject packet_content = (JSONObject) contentObject;
-                wrapper = new Wrapper();
-                wrapper.id = packet_id;
-                wrapper.type = packet_type;
-                wrapper.content = packet_content;
-            } catch (ClassCastException e) {
-                throw new Exception("Unable to unwrap packet: Invalid format of one or more fields",e);
-            } return wrapper;
-        }
-        
     }
     
+    
+    private static int next;
+    private static final IntQueue id_pool;
+    
+    static {
+        final int initial_cap = 256;
+        id_pool = new IntQueue(initial_cap);
+        for (int i = 0; i < initial_cap; i++) {
+            id_pool.enqueue(next++);
+        }
+    }
+    
+    /**Obtain Unique packet ID from ID pool*/
+    public static int obtainID() {
+        if (id_pool.isEmpty()) return next++;
+        return id_pool.dequeue();
+    }
+    
+    /**Return Unique packet ID to ID pool */
+    public static void returnID(int id) {
+        id_pool.enqueue(id);
+    }
+    
+    
+    
+    @SuppressWarnings("unchecked")
+    public static JSONObject wrap(JSONObject content, Type type, int packet_id) {
+        if (content == null || type == null) throw new IllegalStateException("null arg wrap");
+        JSONObject payload = new JSONObject();
+        payload.put(Wrapper.JSON_KEY_ID,packet_id);
+        payload.put(Wrapper.JSON_KEY_TYPE,type.ordinal());
+        payload.put(Wrapper.JSON_KEY_CONTENT,content);
+        return payload;
+    }
+    
+    public static Wrapper unwrap(JSONObject payload) throws Exception {
+        if (payload == null) throw new IllegalStateException("null arg unwrap");
+        Wrapper wrapper;
+        Object idObject = payload.get(Wrapper.JSON_KEY_ID);
+        Object typeObject = payload.get(Wrapper.JSON_KEY_TYPE);
+        Object contentObject = payload.get(Wrapper.JSON_KEY_CONTENT);
+        if (JsonUtils.anyObjectIsNull(
+                idObject,
+                typeObject,
+                contentObject
+        )) throw new Exception("Unable to unwrap packet, missing fields");
+        try {
+            Integer type_ordinal = (Integer) typeObject;
+            Type packet_type = Type.getByOrdinal(type_ordinal);
+            if (packet_type == null) {
+                throw new Exception("Invalid packet type");
+            } Integer packet_id = (Integer) idObject;
+            JSONObject packet_content = (JSONObject) contentObject;
+            wrapper = new Wrapper();
+            wrapper.id = packet_id;
+            wrapper.type = packet_type;
+            wrapper.content = packet_content;
+        } catch (ClassCastException e) {
+            throw new Exception("Unable to unwrap packet: Invalid format of one or more fields",e);
+        } return wrapper;
+    }
+    
+    /**
+     * Build new response packet for invalid request packet
+     * @param packet_id id of request packet
+     * @param message message to client
+     * @return response payload
+     */
+    @SuppressWarnings("unchecked")
+    public static JSONObject invalidPacket(int packet_id, String message) {
+        message = message == null ? "null" : message;
+        JSONObject invalid_message = new JSONObject();
+        invalid_message.put(Wrapper.JSON_KEY_MESSAGE,message);
+        return wrap(invalid_message,Type.INVALID_PACKET,packet_id);
+    }
+    
+    /**
+     * Build new response packet for access denied
+     * @param packet_id id of request packet
+     * @param message message to client
+     * @return response payload
+     */
+    @SuppressWarnings("unchecked")
+    public static JSONObject accessDenied(int packet_id, String message) {
+        message = message == null ? "null" : message;
+        JSONObject invalid_message = new JSONObject();
+        invalid_message.put(Wrapper.JSON_KEY_MESSAGE,message);
+        return wrap(invalid_message,Type.ACCESS_DENIED,packet_id);
+    }
     
     
     /**Utility class: Circular Integer Queue*/

@@ -1,11 +1,9 @@
-package no.hiof.set.g6.db.net.core;
+package no.hiof.set.g6.db.net;
 
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import no.hiof.set.g6.db.net.util.EventLog;
-import no.hiof.set.g6.db.net.util.LogEntry;
 import org.json.simple.JSONObject;
 
 /**
