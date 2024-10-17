@@ -56,7 +56,6 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
         if (jsonObject == null) throw new Exception("JSONObject is null");
         Object typeObject = jsonObject.get(JSON_KEY_ARRAY_TYPE);
         Object arrayObject = jsonObject.get(JSON_KEY_ARRAY);
-        
         if (typeObject == null) throw new Exception("JSON to DataTypeArray: Missing one or more fields");
         
         try {
@@ -65,24 +64,16 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
             if (!objectTypeString.equals(thisTypeString)) {
                 throw new Exception("JSON to DataTypeArray: Invalid Datatype");
             }
-            
             if (arrayObject == null) clear();
-            else { JSONArray jsonArray = (JSONArray) arrayObject;
+            else {
+                JSONArray jsonArray = (JSONArray) arrayObject;
                 clear();
-                for (Object object : jsonArray) {
-                    JSONObject jsonArrayObject = (JSONObject) object;
-                    //list.add(clazz.cast())
-                }
+                for (Object o : jsonArray)
+                    list.add(G6Datatype.fromJson(clazz,(JSONObject) o));
             }
-            
-            
-            
         } catch (ClassCastException e) {
             throw new Exception("JSON to DataTypeArray: Invalid format for one or more fields",e);
         }
-        
-        
-        
     }
     
     @Override
@@ -100,7 +91,14 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
     }
     
     
-    
-    
+    public static void main(String[] args) {
+        G6DataTypeArray<UserAccount> userAccounts = new G6DataTypeArray<>(UserAccount.class);
+        for (int i = 0; i < 10; i++) {
+            UserAccount userAccount = new UserAccount();
+            userAccount.firstName = "Teddy " + i;
+            userAccounts.add(userAccount);
+        } userAccounts.sort();
+        System.out.println(userAccounts.toJson().toString());
+    }
     
 }
