@@ -38,7 +38,8 @@ public class G6Packet {
         
         Type(String descriptor) {
             this.descriptor = descriptor;
-        } public final String descriptor;
+        }
+        public final String descriptor;
         private static final Type[] all;
         static { all = values(); }
         public static Type getByOrdinal(int ordinal) {

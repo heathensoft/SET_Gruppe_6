@@ -12,7 +12,7 @@ import java.util.*;
  */
 
 
-public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, Iterable<T> {
+public class DatatypeArray<T extends G6Datatype> implements G6Serializable, Iterable<T> {
     
     public static final String JSON_KEY_ARRAY_TYPE = "Type";
     public static final String JSON_KEY_ARRAY = "Array";
@@ -21,7 +21,8 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
     private static final Map<Class<?>,String> class_map;
     static {
         
-        // Add Datatypes Here as we create new:
+        // ADD NEW DATATYPES HERE
+        
         class_map = new HashMap<>();
         class_map.put(HomeAddress.class,"Home Address");
         class_map.put(UserAccount.class,"User Account");
@@ -30,11 +31,8 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
     private final List<T> list;
     private final Class<T> clazz;
     
-    public G6DataTypeArray(Class<T> clazz) {
-        this(clazz,16);
-    }
-    
-    public G6DataTypeArray(Class<T> clazz, int capacity) {
+    public DatatypeArray(Class<T> clazz) { this(clazz,16); }
+    public DatatypeArray(Class<T> clazz, int capacity) {
         if (clazz == null) throw new IllegalStateException("null arg class");
         this.list = new ArrayList<>(Math.max(capacity,0));
         this.clazz = clazz;
@@ -56,7 +54,10 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
         if (jsonObject == null) throw new Exception("JSONObject is null");
         Object typeObject = jsonObject.get(JSON_KEY_ARRAY_TYPE);
         Object arrayObject = jsonObject.get(JSON_KEY_ARRAY);
-        if (typeObject == null) throw new Exception("JSON to DataTypeArray: Missing one or more fields");
+        
+        if (typeObject == null) {
+            throw new Exception("JSON to DataTypeArray: Missing one or more fields");
+        }
         
         try {
             String objectTypeString = (String) typeObject;
@@ -64,12 +65,16 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
             if (!objectTypeString.equals(thisTypeString)) {
                 throw new Exception("JSON to DataTypeArray: Invalid Datatype");
             }
-            if (arrayObject == null) clear();
+            if (arrayObject == null) {
+                list.clear();
+            }
             else {
                 JSONArray jsonArray = (JSONArray) arrayObject;
-                clear();
-                for (Object o : jsonArray)
+                list.clear();
+                for (Object o : jsonArray) {
                     list.add(G6Datatype.fromJson(clazz,(JSONObject) o));
+                }
+                
             }
         } catch (ClassCastException e) {
             throw new Exception("JSON to DataTypeArray: Invalid format for one or more fields",e);
@@ -91,14 +96,25 @@ public class G6DataTypeArray<T extends G6Datatype> implements G6Serializable, It
     }
     
     
-    public static void main(String[] args) {
-        G6DataTypeArray<UserAccount> userAccounts = new G6DataTypeArray<>(UserAccount.class);
+    public static void main(String[] args) throws Exception {
+        DatatypeArray<UserAccount> userAccounts = new DatatypeArray<>(UserAccount.class);
         for (int i = 0; i < 10; i++) {
             UserAccount userAccount = new UserAccount();
             userAccount.firstName = "Teddy " + i;
             userAccounts.add(userAccount);
         } userAccounts.sort();
-        System.out.println(userAccounts.toJson().toString());
+        JSONObject jsonObject = userAccounts.toJson();
+        System.out.println(jsonObject.toString());
+        
+        userAccounts = new DatatypeArray<>(UserAccount.class);
+        userAccounts.fromJson(jsonObject);
+        
+        jsonObject = userAccounts.toJson();
+        System.out.println(jsonObject.toString());
+        
+        
     }
+    
+    
     
 }

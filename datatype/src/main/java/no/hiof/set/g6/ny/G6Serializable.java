@@ -13,13 +13,13 @@ public interface G6Serializable {
     
     /**
      * Set the object fields to values provided by the jsonObject
-     * @throws Exception if the jsonObject is null or does not relate to this
+     * @throws Exception if the jsonObject is null or does not translate to this
      */
     void fromJson(JSONObject jsonObject) throws Exception;
     
     /**
-     * Serialize the object to Json-Format
-     * @return serialized JsonObject
+     * Serialize the object to Json format
+     * @return JsonObject
      */
     JSONObject toJson();
 }

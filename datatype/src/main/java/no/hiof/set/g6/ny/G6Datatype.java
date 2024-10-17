@@ -4,8 +4,11 @@ package no.hiof.set.g6.ny;
 import org.json.simple.JSONObject;
 
 /**
- * @author Frederik Dahl
- * 16/10/2024
+ * The Base Class of all our Datatypes.
+ *
+ * It's important that all G6Datatypes got an empty constructor !!!
+ * (Why? Because we are using java reflection to create new Datatype Instances)
+ *
  */
 
 
@@ -13,28 +16,25 @@ public abstract class G6Datatype implements G6Serializable, Comparable<G6Datatyp
     
     public G6Datatype() { }
     
-    @SuppressWarnings("unchecked")
+    /**
+     * Creates a new G6Datatype of Class clazz, using values from a JSONObject.
+     * @param clazz the class of the new G6Datatype of type T
+     * @param jsonObject JSONObject with appropriate content
+     * @return new G6Datatype of type T
+     * @throws Exception If the JSONObject could not be translated into G6Datatype T
+     * or if the G6Datatype Class doesn't have an empty constructor
+     */
     public static <T extends G6Datatype> T fromJson(Class<T> clazz, JSONObject jsonObject) throws Exception {
         if (clazz == null || jsonObject == null) throw new IllegalStateException("null arg fromJson");
-        G6Datatype dataType;
-        
-        if (clazz == HomeAddress.class) {
-            dataType = new HomeAddress();
+        try { T datatype = clazz.getDeclaredConstructor().newInstance();
+            datatype.fromJson(jsonObject);
+            return datatype;
+        } catch (NoSuchMethodException e) {
+            throw new Exception(e);
         }
-        else if (clazz == UserAccount.class) {
-            dataType = new UserAccount();
-        }
-        //else if (clazz == AnotherClass.class) {
-        //    dataType = new UserAccount();
-        //}
-        
-        
-        
-        else throw new Exception("Unsupported DataType");
-        dataType.fromJson(jsonObject);
-        return (T)dataType;
     }
     
+    /** Datatype does not to override this */
     @Override
     public int compareTo(G6Datatype other) { return 0; }
 }
