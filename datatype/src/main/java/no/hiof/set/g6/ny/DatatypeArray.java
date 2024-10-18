@@ -7,14 +7,16 @@ import org.json.simple.JSONObject;
 import java.util.*;
 
 /**
+ * Generic container for G6Datatypes
+ * Json Serializable
  *
  */
 
 
-public class DatatypeArray<T extends G6Datatype> implements G6Serializable, Iterable<T> {
+public class DatatypeArray<T extends G6Datatype> implements JsonSerializable, Iterable<T> {
     
-    public static final String JSON_KEY_ARRAY_TYPE = "Type";
     public static final String JSON_KEY_ARRAY = "Array";
+    public static final String JSON_KEY_ARRAY_TYPE = "Type";
     public static final String JSON_TYPE_UNDEFINED = "Undefined";
     
     private static final Map<Class<?>,String> class_map;
@@ -74,7 +76,6 @@ public class DatatypeArray<T extends G6Datatype> implements G6Serializable, Iter
                 for (Object o : jsonArray) {
                     list.add(G6Datatype.fromJson(clazz,(JSONObject) o));
                 }
-                
             }
         } catch (ClassCastException e) {
             throw new Exception("JSON to DataTypeArray: Invalid format for one or more fields",e);

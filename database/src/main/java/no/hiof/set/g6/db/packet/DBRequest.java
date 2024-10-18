@@ -1,7 +1,7 @@
-package no.hiof.set.g6.db;
+package no.hiof.set.g6.db.packet;
 
 
-import no.hiof.set.g6.ny.G6Serializable;
+import no.hiof.set.g6.ny.JsonSerializable;
 
 /**
  * @author Frederik Dahl
@@ -9,7 +9,7 @@ import no.hiof.set.g6.ny.G6Serializable;
  */
 
 
-public abstract class DBRequest implements G6Serializable {
+public abstract class DBRequest implements JsonSerializable {
     
     protected Type type;
     

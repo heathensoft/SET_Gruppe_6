@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
  */
 
 
-public abstract class G6Datatype implements G6Serializable, Comparable<G6Datatype> {
+public abstract class G6Datatype implements JsonSerializable, Comparable<G6Datatype> {
     
     public G6Datatype() { }
     

@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
  */
 
 
-public interface G6Serializable {
+public interface JsonSerializable {
     
     /**
      * Set the objects fields to values provided by the jsonObject

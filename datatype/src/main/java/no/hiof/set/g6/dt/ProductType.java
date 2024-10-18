@@ -22,4 +22,5 @@ public enum ProductType {
     ProductType(String descriptor) {
         this.descriptor = descriptor;
     }
+    
 }
