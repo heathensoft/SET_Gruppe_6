@@ -1,13 +1,17 @@
 package no.hiof.set.g6.db;
 
-import no.hiof.set.g6.dtdb.LocalUser;
+
 import org.json.simple.JSONObject;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import no.hiof.set.g6.dt.G6JSON;
-import no.hiof.set.g6.dt.HomeAddress;
-import no.hiof.set.g6.dt.UserAccount;
+
+//import no.hiof.set.g6.dt.G6JSON;
+import no.hiof.set.g6.ny.UserAccount;
+import no.hiof.set.g6.ny.HomeAddress;
+import no.hiof.set.g6.ny.LocalUser;
+
+//import no.hiof.set.g6.ny.DatatypeArray;
 
 public class MyJDBC {
 
@@ -55,15 +59,15 @@ public class MyJDBC {
 
                 // Create address and user account objects
                 HomeAddress address = new HomeAddress(country, state, city, streetAddress, postalCode);
-                UserAccount account = new UserAccount(firstName, lastName, email);
-                account.getAddress().set(address);
-                account.getPhoneNumbers().add(phoneNumbers);
+                UserAccount account = new UserAccount(firstName, lastName, email, phoneNumbers);
+                account.getAddress().set(address); // Bruk setter for å sette adressen
 
-                // Convert the UserAccount object to a JSON object
-                JSONObject jsonObject = G6JSON.userAccountToJSON(account);
+                LocalUser localUser = new LocalUser(account, userName, role);
 
-                // Add the JSON object to the userList
-                userList.add(jsonObject);
+
+                // Convert LocalUser to JSON and add to list
+                JSONObject jsonObject = localUser.toJson();
+                userList.add(jsonObject); // Add JSON object to the list
             }
 
         } catch (SQLException e) {
@@ -73,13 +77,15 @@ public class MyJDBC {
         return userList; // Return the list of JSON objects
     }
 
+    public List<JSONObject> getAllLocksInfo() {
+        return null;
+    }
+
     // Main method for testing the retrieval of user information
     public static void main(String[] args) {
         MyJDBC myJDBC = new MyJDBC();
 
-
         List<JSONObject> userInfoList = myJDBC.getAllUserInfo();
-
 
         for (JSONObject userInfo : userInfoList) {
             System.out.println(userInfo.toJSONString());
