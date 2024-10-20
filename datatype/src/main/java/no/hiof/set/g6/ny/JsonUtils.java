@@ -5,6 +5,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 /**
  * @author Frederik Dahl
@@ -13,7 +18,8 @@ import org.json.simple.parser.ParseException;
 
 
 public class JsonUtils {
-    
+
+    // Todo: load / Save Json to file
     
     /**
      * @param string json-formatted string
@@ -37,4 +43,39 @@ public class JsonUtils {
             if (object == null) return true;
         } return false;
     }
+
+
+    public static JSONObject loadFromFile(Path path) throws IOException {
+        JSONObject object;
+        String string = Files.readString(path);
+        try { object = parse(string);
+        } catch (ParseException e) {
+            throw new IOException(e);
+        } return object;
+    }
+
+    /**
+     * Save JSONObject to file. (Overwrite existing)
+     * @param object object to save
+     * @param path path of file
+     * @throws IOException ParseException or IO error
+     */
+    public static void saveToFile(JSONObject object, Path path) throws IOException {
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        } Files.writeString(path,object.toString());
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        Path folder = Path.of("database/workbenchFiles");
+        Path file = folder.resolve("UserAccounts.json");
+        UserAccount userAccount = new UserAccount();
+        saveToFile(userAccount.toJson(),file);
+
+
+
+    }
+
+
 }
