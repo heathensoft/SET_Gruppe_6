@@ -22,7 +22,15 @@ public class UserAccount extends G6Datatype {
     public String email;                // corresponds to email VARCHAR(150)
     public String phoneNumber;          //
     private final HomeAddress address;  // corresponds to address_id INT (Foreign Key)
-    
+
+    public UserAccount(String firstName, String lastName, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = new HomeAddress(); // Make sure address is initialized with an empty HomeAddress object
+    }
+
     // Constructors, Getters, and Setters
     public UserAccount() {
         this.firstName = "";

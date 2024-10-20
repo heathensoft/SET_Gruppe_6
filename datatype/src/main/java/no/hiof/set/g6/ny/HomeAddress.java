@@ -1,37 +1,44 @@
 package no.hiof.set.g6.ny;
 
-
 import org.json.simple.JSONObject;
 
 /**
  * @author Mahmad
  */
 
-
 public class HomeAddress extends G6Datatype {
-    
+
     public static final String JSON_KEY_ID = "Address ID";
     public static final String JSON_KEY_COUNTRY = "Country";
     public static final String JSON_KEY_STATE = "State";
     public static final String JSON_KEY_CITY = "City";
     public static final String JSON_KEY_STREET = "Street Address";
     public static final String JSON_KEY_POSTAL_CODE = "Postal Code";
-    
+
     public int addressID;   // corresponds to address_id INT
     public String country;  // corresponds to country VARCHAR(100)
     public String state;    // corresponds to state VARCHAR(100)
     public String city;     // corresponds to city VARCHAR(100)
     public String street;   // corresponds to street_address VARCHAR(255)
     public int postalCode;  // corresponds to postal_code INT
-    
-    // Constructors, Getters, and Setters
+
+    // Konstruktør som tar fem argumenter (country, state, city, street, postalCode)
+    public HomeAddress(String country, String state, String city, String street, int postalCode) {
+        this.country = country;
+        this.state = state;
+        this.city = city;
+        this.street = street;
+        this.postalCode = postalCode;
+    }
+
+    // Standard konstruktør uten argumenter
     public HomeAddress() {
         this.country = "";
         this.state = "";
         this.city = "";
         this.street = "";
     }
-    
+
     public void set(HomeAddress address) {
         if (address == null) {
             this.country = "null";
@@ -49,7 +56,7 @@ public class HomeAddress extends G6Datatype {
             this.addressID = address.addressID;
         }
     }
-    
+
     @Override
     public void fromJson(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
@@ -74,7 +81,7 @@ public class HomeAddress extends G6Datatype {
             String city = (String) cityObject;
             String street = (String) streetObject;
             Integer postalCode = (Integer) postalCodeObject;
-            
+
             this.addressID = addressID;
             this.country = country;
             this.state = state;
@@ -82,10 +89,10 @@ public class HomeAddress extends G6Datatype {
             this.street = street;
             this.postalCode = postalCode;
         } catch (ClassCastException e) {
-            throw new Exception("JSON to HomeAddress: Invalid format for one or more fields",e);
+            throw new Exception("JSON to HomeAddress: Invalid format for one or more fields", e);
         }
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     public JSONObject toJson() {
@@ -96,17 +103,17 @@ public class HomeAddress extends G6Datatype {
         int postalCode = this.postalCode;
         int addressID = this.addressID;
         JSONObject jsonObject = new JSONObject(); {
-            jsonObject.put(JSON_KEY_ID,addressID);
-            jsonObject.put(JSON_KEY_COUNTRY,country);
-            jsonObject.put(JSON_KEY_STATE,state);
-            jsonObject.put(JSON_KEY_CITY,city);
-            jsonObject.put(JSON_KEY_STREET,street);
-            jsonObject.put(JSON_KEY_POSTAL_CODE,postalCode);
-        } return jsonObject;
+            jsonObject.put(JSON_KEY_ID, addressID);
+            jsonObject.put(JSON_KEY_COUNTRY, country);
+            jsonObject.put(JSON_KEY_STATE, state);
+            jsonObject.put(JSON_KEY_CITY, city);
+            jsonObject.put(JSON_KEY_STREET, street);
+            jsonObject.put(JSON_KEY_POSTAL_CODE, postalCode);
+        }
+        return jsonObject;
     }
-    
-    // Just for sorting purposes
-    
+
+    // Bare for sorteringsformål
     @Override
     public int compareTo(G6Datatype other) {
         if (other instanceof HomeAddress o) {
@@ -128,6 +135,7 @@ public class HomeAddress extends G6Datatype {
                 comp = t_city.compareTo(o_city);
             }
             return comp;
-        } return 0;
+        }
+        return 0;
     }
 }
