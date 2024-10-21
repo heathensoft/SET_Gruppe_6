@@ -32,7 +32,7 @@ val lwjglNatives = Pair(
 }
 
 dependencies {
-    implementation(project(":database"))
+    implementation(project(":network"))
     implementation(files("lib/heathensoft-jlib-0.6.0.jar"))
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
     //implementation("org.lwjgl", "lwjgl")

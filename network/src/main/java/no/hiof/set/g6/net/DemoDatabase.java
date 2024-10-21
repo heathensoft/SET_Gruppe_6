@@ -1,13 +1,15 @@
-package no.hiof.set.g6.db;
+package no.hiof.set.g6.net;
 
 import no.hiof.set.g6.ny.DatatypeArray;
 import no.hiof.set.g6.ny.LocalUser;
 import no.hiof.set.g6.ny.Locks;
 import no.hiof.set.g6.ny.UserAccount;
 
-public class SQLDatabase implements PrototypeDB {
+import java.nio.file.Path;
 
+public class DemoDatabase implements PrototypeDB {
 
+    private Path path;
 
     @Override
     public LocalUser.Role getUserRole(LocalUser user) {
@@ -47,5 +49,15 @@ public class SQLDatabase implements PrototypeDB {
     @Override
     public boolean editLock(Locks lock) throws Exception {
         return false;
+    }
+
+    @Override
+    public void load() throws Exception {
+        PrototypeDB.super.load();
+    }
+
+    @Override
+    public void save() throws Exception {
+        PrototypeDB.super.save();
     }
 }
