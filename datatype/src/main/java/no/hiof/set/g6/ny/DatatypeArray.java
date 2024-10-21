@@ -28,6 +28,7 @@ public class DatatypeArray<T extends G6Datatype> implements JsonSerializable, It
         class_map.put(HomeAddress.class,"Home Address");
         class_map.put(UserAccount.class,"User Account");
         class_map.put(LocalUser.class,"Local User");
+        class_map.put(Locks.class,"Lock");
     }
     
     private final List<T> list;

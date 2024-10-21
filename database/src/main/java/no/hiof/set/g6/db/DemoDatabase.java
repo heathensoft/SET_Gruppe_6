@@ -2,6 +2,7 @@ package no.hiof.set.g6.db;
 
 import no.hiof.set.g6.ny.DatatypeArray;
 import no.hiof.set.g6.ny.LocalUser;
+import no.hiof.set.g6.ny.Locks;
 import no.hiof.set.g6.ny.UserAccount;
 
 import java.nio.file.Path;
@@ -37,6 +38,16 @@ public class DemoDatabase implements PrototypeDB {
 
     @Override
     public boolean editLocalUser(LocalUser user) throws Exception {
+        return false;
+    }
+
+    @Override
+    public DatatypeArray<Locks> allStoredLocks() throws Exception {
+        return null;
+    }
+
+    @Override
+    public boolean editLock(Locks lock) throws Exception {
         return false;
     }
 
