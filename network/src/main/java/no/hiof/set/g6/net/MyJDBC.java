@@ -1,33 +1,28 @@
-package no.hiof.set.g6.db;
+package no.hiof.set.g6.net;
 
+
+import org.json.simple.JSONObject;
 import java.sql.*;
-import no.hiof.set.g6.ny.DatatypeArray;
-import no.hiof.set.g6.ny.LocalUser;
-import no.hiof.set.g6.ny.Locks;
+import java.util.ArrayList;
+import java.util.List;
+
+//import no.hiof.set.g6.dt.G6JSON;
 import no.hiof.set.g6.ny.UserAccount;
 import no.hiof.set.g6.ny.HomeAddress;
+import no.hiof.set.g6.ny.LocalUser;
 
+//import no.hiof.set.g6.ny.DatatypeArray;
 
-public class SQLDatabase implements PrototypeDB {
+public class MyJDBC {
 
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/Teknologiprosjekt"; // Database URL
     private static final String USERNAME = "root"; // Database username
     private static final String PASSWORD = "HeiHei123"; // Database password
 
+    // Method to retrieve all user information for users with hub_id = 1
+    public List<JSONObject> getAllUserInfo() {
 
-
-    @Override
-    public LocalUser.Role getUserRole(LocalUser user) {
-        return null;
-    }
-
-    @Override
-    public DatatypeArray<UserAccount> searchForAccount(UserAccount account) throws Exception {
-        return null;
-    }
-
-    @Override
-    public DatatypeArray<LocalUser> allStoredLocalUsers() throws Exception {
+        // SQL query
         String query = """
             SELECT LocalUser.user_name, UserAccount.first_name, UserAccount.last_name, UserAccount.email,
                            HomeAddress.country, HomeAddress.state, HomeAddress.city, HomeAddress.street_address, HomeAddress.postal_code,
@@ -38,14 +33,15 @@ public class SQLDatabase implements PrototypeDB {
                     WHERE LocalUser.hub_id = 1;
         """;
 
-        DatatypeArray<LocalUser> localUsers = new DatatypeArray<>(LocalUser.class); // Initialize DatatypeArray
+        List<JSONObject> userList = new ArrayList<>(); // List to store user information as JSON objects
 
         try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            //Execute SQL query
+            // Execute the SQL query
             ResultSet resultSet = statement.executeQuery();
 
+            // Loop through the result set
             while (resultSet.next()) {
                 String userName = resultSet.getString("user_name");
                 String firstName = resultSet.getString("first_name");
@@ -64,45 +60,35 @@ public class SQLDatabase implements PrototypeDB {
                 // Create address and user account objects
                 HomeAddress address = new HomeAddress(country, state, city, streetAddress, postalCode);
                 UserAccount account = new UserAccount(firstName, lastName, email, phoneNumbers);
-                account.getAddress().set(address);
+                account.getAddress().set(address); // Bruk setter for å sette adressen
 
-                // Create LocalUser object
                 LocalUser localUser = new LocalUser(account, userName, role);
 
-                // Add LocalUser object to the DatatypeArray
-                localUsers.add(localUser);
+
+                // Convert LocalUser to JSON and add to list
+                JSONObject jsonObject = localUser.toJson();
+                userList.add(jsonObject); // Add JSON object to the list
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle any SQL exceptions
         }
 
-        catch (SQLException e) {
-            throw new Exception("Database error: " + e.getMessage(), e); // Handle SQL exceptions
-        }
-
-        return localUsers;
+        return userList; // Return the list of JSON objects
     }
 
-    @Override
-    public boolean addLocalUser(LocalUser user) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean removeLocalUser(LocalUser user) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean editLocalUser(LocalUser user) throws Exception {
-        return false;
-    }
-
-    @Override
-    public DatatypeArray<Locks> allStoredLocks() throws Exception {
+    public List<JSONObject> getAllLocksInfo() {
         return null;
     }
 
-    @Override
-    public boolean editLock(Locks lock) throws Exception {
-        return false;
+    // Main method for testing the retrieval of user information
+    public static void main(String[] args) {
+        MyJDBC myJDBC = new MyJDBC();
+
+        List<JSONObject> userInfoList = myJDBC.getAllUserInfo();
+
+        for (JSONObject userInfo : userInfoList) {
+            System.out.println(userInfo.toJSONString());
+        }
     }
 }

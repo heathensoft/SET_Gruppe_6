@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db;
+package no.hiof.set.g6.net;
 
 import no.hiof.set.g6.ny.DatatypeArray;
 import no.hiof.set.g6.ny.LocalUser;

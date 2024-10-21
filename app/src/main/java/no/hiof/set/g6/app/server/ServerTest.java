@@ -2,9 +2,9 @@ package no.hiof.set.g6.app.server;
 
 
 import io.github.heathensoft.jlib.lwjgl.window.*;
-import no.hiof.set.g6.db.net.JsonPacket;
-import no.hiof.set.g6.db.net.LogEntry;
-import no.hiof.set.g6.db.net.ServerInstance;
+import no.hiof.set.g6.net.core.JsonPacket;
+import no.hiof.set.g6.net.core.LogEntry;
+import no.hiof.set.g6.net.core.ServerInstance;
 import org.json.simple.JSONObject;
 import org.lwjgl.glfw.GLFW;
 import org.tinylog.Logger;

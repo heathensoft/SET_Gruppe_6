@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.net;
+package no.hiof.set.g6.net.core;
 
 
 /**

@@ -1,4 +1,4 @@
-package no.hiof.set.g6.db.packet;
+package no.hiof.set.g6.net.packet;
 
 
 import no.hiof.set.g6.ny.JsonUtils;
