@@ -68,7 +68,7 @@ public class JsonUtils {
 
     public static void main(String[] args) throws Exception {
 
-        Path folder = Path.of("database/workbenchFiles");
+        Path folder = Path.of("network/workbenchFiles");
         Path file = folder.resolve("UserAccounts.json");
         UserAccount userAccount = new UserAccount();
         saveToFile(userAccount.toJson(),file);
