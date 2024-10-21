@@ -2,6 +2,7 @@ package no.hiof.set.g6.db;
 
 import no.hiof.set.g6.ny.DatatypeArray;
 import no.hiof.set.g6.ny.LocalUser;
+import no.hiof.set.g6.ny.Locks;
 import no.hiof.set.g6.ny.UserAccount;
 
 /**
@@ -68,6 +69,18 @@ public interface PrototypeDB {
      */
     boolean editLocalUser(LocalUser user) throws Exception;
 
+    /**
+     * @return All Locks in the HUB Database
+     */
+    DatatypeArray<Locks> allStoredLocks() throws Exception;
+
+    // find the lock by primary key, edit the lock and save the lock
+    /**
+     * Edit a lock in HUB Database (Open lock / Close lock / change name)
+     * @param lock The Lock to edit
+     * @return true if the lock exists and was edited, false if the lock does not exist
+     */
+    boolean editLock(Locks lock) throws Exception;
 
     /**
      * If the Database needs to be initialized or loaded into memory.
