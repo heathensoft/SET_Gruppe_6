@@ -125,7 +125,6 @@ public class SQLDatabase implements PrototypeDB {
                 // Created Locks object
                 Locks lock = new Locks(doorName, lockStatus, batteryStatus, mechanicalStatus);
 
-                //HELLOHAHAHHAHA
                 // Legg til låsen i DatatypeArray
                 locksArray.add(lock);
             }
