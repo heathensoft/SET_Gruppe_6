@@ -98,8 +98,43 @@ public class SQLDatabase implements PrototypeDB {
 
     @Override
     public DatatypeArray<Locks> allStoredLocks() throws Exception {
-        return null;
+        String query = """
+        SELECT door_name, lock_status, battery_status, mechanical_status 
+        FROM Locks;
+    """; // SQL query
+
+        DatatypeArray<Locks> locksArray = new DatatypeArray<>(Locks.class); //Initializes DatatypeArray for locks
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Execute SQL query
+            ResultSet resultSet = statement.executeQuery();
+
+
+            while (resultSet.next()) {
+                String doorName = resultSet.getString("door_name");
+                String lockStatusStr = resultSet.getString("lock_status");
+                int batteryStatus = resultSet.getInt("battery_status");
+                String mechanicalStatusStr = resultSet.getString("mechanical_status");
+
+                // Converting string values to ENUM
+                Locks.LockStatus lockStatus = Locks.LockStatus.valueOf(lockStatusStr.toUpperCase());
+                Locks.MechanicalStatus mechanicalStatus = Locks.MechanicalStatus.valueOf(mechanicalStatusStr.toUpperCase());
+
+                // Created Locks object
+                Locks lock = new Locks(doorName, lockStatus, batteryStatus, mechanicalStatus);
+
+                // Legg til låsen i DatatypeArray
+                locksArray.add(lock);
+            }
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e);
+        }
+
+        return locksArray; // Returns DatatypeArray
     }
+
 
     @Override
     public boolean editLock(Locks lock) throws Exception {
