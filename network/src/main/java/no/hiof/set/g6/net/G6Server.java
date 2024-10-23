@@ -11,6 +11,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Database / application - agnostic HUB Server
+ * The server handles various requests from connected clients and responds appropriately
+ *
+ */
+
 public class G6Server {
 
     private final int port;
@@ -21,8 +27,12 @@ public class G6Server {
     private final List<JsonPacket> outgoing_packets;
     private final LinkedList<LogEntry> logs;
 
-
-
+    /**
+     * @param port server port
+     * @param database database implementation
+     * @throws Exception if the server fails to connect or the database fails to connect,
+     * the server program should terminate
+     */
     public G6Server(int port, PrototypeDB database) throws Exception {
         this.request_handler = new ServerRequestHandler(database);
         this.incoming_packets = new ArrayList<>(64);
@@ -33,13 +43,22 @@ public class G6Server {
         database.load();
     }
 
+    /**
+     * If the Server Program started successfully but for some reason disconnected,
+     * an attempt to restart might work.
+     * @throws Exception If the restart throws an exception for any reason.
+     * In which case, the server could either wait for a duration and try again or
+     * terminate entirely.
+     */
     public void attemptRestartConnection() throws Exception {
         try {
             incoming_packets.clear();
             outgoing_packets.clear();
             try {
+                // try to shut down server
                 server_instance.shutDownAndWait();
             } finally {
+                // save database even if this fails
                 server_instance.eventLog().readAll(logs);
                 request_handler.onServerShutDown();
             }
@@ -47,6 +66,7 @@ public class G6Server {
             server_instance = new ServerInstance(port);
             if (server_instance.isConnected()) {
                 disconnect_timer = 0.0f;
+                // reload database
                 request_handler.onServerStart();
             }
         } finally {
@@ -55,6 +75,12 @@ public class G6Server {
 
     }
 
+    /**
+     * Saves the database and shuts down the Server
+     * @param wait for server to shut down before continuing
+     * @throws Exception If an exception is thrown for any reason.
+     * Either way, the database save() method will be called.
+     */
     public void shutDown(boolean wait) throws Exception {
         try {
             incoming_packets.clear();
@@ -62,6 +88,7 @@ public class G6Server {
             if (wait) server_instance.shutDownAndWait();
             else server_instance.shutDown();
         } finally {
+            // always save the database
             server_instance.eventLog().readAll(logs);
             request_handler.onServerShutDown();
         }

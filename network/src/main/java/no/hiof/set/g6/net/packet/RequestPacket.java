@@ -4,6 +4,9 @@ import no.hiof.set.g6.ny.LocalUser;
 import org.json.simple.JSONObject;
 
 
+/**
+ * A database request packet
+ */
 
 public class RequestPacket extends RequestPacketADT {
 
