@@ -23,7 +23,6 @@ public class DatatypeArray<T extends G6Datatype> implements JsonSerializable, It
     static {
         
         // ADD NEW DATATYPES HERE
-        // endring
         class_map = new HashMap<>();
         class_map.put(HomeAddress.class,"Home Address");
         class_map.put(UserAccount.class,"User Account");

@@ -6,7 +6,19 @@ public class LocalUser extends G6Datatype {
 
     // ENUM for role in the system
     public enum Role {
-        OWNER, RESIDENT, GUEST
+        NONE("None"),
+        GUEST("Guest"),
+        RESIDENT("Resident"),
+        OWNER("Owner");
+        Role(String descriptor) { this.descriptor = descriptor; }
+        public final String descriptor;
+        private static final Role[] all;
+        static { all = values(); }
+        public static Role getByOrdinal(int ordinal) {
+            if (ordinal < all.length && ordinal > 0) {
+                return all[ordinal];
+            } return null;
+        }
     }
 
     // JSON keys
