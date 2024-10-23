@@ -2,6 +2,7 @@ package no.hiof.set.g6.net.packet;
 
 
 import no.hiof.set.g6.ny.JsonSerializable;
+import no.hiof.set.g6.ny.JsonUtils;
 import org.json.simple.JSONObject;
 
 /**
@@ -46,6 +47,33 @@ public abstract class RequestPacketADT implements JsonSerializable {
     /** Request / Response Packet content. Can be null */
     public JSONObject content;
 
+
+    /**
+     * Put JsonObject into packet contents
+     * @param key the key
+     * @param jsonObject the jsonObject
+     */
+    @SuppressWarnings("unchecked")
+    public void putReplace(String key, JSONObject jsonObject) {
+        if (JsonUtils.anyObjectIsNull(key,jsonObject)) throw new IllegalStateException("null arg. contents");
+        if (content == null) {
+            content = new JSONObject();
+        } content.replace(key,jsonObject);
+    }
+
+    /**
+     * Get JsonObject from packet contents
+     * @param key the key
+     * @return the jsonObject or null
+     */
+    public JSONObject getOrNull(String key) {
+        if (content != null) {
+            Object object = content.get(key);
+            if (object instanceof JSONObject jsonObject) {
+                return jsonObject;
+            }
+        } return null;
+    }
 
     @SuppressWarnings("unchecked")
     protected void putType(JSONObject jsonObject) {

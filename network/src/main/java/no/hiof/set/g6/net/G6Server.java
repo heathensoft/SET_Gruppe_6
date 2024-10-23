@@ -182,15 +182,9 @@ public class G6Server {
                 try {
                     RequestPacket request = new RequestPacket();
                     request.fromJson(packet_content);
-                    // All database requests should have content, but might not have.
-                    if (request.content == null) {
-                        RequestPacketADT.Type request_type = request.request_type;
-                        // Send Invalid Packet Response and return
-                        String message = "DB Request: " + request_type + ", missing content";
-                        returnInvalidPacket(message,client_channel,packet_id);
-                        return;
-                    }
+
                     // ATP. we have identified a request with a type and user who requested the server response.
+                    // Some requests do not have content (Content might be null)
                     ResponsePacket response_packet = request_handler.handleRequest(request);
                     // ATP. The response is valid / complete. If it weren't an exception would be thrown
                     // The request handler ensures this is the case

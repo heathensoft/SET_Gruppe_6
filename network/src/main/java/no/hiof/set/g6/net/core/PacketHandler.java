@@ -14,11 +14,11 @@ import org.json.simple.JSONObject;
  */
 
 
-public class NettyPacketHandler extends SimpleChannelInboundHandler<JSONObject> {
+public class PacketHandler extends SimpleChannelInboundHandler<JSONObject> {
 
     private final AppInterface interface_;
     
-    NettyPacketHandler(AppInterface interface_) { this.interface_ = interface_; }
+    PacketHandler(AppInterface interface_) { this.interface_ = interface_; }
     
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JSONObject msg) throws Exception {
