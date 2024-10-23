@@ -47,18 +47,17 @@ public abstract class RequestPacketADT implements JsonSerializable {
     /** Request / Response Packet content. Can be null */
     public JSONObject content;
 
-
     /**
-     * Put JsonObject into packet contents
+     * Put Object into packet contents
      * @param key the key
-     * @param jsonObject the jsonObject
+     * @param object the object
      */
     @SuppressWarnings("unchecked")
-    public void putReplace(String key, JSONObject jsonObject) {
-        if (JsonUtils.anyObjectIsNull(key,jsonObject)) throw new IllegalStateException("null arg. contents");
+    public void putReplace(String key, Object object) {
+        if (JsonUtils.anyObjectIsNull(key,object)) throw new IllegalStateException("null arg. contents");
         if (content == null) {
             content = new JSONObject();
-        } content.replace(key,jsonObject);
+        } content.replace(key,object);
     }
 
     /**
