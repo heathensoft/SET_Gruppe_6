@@ -14,17 +14,17 @@ import org.json.simple.JSONObject;
  */
 
 
-public class JsonPacketHandler extends SimpleChannelInboundHandler<JSONObject> {
+public class NettyPacketHandler extends SimpleChannelInboundHandler<JSONObject> {
 
     private final AppInterface interface_;
     
-    JsonPacketHandler(AppInterface interface_) { this.interface_ = interface_; }
+    NettyPacketHandler(AppInterface interface_) { this.interface_ = interface_; }
     
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JSONObject msg) throws Exception {
         final Channel cha = ctx.channel();
         JsonPacket packet = new JsonPacket(msg,cha);
-        interface_.eventLog().write(LogEntry.debug("packet received from: " + cha));
+        interface_.eventLog().write(LogEntry.debug("packet received from: " + cha.remoteAddress()));
         interface_.onPacketReceived(packet);
     }
     

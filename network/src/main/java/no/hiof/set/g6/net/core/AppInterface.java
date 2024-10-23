@@ -110,7 +110,7 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new StringEncoder());
         pipeline.addLast(new StringToObjectConverter());
         pipeline.addLast(new ObjectToStringConverter());
-        pipeline.addLast(new JsonPacketHandler(this));
+        pipeline.addLast(new NettyPacketHandler(this));
     }
     
     private static final class ObjectToStringConverter extends MessageToMessageEncoder<JSONObject> {

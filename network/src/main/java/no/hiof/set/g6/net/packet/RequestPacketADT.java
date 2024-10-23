@@ -2,7 +2,6 @@ package no.hiof.set.g6.net.packet;
 
 
 import no.hiof.set.g6.ny.JsonSerializable;
-import no.hiof.set.g6.ny.LocalUser;
 import org.json.simple.JSONObject;
 
 /**
@@ -14,7 +13,6 @@ import org.json.simple.JSONObject;
 public abstract class RequestPacketADT implements JsonSerializable {
 
     public static final String JSON_KEY_REQUEST_TYPE = "Request Type";
-    public static final String JSON_KEY_REQUEST_USER = "Request User";
     public static final String JSON_KEY_CONTENT = "Request Content";
 
     public enum Type {
@@ -30,8 +28,9 @@ public abstract class RequestPacketADT implements JsonSerializable {
 
         Type(String descriptor) {
             this.descriptor = descriptor;
-        }
-        public final String descriptor;
+        } public String toString() {
+            return descriptor;
+        } public final String descriptor;
         private static final Type[] all;
         static { all = values(); }
         public static Type getByOrdinal(int ordinal) {
@@ -42,12 +41,10 @@ public abstract class RequestPacketADT implements JsonSerializable {
     }
 
     /** The Type of the request / response */
-    protected Type request_type;
-    /** The User who made the request. Only used by request, not response */
-    protected LocalUser request_user;
-    /** Request / Response Packet content */
-    protected JSONObject content;
+    public Type request_type;
 
+    /** Request / Response Packet content. Can be null */
+    public JSONObject content;
 
 
     @SuppressWarnings("unchecked")
@@ -56,28 +53,10 @@ public abstract class RequestPacketADT implements JsonSerializable {
         jsonObject.put(JSON_KEY_REQUEST_TYPE, request_type.ordinal());
     }
 
-    @SuppressWarnings("unchecked")
-    protected void putRequestUser(JSONObject jsonObject) {
-        if (request_user == null) throw new IllegalStateException("DBRequest: request user cannot be null");
-        jsonObject.put(JSON_KEY_REQUEST_USER,request_user);
-    }
-
     // Content can be null
     @SuppressWarnings("unchecked")
     protected void putContent(JSONObject jsonObject) {
         if (content != null) jsonObject.put(JSON_KEY_CONTENT,content);
-    }
-
-    /** Fetch the Request User (The User who made the request) of the DB request */
-    protected LocalUser getRequestUser(JSONObject jsonObject) throws Exception {
-        if (jsonObject == null) throw new Exception("JSONObject is null");
-        Object userObject = jsonObject.get(JSON_KEY_REQUEST_USER);
-        if (userObject == null) throw new Exception("JSON to DBRequest: Request User not found");
-        LocalUser request_user;
-        try { request_user = (LocalUser) userObject;
-        } catch (ClassCastException e) {
-            throw new Exception("JSON to DBRequest: Invalid format for LocalUser", e);
-        } return request_user;
     }
 
     /** Fetch the Type of the DB request / response */
