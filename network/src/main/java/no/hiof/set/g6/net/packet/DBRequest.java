@@ -2,6 +2,7 @@ package no.hiof.set.g6.net.packet;
 
 
 import no.hiof.set.g6.ny.JsonSerializable;
+import no.hiof.set.g6.ny.LocalUser;
 
 /**
  * @author Frederik Dahl
@@ -12,6 +13,7 @@ import no.hiof.set.g6.ny.JsonSerializable;
 public abstract class DBRequest implements JsonSerializable {
     
     protected Type type;
+    protected LocalUser user;
     
     public enum Type {
         
