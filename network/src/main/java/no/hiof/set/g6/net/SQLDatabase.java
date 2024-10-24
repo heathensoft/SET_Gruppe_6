@@ -17,7 +17,7 @@ public class SQLDatabase implements HUBDatabase {
 
 
     @Override
-    public LocalUser.Role getUserRole(LocalUser user) {
+    public LocalUser.Role getUserRole(LocalUser user) throws Exception {
         String query = """
         SELECT role 
         FROM LocalUser 
@@ -25,8 +25,28 @@ public class SQLDatabase implements HUBDatabase {
         WHERE UserAccount.email = ?
     """;  // SQL-spørring for å hente rollen basert på e-postadressen
 
-        return null;
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Sett e-postadressen som verdien for spørringens parameter
+            statement.setString(1, user.getUserAccount().email);
+
+            // Utfør spørringen
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Hent rollen fra resultatsettet
+                String roleStr = resultSet.getString("role");
+                return LocalUser.Role.valueOf(roleStr.toUpperCase());  // Konverter String til ENUM
+            } else {
+                return LocalUser.Role.NONE;  // Returner NONE hvis brukeren ikke finnes
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e);  // Håndter SQL-feil
+        }
     }
+
 
     @Override
     public DatatypeArray<UserAccount> searchForAccount(UserAccount account) throws Exception {
