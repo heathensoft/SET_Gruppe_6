@@ -4,6 +4,7 @@ import no.hiof.set.g6.ny.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public class DemoDatabase implements HUBDatabase {
     public static final String FILE_USERS = "Users.json";
     public static final String FILE_ACCOUNTS = "Accounts.json";
     public static final String FILE_LOCKS = "Locks.json";
+
 
     public DemoDatabase(String directory) {
         this.directory = Path.of(directory);
@@ -101,16 +103,104 @@ public class DemoDatabase implements HUBDatabase {
 
     @Override
     public void load() throws Exception {
-        HUBDatabase.super.load();
+        Path path; JSONObject jsonObject;
+
+        path = directory.resolve(FILE_ACCOUNTS);
+        if (Files.exists(path)) {
+            jsonObject = JsonUtils.loadFromFile(path);
+            List<UserAccount> account_list = accounts_from_json(jsonObject);
+            accounts_table.clear();
+            accounts_table.addAll(account_list);
+        }
+
+        path = directory.resolve(FILE_USERS);
+        if (Files.exists(path)) {
+            jsonObject = JsonUtils.loadFromFile(path);
+            List<LocalUser> user_list = users_from_json(jsonObject);
+            users_table.clear();
+            for (LocalUser user : user_list) {
+                String email = user.getUserAccount().email;
+                users_table.put(email,user);
+            }
+        }
+
+        path = directory.resolve(FILE_LOCKS);
+        if (Files.exists(path)) {
+            jsonObject = JsonUtils.loadFromFile(path);
+            List<Locks> lock_list = locks_from_json(jsonObject);
+            locks_table.clear();
+            for (Locks lock : lock_list) {
+                locks_table.put(lock.lockId,lock);
+            }
+        }
     }
 
     @Override
     public void save() throws Exception {
-        HUBDatabase.super.save();
+        Path path; JSONObject jsonObject;
+
+        path = directory.resolve(FILE_ACCOUNTS);
+        jsonObject = accounts_to_json();
+        JsonUtils.saveToFile(jsonObject,path);
+
+        path = directory.resolve(FILE_USERS);
+        jsonObject = users_to_json();
+        JsonUtils.saveToFile(jsonObject,path);
+
+        path = directory.resolve(FILE_LOCKS);
+        jsonObject = locks_to_json();
+        JsonUtils.saveToFile(jsonObject,path);
     }
 
-    private void accounts_from_json(JSONObject object) throws Exception {
+    private List<UserAccount> accounts_from_json(JSONObject jsonObject) throws Exception {
+        if (jsonObject == null) throw new Exception("JSONObject is null");
+        Object arrayObject = jsonObject.get(FILE_ACCOUNTS);
+        if (arrayObject == null) throw new Exception("Json to array: missing");
+        try { List<UserAccount> result = new ArrayList<>();
+            JSONArray array = (JSONArray) arrayObject;
+            for (Object o : array) {
+                JSONObject jo = (JSONObject) o;
+                UserAccount account = new UserAccount();
+                account.fromJson(jo);
+                result.add(account);
+            } return result;
+        } catch (ClassCastException e) {
+            throw new Exception("JSON to array: Invalid format", e);
+        }
+    }
 
+    private List<LocalUser> users_from_json(JSONObject jsonObject) throws Exception {
+        if (jsonObject == null) throw new Exception("JSONObject is null");
+        Object arrayObject = jsonObject.get(FILE_USERS);
+        if (arrayObject == null) throw new Exception("Json to array: missing");
+        try { List<LocalUser> result = new ArrayList<>();
+            JSONArray array = (JSONArray) arrayObject;
+            for (Object o : array) {
+                JSONObject jo = (JSONObject) o;
+                LocalUser user = new LocalUser();
+                user.fromJson(jo);
+                result.add(user);
+            } return result;
+        } catch (ClassCastException e) {
+            throw new Exception("JSON to array: Invalid format", e);
+        }
+    }
+
+    private List<Locks> locks_from_json(JSONObject jsonObject) throws Exception {
+        if (jsonObject == null) throw new Exception("JSONObject is null");
+        Object arrayObject = jsonObject.get(FILE_LOCKS);
+        if (arrayObject == null) throw new Exception("Json to array: missing");
+        try { List<Locks> result = new ArrayList<>();
+            JSONArray array = (JSONArray) arrayObject;
+            for (Object o : array) {
+                JSONObject jo = (JSONObject) o;
+                Locks lock = new Locks();
+                lock.fromJson(jo);
+                result.add(lock);
+            } return result;
+        } catch (ClassCastException e) {
+            throw new Exception("JSON to array: Invalid format", e);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -189,4 +279,34 @@ public class DemoDatabase implements HUBDatabase {
         } return result;
     }
 
+    public static void main(String[] args) throws Exception {
+
+        DemoDatabase database = new DemoDatabase("");
+
+        Locks lock1 = new Locks();
+        lock1.doorName = "Ytterdør Kjeller";
+        lock1.batteryStatus = 90;
+        lock1.lockStatus = Locks.LockStatus.UNLOCKED;
+        lock1.lockId = 1;
+
+        Locks lock2 = new Locks();
+        lock2.doorName = "Ytterdør Oppe";
+        lock2.batteryStatus = 85;
+        lock2.lockId = 2;
+
+        Locks lock3 = new Locks();
+        lock3.doorName = "Garasje Inngang";
+        lock3.batteryStatus = 90;
+        lock3.mechanicalStatus = Locks.MechanicalStatus.FAULT;
+        lock3.lockId = 3;
+
+        database.locks_table.put(lock1.lockId,lock1);
+        database.locks_table.put(lock2.lockId,lock2);
+        database.locks_table.put(lock3.lockId,lock3);
+
+
+        database.save();
+
+
+    }
 }
