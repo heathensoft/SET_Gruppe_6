@@ -18,7 +18,8 @@ public class SQLDatabase implements PrototypeDB {
 
     @Override
     public LocalUser.Role getUserRole(LocalUser user) {
-        return null;
+        String query = "SELECT role FROM LocalUser WHERE user_name = ?";
+        return user.getRole();
     }
 
     @Override
