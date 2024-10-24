@@ -7,7 +7,7 @@ import no.hiof.set.g6.ny.UserAccount;
 
 import java.nio.file.Path;
 
-public class DemoDatabase implements PrototypeDB {
+public class DemoDatabase implements HUBDatabase {
 
     private Path path;
 
@@ -53,11 +53,11 @@ public class DemoDatabase implements PrototypeDB {
 
     @Override
     public void load() throws Exception {
-        PrototypeDB.super.load();
+        HUBDatabase.super.load();
     }
 
     @Override
     public void save() throws Exception {
-        PrototypeDB.super.save();
+        HUBDatabase.super.save();
     }
 }

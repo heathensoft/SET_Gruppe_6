@@ -15,9 +15,9 @@ import org.json.simple.JSONObject;
 
 public class ServerRequestHandler {
 
-    private final PrototypeDB database;
+    private final HUBDatabase database;
 
-    ServerRequestHandler(PrototypeDB database) {
+    ServerRequestHandler(HUBDatabase database) {
         if (database == null) throw new IllegalStateException("Null arg. database");
         this.database = database;
     }
