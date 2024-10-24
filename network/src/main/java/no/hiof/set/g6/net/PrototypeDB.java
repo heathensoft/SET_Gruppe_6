@@ -24,7 +24,7 @@ public interface PrototypeDB {
      * @param user LocalUser
      * @return The Role of the User or Role.NONE: if User is not in the Database
      */
-    LocalUser.Role getUserRole(LocalUser user) throws Exception;
+    LocalUser.Role getUserRole(LocalUser user);
 
 
     // Not sure how you want to do this
