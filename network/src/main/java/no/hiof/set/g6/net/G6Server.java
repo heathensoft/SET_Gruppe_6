@@ -33,7 +33,7 @@ public class G6Server {
      * @throws Exception if the server fails to connect or the database fails to connect,
      * the server program should terminate
      */
-    public G6Server(int port, PrototypeDB database) throws Exception {
+    public G6Server(int port, HUBDatabase database) throws Exception {
         this.request_handler = new ServerRequestHandler(database);
         this.incoming_packets = new ArrayList<>(64);
         this.outgoing_packets = new ArrayList<>(64);

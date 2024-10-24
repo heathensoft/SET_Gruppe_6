@@ -8,7 +8,7 @@ import no.hiof.set.g6.ny.UserAccount;
 import no.hiof.set.g6.ny.HomeAddress;
 
 
-public class SQLDatabase implements PrototypeDB {
+public class SQLDatabase implements HUBDatabase {
 
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/Teknologiprosjekt"; // Database URL
     private static final String USERNAME = "root"; // Database username
