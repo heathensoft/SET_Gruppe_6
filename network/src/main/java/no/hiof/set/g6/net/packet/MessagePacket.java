@@ -2,8 +2,9 @@ package no.hiof.set.g6.net.packet;
 
 
 /**
- * @author Frederik Dahl
- * 18/10/2024
+ *  Not implemented for the Prototype.
+ *  A Packet for sending text messages to one or more LocalUsers
+ *
  */
 
 

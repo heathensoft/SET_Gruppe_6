@@ -4,7 +4,7 @@ import no.hiof.set.g6.ny.*;
 import org.json.simple.JSONObject;
 
 /**
- * A database response packet
+ * A database response packet. Sent from a Server to a Local Client
  */
 
 public class ResponsePacket extends RequestPacketADT {

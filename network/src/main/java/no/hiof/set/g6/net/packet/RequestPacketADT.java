@@ -6,8 +6,7 @@ import no.hiof.set.g6.ny.JsonUtils;
 import org.json.simple.JSONObject;
 
 /**
- * @author Frederik Dahl
- * 17/10/2024
+ * Super class for RequestPacket and ResponsePacket
  */
 
 

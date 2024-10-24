@@ -8,7 +8,8 @@ import org.json.simple.JSONObject;
 
 
 /**
- * A database request packet
+ * A database request packet. Sent from a Client to the HUB server
+ *
  */
 
 public class RequestPacket extends RequestPacketADT {

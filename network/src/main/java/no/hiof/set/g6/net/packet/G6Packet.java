@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 import java.util.EmptyStackException;
 
 /**
- * Utility class for G6 packets.
+ * Utility class for G6 packet communication.
  *
  */
 
@@ -17,7 +17,6 @@ public class G6Packet {
     public static final int ID_UNKNOWN = -1;
     
     public enum Type {
-        
         /** Response from Peer if the Content of a Packet is corrupted / incomplete*/
         INVALID_PACKET("Invalid Packet"),
         /** User making a Request for a Server Database Operation*/
@@ -26,7 +25,6 @@ public class G6Packet {
         DATABASE_RESPONSE("Database Response"),
         /** Not Supported at the moment*/
         MESSAGE("Message");
-        
         Type(String descriptor) {
             this.descriptor = descriptor;
         }
@@ -39,7 +37,6 @@ public class G6Packet {
                 return all[ordinal];
             } return null;
         }
-
     }
     
     /**The Container JsonObject for G6 Packets
@@ -49,21 +46,23 @@ public class G6Packet {
         public static final String JSON_KEY_TYPE = "Packet Type";
         public static final String JSON_KEY_CONTENT = "Packet Content";
         public static final String JSON_KEY_MESSAGE = "Message";
-        
         private int id;
         private Type type;
         private JSONObject content;
         private Wrapper() { /*...*/ }
-        
         public int packetID() { return id; }
         public Type packetType() { return type; }
         public JSONObject packetContent() { return content; }
     }
     
-    
+    // **************************************************************************************
+
+    // The client can optionally use Packet ID to identify packets.
+    // The server response will always contain this ID
+
     private static int next;
     private static final IntQueue id_pool;
-    
+
     static {
         final int initial_cap = 256;
         id_pool = new IntQueue(initial_cap);
@@ -82,9 +81,10 @@ public class G6Packet {
     public static void returnID(int id) {
         id_pool.enqueue(id);
     }
-    
-    
-    
+
+    // **************************************************************************************
+
+
     @SuppressWarnings("unchecked")
     public static JSONObject wrap(JSONObject content, Type type, int packet_id) {
         if (content == null || type == null) throw new IllegalStateException("null arg wrap");

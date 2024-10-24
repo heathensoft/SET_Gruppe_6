@@ -32,60 +32,83 @@ public class ServerRequestHandler {
 
         RequestPacketADT.Type request_type = request.request_type;
         LocalUser request_user = request.client_user;
-        JSONObject request_content = request.content; // Might be null
-
         //LocalUser.Role permission = database.getUserRole(request_user); ****************
-
         // Todo: Check permission here. After the feature has been pushed
         // Give Request type a corresponding permission
 
+        ResponsePacket response;
+
         switch (request_type) {
             case ACCOUNT_SEARCH -> {
+
                 JSONObject accountJson = request.getOrNull(RequestPacket.JSON_KEY_USER_ACCOUNT_SEARCH);
                 if (accountJson == null) throw new Exception("Missing argument for Account Search");
                 UserAccount account = new UserAccount();
                 account.fromJson(accountJson);
                 DatatypeArray<UserAccount> list = database.searchForAccount(account);
+                if (list == null) throw new IllegalStateException("Database should never return null");
+                response = ResponsePacket.build_response_account_search(list);
 
-                // Todo: build response here
             }
             case USER_LIST -> {
-                DatatypeArray<LocalUser> list = database.allStoredLocalUsers();
 
-                // Todo: build response here
+                DatatypeArray<LocalUser> list = database.allStoredLocalUsers();
+                if (list == null) throw new IllegalStateException("Database should never return null");
+                response = ResponsePacket.build_response_list_users(list);
+
             }
             case USER_ADD -> {
-                JSONObject userJson = request.getOrNull(RequestPacket.JSON_KEY_USER_TO_ADD);
 
-                // Todo: build response here
+                JSONObject userJson = request.getOrNull(RequestPacket.JSON_KEY_USER_TO_ADD);
+                if (userJson == null) throw new Exception("Missing argument for user add");
+                LocalUser user = new LocalUser();
+                user.fromJson(userJson);
+                boolean success = database.addLocalUser(user);
+                response = ResponsePacket.build_response_add_user(success);
+
             }
             case USER_REMOVE -> {
-                JSONObject userJson = request.getOrNull(RequestPacket.JSON_KEY_USER_TO_REMOVE);
 
-                // Todo: build response here
+                JSONObject userJson = request.getOrNull(RequestPacket.JSON_KEY_USER_TO_REMOVE);
+                if (userJson == null) throw new Exception("Missing argument for user remove");
+                LocalUser user = new LocalUser();
+                user.fromJson(userJson);
+                boolean success = database.removeLocalUser(user);
+                response = ResponsePacket.build_response_remove_user(success);
+
             }
             case USER_EDIT -> {
-                JSONObject userJson = request.getOrNull(RequestPacket.JSON_KEY_USER_TO_EDIT);
 
-                // Todo: build response here
+                JSONObject userJson = request.getOrNull(RequestPacket.JSON_KEY_USER_TO_EDIT);
+                if (userJson == null) throw new Exception("Missing argument for user edit");
+                LocalUser user = new LocalUser();
+                user.fromJson(userJson);
+                boolean success = database.editLocalUser(user);
+                response = ResponsePacket.build_response_edit_user(success);
+
             }
             case LOCK_LIST -> {
+
                 DatatypeArray<Locks> list = database.allStoredLocks();
-
-                // Todo: build response here
-
+                if (list == null) throw new IllegalStateException("Database should never return null");
+                response = ResponsePacket.build_response_list_locks(list);
 
             }
             case LOCK_EDIT -> {
-                JSONObject lockJson = request.getOrNull(RequestPacket.JSON_KEY_LOCK_TO_EDIT);
 
-                // Todo: build response here
+                JSONObject lockJson = request.getOrNull(RequestPacket.JSON_KEY_LOCK_TO_EDIT);
+                if (lockJson == null) throw new Exception("Missing argument for lock edit");
+                Locks lock = new Locks();
+                lock.fromJson(lockJson);
+                boolean success = database.editLock(lock);
+                response = ResponsePacket.build_response_edit_lock(success);
+
             }
             case ACCESS_DENIED -> throw new Exception("Illegal Request Type: " + request_type);
             default -> throw new IllegalStateException("Unexpected value: " + request_type);
         }
 
-        return null;
+        return response;
     }
 
 
