@@ -18,6 +18,13 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public LocalUser.Role getUserRole(LocalUser user) {
+        String query = """
+        SELECT role 
+        FROM LocalUser 
+        JOIN UserAccount ON LocalUser.account_id = UserAccount.account_id 
+        WHERE UserAccount.email = ?
+    """;  // SQL-spørring for å hente rollen basert på e-postadressen
+
         return null;
     }
 
