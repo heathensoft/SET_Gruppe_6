@@ -24,11 +24,11 @@ public class Locks extends G6Datatype<Locks> {
         OK, FAULT
     }
 
-    private int lockId;               // corresponds to lock_id INT
-    private String doorName;          // corresponds to door_name VARCHAR(50)
-    private LockStatus lockStatus;    // corresponds to lock_status ENUM('Locked', 'Unlocked')
-    private int batteryStatus;        // corresponds to battery_status INT
-    private MechanicalStatus mechanicalStatus;  // corresponds to mechanical_status ENUM('OK', 'Fault')
+    public int lockId;               // corresponds to lock_id INT
+    public String doorName;          // corresponds to door_name VARCHAR(50)
+    public LockStatus lockStatus;    // corresponds to lock_status ENUM('Locked', 'Unlocked')
+    public int batteryStatus;        // corresponds to battery_status INT
+    public MechanicalStatus mechanicalStatus;  // corresponds to mechanical_status ENUM('OK', 'Fault')
 
     // Constructor
     public Locks(String doorName, LockStatus lockStatus, int batteryStatus, MechanicalStatus mechanicalStatus) {
