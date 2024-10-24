@@ -11,6 +11,9 @@ import no.hiof.set.g6.ny.UserAccount;
  * Whether we are storing the database as files or use MySQL, both implementations
  * must implement the HUBDatabase interface.
  *
+ * Before any of the methods are called, the arguments are validated.
+ * They are not null and all fields are not null.
+ *
  */
 
 public interface HUBDatabase {

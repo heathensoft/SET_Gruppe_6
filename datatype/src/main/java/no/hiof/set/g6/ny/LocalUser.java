@@ -2,7 +2,7 @@ package no.hiof.set.g6.ny;
 
 import org.json.simple.JSONObject;
 
-public class LocalUser extends G6Datatype {
+public class LocalUser extends G6Datatype<LocalUser> {
 
     // ENUM for role in the system
     public enum Role {
@@ -26,7 +26,7 @@ public class LocalUser extends G6Datatype {
     public static final String JSON_KEY_USER_NAME = "User Name";
     public static final String JSON_KEY_ROLE = "Role";
 
-    private UserAccount userAccount;
+    private final UserAccount userAccount;
     private String userName;
     private Role role;
 
@@ -43,15 +43,35 @@ public class LocalUser extends G6Datatype {
         this.role = Role.GUEST;  // Default role
     }
 
+    @Override
+    public boolean missingFields() {
+        if (!JsonUtils.anyObjectIsNull(userAccount,userName,role)) {
+          return userAccount.missingFields();
+        } return true;
+    }
+
+    @Override
+    public void set(LocalUser other) {
+        if (other == null) {
+            userAccount.set(null);
+            userName = "null";
+            role = Role.NONE;
+        } else {
+            userAccount.set(other.userAccount);
+            userName = other.userName;
+            role = other.role;
+        }
+    }
+
     // Getters
     public UserAccount getUserAccount() { return userAccount; }
     public String getUserName() { return userName; }
     public Role getRole() { return role; }
 
     // Setters
-    public void setUserAccount(UserAccount userAccount) { this.userAccount = userAccount; }
+    public void setUserAccount(UserAccount userAccount) { this.userAccount.set(userAccount); }
     public void setUserName(String userName) { this.userName = userName; }
-    public void setRole(Role role) { this.role = role; }
+    public void setRole(Role role) { this.role = role == null ? Role.NONE : role; }
 
     // Method to convert JSON to LocalUser object
     @Override

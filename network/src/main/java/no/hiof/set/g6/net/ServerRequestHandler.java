@@ -32,6 +32,12 @@ public class ServerRequestHandler {
 
         RequestPacketADT.Type request_type = request.request_type;
         LocalUser request_user = request.client_user;
+
+        // Make sure the client user is valid
+        if (request_user.missingFields()) {
+            throw new Exception("invalid client user data");
+        }
+
         //LocalUser.Role permission = database.getUserRole(request_user); ****************
         // Todo: Check permission here. After the feature has been pushed
         // Give Request type a corresponding permission
@@ -45,6 +51,7 @@ public class ServerRequestHandler {
                 if (accountJson == null) throw new Exception("Missing argument for Account Search");
                 UserAccount account = new UserAccount();
                 account.fromJson(accountJson);
+                if (account.missingFields()) throw new Exception("Invalid account to search for");
                 DatatypeArray<UserAccount> list = database.searchForAccount(account);
                 if (list == null) throw new IllegalStateException("Database should never return null");
                 response = ResponsePacket.build_response_account_search(list);
@@ -63,6 +70,7 @@ public class ServerRequestHandler {
                 if (userJson == null) throw new Exception("Missing argument for user add");
                 LocalUser user = new LocalUser();
                 user.fromJson(userJson);
+                if (user.missingFields()) throw new Exception("Invalid user to add");
                 boolean success = database.addLocalUser(user);
                 response = ResponsePacket.build_response_add_user(success);
 
@@ -73,6 +81,7 @@ public class ServerRequestHandler {
                 if (userJson == null) throw new Exception("Missing argument for user remove");
                 LocalUser user = new LocalUser();
                 user.fromJson(userJson);
+                if (user.missingFields()) throw new Exception("Invalid user to remove");
                 boolean success = database.removeLocalUser(user);
                 response = ResponsePacket.build_response_remove_user(success);
 
@@ -83,6 +92,7 @@ public class ServerRequestHandler {
                 if (userJson == null) throw new Exception("Missing argument for user edit");
                 LocalUser user = new LocalUser();
                 user.fromJson(userJson);
+                if (user.missingFields()) throw new Exception("Invalid user to edit");
                 boolean success = database.editLocalUser(user);
                 response = ResponsePacket.build_response_edit_user(success);
 
@@ -100,6 +110,7 @@ public class ServerRequestHandler {
                 if (lockJson == null) throw new Exception("Missing argument for lock edit");
                 Locks lock = new Locks();
                 lock.fromJson(lockJson);
+                if (lock.missingFields()) throw new Exception("Invalid lock to edit");
                 boolean success = database.editLock(lock);
                 response = ResponsePacket.build_response_edit_lock(success);
 

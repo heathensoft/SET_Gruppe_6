@@ -10,8 +10,9 @@ import org.json.simple.JSONObject;
  *
  */
 
+// Todo: Method to validate (Check that the object fields are not null)
 
-public abstract class G6Datatype implements JsonSerializable, Comparable<G6Datatype> {
+public abstract class G6Datatype<T extends G6Datatype<T>> implements JsonSerializable, Comparable<G6Datatype<?>> {
     
     public G6Datatype() { }
     
@@ -23,7 +24,7 @@ public abstract class G6Datatype implements JsonSerializable, Comparable<G6Datat
      * @throws Exception If the JSONObject could not be translated into G6Datatype T
      * or if the G6Datatype Class doesn't have an empty constructor
      */
-    public static <T extends G6Datatype> T fromJson(Class<T> clazz, JSONObject jsonObject) throws Exception {
+    public static <T extends G6Datatype<?>> T fromJson(Class<T> clazz, JSONObject jsonObject) throws Exception {
         if (clazz == null || jsonObject == null) throw new IllegalStateException("null arg fromJson");
         try { T datatype = clazz.getDeclaredConstructor().newInstance();
             datatype.fromJson(jsonObject);
@@ -32,6 +33,18 @@ public abstract class G6Datatype implements JsonSerializable, Comparable<G6Datat
             throw new Exception(e);
         }
     }
+
+    /**
+     * Validates the Object. Making sure all it's fields are set
+     * @return true if the Object has missing fields (null fields)
+     */
+    public abstract boolean missingFields();
+
+    /**
+     * Set these fields with the fields of "other".
+     * @param other the other object
+     */
+    public abstract void set(T other);
     
     /* Datatype does not have to override this (Sorting purposes)*/
     @Override

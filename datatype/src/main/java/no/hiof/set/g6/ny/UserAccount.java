@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
  */
 
 
-public class UserAccount extends G6Datatype {
+public class UserAccount extends G6Datatype<UserAccount> {
     
     public static final String JSON_KEY_ID = "Account ID";
     public static final String JSON_KEY_FIRST_NAME = "First Name";
@@ -39,7 +39,31 @@ public class UserAccount extends G6Datatype {
         this.phoneNumber = "";
         this.address = new HomeAddress();
     }
-    
+
+    @Override
+    public boolean missingFields() {
+        if (!JsonUtils.anyObjectIsNull(firstName,lastName,email,phoneNumber,address)) {
+            return address.missingFields();
+        } return true;
+    }
+
+    @Override
+    public void set(UserAccount other) {
+        if (other == null) {
+            firstName = "null";
+            lastName = "null";
+            email = "null";
+            phoneNumber = "null";
+            address.set(null);
+        } else {
+            firstName = other.firstName;
+            lastName = other.lastName;
+            email = other.email;
+            phoneNumber = other.phoneNumber;
+            address.set(other.address);
+        }
+    }
+
     public HomeAddress getAddress() { return address; }
     
     

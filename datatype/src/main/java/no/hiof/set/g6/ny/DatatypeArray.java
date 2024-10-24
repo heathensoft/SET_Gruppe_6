@@ -13,7 +13,7 @@ import java.util.*;
  */
 
 
-public class DatatypeArray<T extends G6Datatype> implements JsonSerializable, Iterable<T> {
+public class DatatypeArray<T extends G6Datatype<?>> implements JsonSerializable, Iterable<T> {
     
     public static final String JSON_KEY_ARRAY = "Array";
     public static final String JSON_KEY_ARRAY_TYPE = "Type";

@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 /**
  * @author Mahmad
  */
-public class Locks extends G6Datatype {
+public class Locks extends G6Datatype<Locks> {
 
     public static final String JSON_KEY_LOCK_ID = "Lock ID";
     public static final String JSON_KEY_HUB_ID = "Hub ID";
@@ -46,6 +46,12 @@ public class Locks extends G6Datatype {
         this.mechanicalStatus = MechanicalStatus.OK;
     }
 
+    @Override
+    public boolean missingFields() {
+        return JsonUtils.anyObjectIsNull(doorName,lockStatus,mechanicalStatus);
+    }
+
+    @Override
     public void set(Locks lock) {
         if (lock == null) {
             this.lockId = 0;
