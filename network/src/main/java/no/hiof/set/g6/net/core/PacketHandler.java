@@ -24,7 +24,7 @@ public class PacketHandler extends SimpleChannelInboundHandler<JSONObject> {
     protected void channelRead0(ChannelHandlerContext ctx, JSONObject msg) throws Exception {
         final Channel cha = ctx.channel();
         JsonPacket packet = new JsonPacket(msg,cha);
-        interface_.eventLog().write(LogEntry.debug("packet received from: " + cha));
+        interface_.eventLog().write(LogEntry.debug("packet received from: " + cha.remoteAddress()));
         interface_.onPacketReceived(packet);
     }
     

@@ -7,36 +7,28 @@ import org.json.simple.JSONObject;
 import java.util.EmptyStackException;
 
 /**
- * Utility class for G6 packets.
+ * Utility class for G6 packet communication.
  *
  */
 
 
 public class G6Packet {
+
+    public static final int ID_UNKNOWN = -1;
     
     public enum Type {
-        
-        /**Response from Peer if the Content of a Packet is corrupted*/
+        /** Response from Peer if the Content of a Packet is corrupted / incomplete*/
         INVALID_PACKET("Invalid Packet"),
-        
-        /**If the User lacks the proper permission for Request*/
-        ACCESS_DENIED("Access Denied"),
-        
-        /**User attempt to establish connection to Peer*/
-        ESTABLISH_CONNECTION("Establish Connection"),
-        
-        /**User making a Request for a Database Operation*/
+        /** User making a Request for a Server Database Operation*/
         DATABASE_REQUEST("Database Request"),
-        
-        /**Server Response to Database Request*/
+        /** Server Response to a Database Request*/
         DATABASE_RESPONSE("Database Response"),
-        
-        /**Not Supported at the moment*/
+        /** Not Supported at the moment*/
         MESSAGE("Message");
-        
         Type(String descriptor) {
             this.descriptor = descriptor;
         }
+        public String toString() { return descriptor; }
         public final String descriptor;
         private static final Type[] all;
         static { all = values(); }
@@ -54,21 +46,23 @@ public class G6Packet {
         public static final String JSON_KEY_TYPE = "Packet Type";
         public static final String JSON_KEY_CONTENT = "Packet Content";
         public static final String JSON_KEY_MESSAGE = "Message";
-        
         private int id;
         private Type type;
         private JSONObject content;
         private Wrapper() { /*...*/ }
-        
         public int packetID() { return id; }
         public Type packetType() { return type; }
         public JSONObject packetContent() { return content; }
     }
     
-    
+    // **************************************************************************************
+
+    // The client can optionally use Packet ID to identify packets.
+    // The server response will always contain this ID
+
     private static int next;
     private static final IntQueue id_pool;
-    
+
     static {
         final int initial_cap = 256;
         id_pool = new IntQueue(initial_cap);
@@ -87,9 +81,10 @@ public class G6Packet {
     public static void returnID(int id) {
         id_pool.enqueue(id);
     }
-    
-    
-    
+
+    // **************************************************************************************
+
+
     @SuppressWarnings("unchecked")
     public static JSONObject wrap(JSONObject content, Type type, int packet_id) {
         if (content == null || type == null) throw new IllegalStateException("null arg wrap");
@@ -140,21 +135,7 @@ public class G6Packet {
         invalid_message.put(Wrapper.JSON_KEY_MESSAGE,message);
         return wrap(invalid_message,Type.INVALID_PACKET,packet_id);
     }
-    
-    /**
-     * Build new response packet for access denied
-     * @param packet_id id of request packet
-     * @param message message to client
-     * @return response payload
-     */
-    @SuppressWarnings("unchecked")
-    public static JSONObject accessDenied(int packet_id, String message) {
-        message = message == null ? "null" : message;
-        JSONObject invalid_message = new JSONObject();
-        invalid_message.put(Wrapper.JSON_KEY_MESSAGE,message);
-        return wrap(invalid_message,Type.ACCESS_DENIED,packet_id);
-    }
-    
+
     
     /**Utility class: Circular Integer Queue*/
     private static final class IntQueue {

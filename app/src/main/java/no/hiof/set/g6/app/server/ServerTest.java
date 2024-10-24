@@ -51,6 +51,7 @@ public class ServerTest extends Application {
         incoming = new ArrayList<>(32);
         logs = new ArrayList<>(32);
         server = new ServerInstance(PORT);
+        System.out.println(server.isConnected());
         database = new HashMap<>(128);
         loadDatabase();
     }
@@ -60,7 +61,7 @@ public class ServerTest extends Application {
         if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
             Engine.get().exit();
         } handleClientRequests();
-        logNetworkConnection(LogEntry.Type.INFO);
+        logNetworkConnection(LogEntry.Type.DEBUG);
     }
     
     protected void on_render(float frame_time, float alpha) { }

@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
  * @author Mahmad
  */
 
-public class HomeAddress extends G6Datatype {
+public class HomeAddress extends G6Datatype<HomeAddress> {
 
     public static final String JSON_KEY_ID = "Address ID";
     public static final String JSON_KEY_COUNTRY = "Country";
@@ -37,6 +37,11 @@ public class HomeAddress extends G6Datatype {
         this.state = "";
         this.city = "";
         this.street = "";
+    }
+
+    @Override
+    public boolean missingFields() {
+        return JsonUtils.anyObjectIsNull(country,state,city,street);
     }
 
     public void set(HomeAddress address) {
