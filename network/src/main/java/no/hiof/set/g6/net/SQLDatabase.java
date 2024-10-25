@@ -115,7 +115,32 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public boolean removeLocalUser(LocalUser user) throws Exception {
-        return false;
+
+        //Henter ut brukerens rolle
+        LocalUser.Role userRole = getUserRole(user);
+
+        if (userRole != LocalUser.Role.RESIDENT && userRole != LocalUser.Role.OWNER) {
+            return false;
+        }
+
+        String deleteQuery = """
+        DELETE FROM LocalUser 
+        WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?);
+    """;
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+
+            // Sett e-postadressen fra user-objektet
+            statement.setString(1, user.getUserAccount().email);
+
+            // Utfør oppdateringen og sjekk om noen rader ble påvirket
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e); // Håndter SQL-feil
+        }
     }
 
     @Override
