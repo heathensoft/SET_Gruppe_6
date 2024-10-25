@@ -115,6 +115,20 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public boolean removeLocalUser(LocalUser user) throws Exception {
+
+        //Henter ut brukerens rolle
+        LocalUser.Role userRole = getUserRole(user);
+
+        if (userRole != LocalUser.Role.RESIDENT && userRole != LocalUser.Role.OWNER) {
+            return false;
+        }
+
+        String deleteQuery = """
+        DELETE FROM LocalUser 
+        WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?);
+    """;
+
+
         return false;
     }
 
