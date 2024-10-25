@@ -128,8 +128,19 @@ public class SQLDatabase implements HUBDatabase {
         WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?);
     """;
 
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
 
-        return false;
+            // Sett e-postadressen fra user-objektet
+            statement.setString(1, user.getUserAccount().email);
+
+            // Utfør oppdateringen og sjekk om noen rader ble påvirket
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e); // Håndter SQL-feil
+        }
     }
 
     @Override
