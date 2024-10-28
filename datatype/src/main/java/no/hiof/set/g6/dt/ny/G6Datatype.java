@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 
 public abstract class G6Datatype<T extends G6Datatype<T>> implements JsonSerializable, Comparable<T> {
 
+
     public static final String NULL_STRING = "null";
     public static final int NULL = 0;
 

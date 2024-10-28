@@ -8,14 +8,12 @@ import org.json.simple.JSONObject;
 
 public final class HomeAddress extends G6Datatype<HomeAddress> {
 
-    public static final String JSON_KEY_ID = "Address ID";
     public static final String JSON_KEY_COUNTRY = "Country";
     public static final String JSON_KEY_STATE = "State";
     public static final String JSON_KEY_CITY = "City";
     public static final String JSON_KEY_STREET = "Street Address";
     public static final String JSON_KEY_POSTAL_CODE = "Postal Code";
 
-    public int id;          // corresponds to address_id INT
     public String country;  // corresponds to country VARCHAR(100)
     public String state;    // corresponds to state VARCHAR(100)
     public String city;     // corresponds to city VARCHAR(100)
@@ -32,7 +30,6 @@ public final class HomeAddress extends G6Datatype<HomeAddress> {
         this.city = NULL_STRING;
         this.street = NULL_STRING;
         this.postalCode = NULL;
-        this.id = NULL;
     }
 
     @Override
@@ -52,21 +49,18 @@ public final class HomeAddress extends G6Datatype<HomeAddress> {
             this.city = o.city;
             this.street = o.street;
             this.postalCode = o.postalCode;
-            this.id = o.id;
         }
     }
 
     @Override
     public void fromJson(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
-        Object addressIDObject = jsonObject.get(JSON_KEY_ID);
         Object countryObject = jsonObject.get(JSON_KEY_COUNTRY);
         Object stateObject = jsonObject.get(JSON_KEY_STATE);
         Object cityObject = jsonObject.get(JSON_KEY_CITY);
         Object streetObject = jsonObject.get(JSON_KEY_STREET);
         Object postalCodeObject = jsonObject.get(JSON_KEY_POSTAL_CODE);
         if (JsonUtils.anyObjectIsNull(
-                addressIDObject,
                 countryObject,
                 stateObject,
                 cityObject,
@@ -74,14 +68,12 @@ public final class HomeAddress extends G6Datatype<HomeAddress> {
                 postalCodeObject
         )) throw new Exception("JSON to HomeAddress: Missing one or more fields");
         try {
-            Integer addressID = (Integer) addressIDObject;
             String country = (String) countryObject;
             String state = (String) stateObject;
             String city = (String) cityObject;
             String street = (String) streetObject;
             Integer postalCode = (Integer) postalCodeObject;
 
-            this.id = addressID;
             this.country = country;
             this.state = state;
             this.city = city;
@@ -99,7 +91,6 @@ public final class HomeAddress extends G6Datatype<HomeAddress> {
     public JSONObject toJson() {
         ensureFieldsNotNull();
         JSONObject jsonObject = new JSONObject(); {
-            jsonObject.put(JSON_KEY_ID, id);
             jsonObject.put(JSON_KEY_COUNTRY, country);
             jsonObject.put(JSON_KEY_STATE, state);
             jsonObject.put(JSON_KEY_CITY, city);

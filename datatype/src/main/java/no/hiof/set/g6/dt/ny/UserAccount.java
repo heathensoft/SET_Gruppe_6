@@ -18,23 +18,29 @@ public final class UserAccount extends G6Datatype<UserAccount> {
     public static final String JSON_KEY_ADDRESS = "Home Address";
     
     public int id;                      // corresponds to account_id INT
-    public int addressID;               // corresponds to address_id INT (Foreign Key)
     public String firstName;            // corresponds to first_name VARCHAR(100)
     public String lastName;             // corresponds to last_name VARCHAR(100)
     public String email;                // corresponds to email VARCHAR(150)
     public String phoneNumber;          //
+    private HomeAddress address;        // corresponds to address_id INT (Foreign Key)
 
     public UserAccount() { super(true); }
 
 
+    public HomeAddress address() {
+        return address;
+    }
+
     @Override
     public void clearFields() {
         id = NULL;
-        addressID = NULL;
         firstName = NULL_STRING;
         lastName = NULL_STRING;
         phoneNumber = NULL_STRING;
         email = NULL_STRING;
+        if (address == null) {
+            address = new HomeAddress();
+        } else address.clearFields();
     }
 
     @Override
@@ -55,7 +61,7 @@ public final class UserAccount extends G6Datatype<UserAccount> {
             lastName = other.lastName;
             email = other.email;
             phoneNumber = other.phoneNumber;
-            addressID = other.addressID;
+            address.set(other.address);
         }
     }
 
@@ -83,14 +89,14 @@ public final class UserAccount extends G6Datatype<UserAccount> {
             String lastName = (String) lastNameObject;
             String email = (String) emailObject;
             String phoneNumber = (String) phoneNumberObject;
-            Integer addressID = (Integer) addressObject;
+            JSONObject homeAddress = (JSONObject) addressObject;
             
             this.id = accountID;
-            this.addressID = addressID;
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
             this.phoneNumber = phoneNumber;
+            this.address.fromJson(homeAddress);
 
             ensureFieldsNotNull();
 
@@ -109,7 +115,7 @@ public final class UserAccount extends G6Datatype<UserAccount> {
             jsonObject.put(JSON_KEY_LAST_NAME,lastName);
             jsonObject.put(JSON_KEY_EMAIL,email);
             jsonObject.put(JSON_KEY_PHONE_NUMBER,phoneNumber);
-            jsonObject.put(JSON_KEY_ADDRESS,addressID);
+            jsonObject.put(JSON_KEY_ADDRESS,address.toJson());
         } return jsonObject;
     }
     

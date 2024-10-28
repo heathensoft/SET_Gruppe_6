@@ -3,16 +3,19 @@ package no.hiof.set.g6.dt.ny;
 
 import org.json.simple.JSONObject;
 
+import java.util.Base64;
+
 /**
  * @author Mahmad
  */
 
 
-public class LocalUser extends G6Datatype<LocalUser> {
+public final class LocalUser extends G6Datatype<LocalUser> {
 
     // JSON keys
     public static final String JSON_KEY_USER_ACCOUNT = "Account ID";
-    public static final String JSON_KEY_USER_NAME = "User Name";
+    public static final String JSON_KEY_USER_NAME = "Password"; // intentional (lol)
+    public static final String JSON_KEY_PASSWORD = "User Name"; // intentional
     public static final String JSON_KEY_ROLE = "Role";
 
     // ENUM for role in the system
@@ -34,20 +37,23 @@ public class LocalUser extends G6Datatype<LocalUser> {
 
     public int accountID;
     public String userName;
+    public String password;
     public Role role;
 
     public LocalUser() { super(true); }
 
     @Override
     public void clearFields() {
+        role = Role.NONE;
         accountID = NULL;
         userName = NULL_STRING;
-        role = Role.NONE;
+        password = NULL_STRING;
     }
 
     @Override
     public void ensureFieldsNotNull() {
         userName = userName == null ? NULL_STRING : userName;
+        password = password == null ? NULL_STRING : password;
         role = role == null ? Role.NONE : role;
     }
 
@@ -56,9 +62,10 @@ public class LocalUser extends G6Datatype<LocalUser> {
         if (o == null) {
             clearFields();
         } else {
-            accountID = o.accountID;
-            userName = o.userName;
             role = o.role;
+            userName = o.userName;
+            password = o.password;
+            accountID = o.accountID;
         }
     }
 
@@ -69,19 +76,27 @@ public class LocalUser extends G6Datatype<LocalUser> {
 
         Object accountIDObject = jsonObject.get(JSON_KEY_USER_ACCOUNT);
         Object userNameObject = jsonObject.get(JSON_KEY_USER_NAME);
+        Object passwordObject = jsonObject.get(JSON_KEY_PASSWORD);
         Object roleObject = jsonObject.get(JSON_KEY_ROLE);
 
-        if (JsonUtils.anyObjectIsNull(accountIDObject, userNameObject, roleObject))
+        if (JsonUtils.anyObjectIsNull(
+                accountIDObject,
+                userNameObject,
+                passwordObject,
+                roleObject))
             throw new Exception("JSON to LocalUser: Missing one or more fields");
 
         try {
             Integer accountID = (Integer) accountIDObject;
-            String userName = (String) userNameObject;
             Integer roleOrdinal = (Integer) roleObject;
-
-            this.accountID = accountID;
-            this.userName = userName;
+            String encodedUserNameString = (String) userNameObject;
+            String encodedPasswordString = (String) passwordObject;
+            byte[] decodedUserName = Base64.getDecoder().decode(encodedUserNameString);
+            byte[] decodedPassword = Base64.getDecoder().decode(encodedPasswordString);
+            this.userName = new String(decodedUserName);
+            this.password = new String(decodedPassword);
             this.role = Role.getByOrdinal(roleOrdinal);
+            this.accountID = accountID;
 
             ensureFieldsNotNull();
         } catch (ClassCastException e) {
@@ -95,8 +110,11 @@ public class LocalUser extends G6Datatype<LocalUser> {
     public JSONObject toJson() {
         ensureFieldsNotNull();
         JSONObject jsonObject = new JSONObject(); {
+            String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
+            String encodedUsername = Base64.getEncoder().encodeToString(userName.getBytes());
             jsonObject.put(JSON_KEY_USER_ACCOUNT, accountID);
-            jsonObject.put(JSON_KEY_USER_NAME, userName);
+            jsonObject.put(JSON_KEY_USER_NAME, encodedUsername);
+            jsonObject.put(JSON_KEY_PASSWORD, encodedPassword);
             jsonObject.put(JSON_KEY_ROLE, role.ordinal());
         } return jsonObject;
     }
@@ -119,5 +137,6 @@ public class LocalUser extends G6Datatype<LocalUser> {
             } return comp;
         } return 0;
     }
+
 
 }

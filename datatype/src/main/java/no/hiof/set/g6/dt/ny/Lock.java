@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 /**
  * @author Mahmad
  */
-public class Lock extends G6Datatype<Lock> {
+public final class Lock extends G6Datatype<Lock> {
 
     /** Battery goes from 1.0 (FULLY CHARGED) -> 0.0 (DEPLETED) */
     // if you want the value from 1 to 100: batteryStatus x 100
