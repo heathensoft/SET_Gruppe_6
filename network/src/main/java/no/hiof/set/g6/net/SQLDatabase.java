@@ -17,9 +17,36 @@ public class SQLDatabase implements HUBDatabase {
 
 
     @Override
-    public LocalUser.Role getUserRole(LocalUser user) {
-        return null;
+    public LocalUser.Role getUserRole(LocalUser user) throws Exception {
+        String query = """
+        SELECT role 
+        FROM LocalUser 
+        JOIN UserAccount ON LocalUser.account_id = UserAccount.account_id 
+        WHERE UserAccount.email = ?
+    """;  // SQL-spørring for å hente rollen basert på e-postadressen
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Sett e-postadressen som verdien for spørringens parameter
+            statement.setString(1, user.getUserAccount().email);
+
+            // Utfør spørringen
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Hent rollen fra resultatsettet
+                String roleStr = resultSet.getString("role");
+                return LocalUser.Role.valueOf(roleStr.toUpperCase());  // Konverter String til ENUM
+            } else {
+                return LocalUser.Role.NONE;  // Returner NONE hvis brukeren ikke finnes
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e);  // Håndter SQL-feil
+        }
     }
+
 
     @Override
     public DatatypeArray<UserAccount> searchForAccount(UserAccount account) throws Exception {
@@ -88,7 +115,32 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public boolean removeLocalUser(LocalUser user) throws Exception {
-        return false;
+
+        //Henter ut brukerens rolle
+        LocalUser.Role userRole = getUserRole(user);
+
+        if (userRole != LocalUser.Role.RESIDENT && userRole != LocalUser.Role.OWNER) {
+            return false;
+        }
+
+        String deleteQuery = """
+        DELETE FROM LocalUser 
+        WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?);
+    """;
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+
+            // Sett e-postadressen fra user-objektet
+            statement.setString(1, user.getUserAccount().email);
+
+            // Utfør oppdateringen og sjekk om noen rader ble påvirket
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e); // Håndter SQL-feil
+        }
     }
 
     @Override
