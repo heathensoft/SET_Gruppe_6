@@ -50,6 +50,11 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public DatatypeArray<UserAccount> searchForAccount(UserAccount account) throws Exception {
+        StringBuilder searchQuery = new StringBuilder("""
+                SELECT * FROM UserAccount WHERE 1 = 1           
+                """
+
+        );
         return null;
     }
 
