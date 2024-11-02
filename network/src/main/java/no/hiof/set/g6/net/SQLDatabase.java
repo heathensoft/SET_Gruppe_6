@@ -122,6 +122,12 @@ public class SQLDatabase implements HUBDatabase {
                 VALUES (?,?);
                 """;
 
+    try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+         PreparedStatement checkStmt = connection.prepareStatement(checkUserQuery);
+         PreparedStatement insertStmt = connection.prepareStatement(insertUserQuery)){
+
+    }
+
         return false;
     }
 
