@@ -1,6 +1,9 @@
 package no.hiof.set.g6.net;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import no.hiof.set.g6.ny.DatatypeArray;
 import no.hiof.set.g6.ny.LocalUser;
 import no.hiof.set.g6.ny.Locks;
@@ -50,8 +53,61 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public DatatypeArray<UserAccount> searchForAccount(UserAccount account) throws Exception {
-        return null;
+        StringBuilder searchQuery = new StringBuilder("""
+                SELECT * FROM UserAccount WHERE 1 = 1           
+                """
+        );
+
+        //Using StringBuilder to add dynamic conditions
+        List<String> conditions = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+
+        //Add condition for each field if provided in the UserAccount parameter
+        if (account.firstName != null && !account.firstName.isEmpty()) {
+            searchQuery.append(" AND first_name = ?");
+            params.add(account.firstName);
+        }
+        if (account.lastName != null && !account.lastName.isEmpty()) {
+            searchQuery.append(" AND last_name = ?");
+            params.add(account.lastName);
+        }
+        if (account.phoneNumber != null && !account.phoneNumber.isEmpty()) {
+            searchQuery.append(" AND phone_numbers = ?");
+            params.add(account.phoneNumber);
+        }
+
+        DatatypeArray<UserAccount> results = new DatatypeArray<>(UserAccount.class);
+
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(searchQuery.toString())) {
+
+            // Set parameters dynamically based on added conditions
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = statement.executeQuery();
+
+            // Iterate through the ResultSet and populate the DatatypeArray with matching UserAccounts
+            while (rs.next()) {
+                UserAccount foundAccount = new UserAccount();
+                foundAccount.firstName = rs.getString("first_name");
+                foundAccount.lastName = rs.getString("last_name");
+                foundAccount.phoneNumber = rs.getString("phone_numbers");
+                foundAccount.email = rs.getString("email");
+
+                results.add(foundAccount);
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e);
+        }
+
+        return results;
     }
+
+
+
 
     @Override
     public DatatypeArray<LocalUser> allStoredLocalUsers() throws Exception {
