@@ -72,7 +72,7 @@ public class SQLDatabase implements HUBDatabase {
             params.add(account.lastName);
         }
         if (account.phoneNumber != null && !account.phoneNumber.isEmpty()) {
-            searchQuery.append(" AND phone_number = ?");
+            searchQuery.append(" AND phone_numbers = ?");
             params.add(account.phoneNumber);
         }
 
@@ -93,7 +93,7 @@ public class SQLDatabase implements HUBDatabase {
                 UserAccount foundAccount = new UserAccount();
                 foundAccount.firstName = rs.getString("first_name");
                 foundAccount.lastName = rs.getString("last_name");
-                foundAccount.phoneNumber = rs.getString("phone");
+                foundAccount.phoneNumber = rs.getString("phone_numbers");
                 foundAccount.email = rs.getString("email");
 
                 results.add(foundAccount);
