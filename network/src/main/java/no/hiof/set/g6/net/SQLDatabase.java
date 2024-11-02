@@ -110,12 +110,46 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public boolean addLocalUser(LocalUser user) throws Exception {
-        return false;
+        //SQL query to check if user already exists based on username
+        String checkUserQuery = """
+                SELECT 1 FROM LocalUser
+                WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?)
+                """;
+
+        //SQL query to insert a new user, omotting account_id and hub_id
+        String insertUserQuery = """
+                INSERT INTO LocalUser (user_name, role)
+                VALUES (?,?);
+                """;
+
+    try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+         PreparedStatement checkStmt = connection.prepareStatement(checkUserQuery);
+         PreparedStatement insertStmt = connection.prepareStatement(insertUserQuery)){
+
+        //Check if LocalUser already exists by searching by email
+        checkStmt.setString(1,user.getUserAccount().email);
+        ResultSet rs = checkStmt.executeQuery();
+
+        //If a row is returned, a user already exists.
+        if (rs.next()){
+            return false;
+        }
+
+        else {
+            insertStmt.setString(1,user.getUserName());
+            insertStmt.setString(2,user.getRole().toString());
+            insertStmt.executeUpdate();
+            return true;
+        }
+
+    } catch (SQLException e){
+        throw new Exception("Database error: " + e.getMessage(),e);
+    }
+
     }
 
     @Override
     public boolean removeLocalUser(LocalUser user) throws Exception {
-
         String deleteQuery = """
         DELETE FROM LocalUser 
         WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?);
