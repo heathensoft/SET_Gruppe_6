@@ -126,6 +126,10 @@ public class SQLDatabase implements HUBDatabase {
          PreparedStatement checkStmt = connection.prepareStatement(checkUserQuery);
          PreparedStatement insertStmt = connection.prepareStatement(insertUserQuery)){
 
+        //Check if LocalUser already exists by searching by email
+        checkStmt.setString(1,user.getUserAccount().email);
+        ResultSet rs = checkStmt.executeQuery();
+
     }
 
         return false;
