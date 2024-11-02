@@ -130,9 +130,22 @@ public class SQLDatabase implements HUBDatabase {
         checkStmt.setString(1,user.getUserAccount().email);
         ResultSet rs = checkStmt.executeQuery();
 
+        //If a row is returned, a user already exists.
+        if (rs.next()){
+            return false;
+        }
+
+        else {
+            insertStmt.setString(1,user.getUserName());
+            insertStmt.setString(2,user.getRole().toString());
+            insertStmt.executeUpdate();
+            return true;
+        }
+
+    } catch (SQLException e){
+        throw new Exception("Database error: " + e.getMessage(),e);
     }
 
-        return false;
     }
 
     @Override
