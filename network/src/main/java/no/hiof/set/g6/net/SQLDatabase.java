@@ -76,9 +76,38 @@ public class SQLDatabase implements HUBDatabase {
             params.add(account.phoneNumber);
         }
 
+        DatatypeArray<UserAccount> results = new DatatypeArray<>(UserAccount.class);
 
-        return null;
+        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(searchQuery.toString())) {
+
+            // Set parameters dynamically based on added conditions
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = statement.executeQuery();
+
+            // Iterate through the ResultSet and populate the DatatypeArray with matching UserAccounts
+            while (rs.next()) {
+                UserAccount foundAccount = new UserAccount();
+                foundAccount.firstName = rs.getString("first_name");
+                foundAccount.lastName = rs.getString("last_name");
+                foundAccount.phoneNumber = rs.getString("phone_number");
+                foundAccount.email = rs.getString("email");
+
+                results.add(foundAccount);
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Database error: " + e.getMessage(), e);
+        }
+
+        return results;
     }
+
+
+
 
     @Override
     public DatatypeArray<LocalUser> allStoredLocalUsers() throws Exception {
