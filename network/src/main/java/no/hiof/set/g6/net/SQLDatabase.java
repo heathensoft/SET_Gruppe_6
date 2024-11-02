@@ -93,7 +93,7 @@ public class SQLDatabase implements HUBDatabase {
                 UserAccount foundAccount = new UserAccount();
                 foundAccount.firstName = rs.getString("first_name");
                 foundAccount.lastName = rs.getString("last_name");
-                foundAccount.phoneNumber = rs.getString("phone_number");
+                foundAccount.phoneNumber = rs.getString("phone");
                 foundAccount.email = rs.getString("email");
 
                 results.add(foundAccount);
