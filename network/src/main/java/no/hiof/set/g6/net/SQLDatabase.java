@@ -1,6 +1,9 @@
 package no.hiof.set.g6.net;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import no.hiof.set.g6.ny.DatatypeArray;
 import no.hiof.set.g6.ny.LocalUser;
 import no.hiof.set.g6.ny.Locks;
@@ -53,8 +56,27 @@ public class SQLDatabase implements HUBDatabase {
         StringBuilder searchQuery = new StringBuilder("""
                 SELECT * FROM UserAccount WHERE 1 = 1           
                 """
-
         );
+
+        //Using StringBuilder to add dynamic conditions
+        List<String> conditions = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+
+        //Add condition for each field if provided in the UserAccount parameter
+        if (account.firstName != null && !account.firstName.isEmpty()) {
+            searchQuery.append(" AND first_name = ?");
+            params.add(account.firstName);
+        }
+        if (account.lastName != null && !account.lastName.isEmpty()) {
+            searchQuery.append(" AND last_name = ?");
+            params.add(account.lastName);
+        }
+        if (account.phoneNumber != null && !account.phoneNumber.isEmpty()) {
+            searchQuery.append(" AND phone_number = ?");
+            params.add(account.phoneNumber);
+        }
+
+
         return null;
     }
 
