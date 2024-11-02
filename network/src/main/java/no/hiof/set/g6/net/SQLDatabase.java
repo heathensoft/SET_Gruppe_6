@@ -110,12 +110,23 @@ public class SQLDatabase implements HUBDatabase {
 
     @Override
     public boolean addLocalUser(LocalUser user) throws Exception {
+        //SQL query to check if user already exists based on username
+        String checkUserQuery = """
+                SELECT 1 FROM LocalUser
+                WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?)
+                """;
+
+        //SQL query to insert a new user, omotting account_id and hub_id
+        String insertUserQuery = """
+                INSERT INTO LocalUser (user_name, role)
+                VALUES (?,?);
+                """;
+
         return false;
     }
 
     @Override
     public boolean removeLocalUser(LocalUser user) throws Exception {
-
         String deleteQuery = """
         DELETE FROM LocalUser 
         WHERE account_id = (SELECT account_id FROM UserAccount WHERE email = ?);
