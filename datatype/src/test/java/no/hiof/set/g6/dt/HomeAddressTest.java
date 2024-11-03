@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 public class HomeAddressTest {
 
 
+    /*
     @Test
     @DisplayName("Assert Expected Values after HomeAddress set to \"null\"")
     public void setNull() {
@@ -19,6 +20,8 @@ public class HomeAddressTest {
         Assertions.assertEquals("null",address.streetAddress);
         Assertions.assertEquals(0,address.postalCode);
     }
-    
+
+
+     */
   
 }

@@ -1,13 +1,9 @@
 package no.hiof.set.g6.dt;
 
-
-/**
- * Et Produkt er noe som bedriften selger. F.eks. En lås-enhet eller HUB.
- *
- */
-
-
 public interface Product {
 
+    String JSON_KEY_SERIAL_NUMBER = "Serial Number";
+
+    int serialNumber();
 
 }

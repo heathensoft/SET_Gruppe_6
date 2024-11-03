@@ -12,7 +12,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import no.hiof.set.g6.dt.G6JSON;
+import no.hiof.set.g6.dt.old.JsonUtils;
 import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
@@ -122,7 +122,7 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     
     private static final class StringToObjectConverter extends MessageToMessageDecoder<String> {
         protected void decode(ChannelHandlerContext channelHandlerContext, String string, List<Object> list) throws Exception {
-            JSONObject object = G6JSON.parse(string);
+            JSONObject object = JsonUtils.parse(string);
             list.add(object);
         }
     }
