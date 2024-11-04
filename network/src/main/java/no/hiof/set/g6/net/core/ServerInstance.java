@@ -105,7 +105,7 @@ public final class ServerInstance extends AppInterface {
     }
     
     @Override
-    public void shutDownAndWait() throws Exception {
+    public void shutDownAndWait() throws InterruptedException {
         eventLog.write(LogEntry.info("shutting down server.."));
         masterGroup.shutdownGracefully().sync();
         workerGroup.shutdownGracefully().sync();
