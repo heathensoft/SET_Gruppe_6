@@ -41,6 +41,12 @@ public final class LocalUser extends G6Datatype<LocalUser> {
 
     public LocalUser() { super(true); }
 
+    public boolean hasRequiredRole(Role required_role) {
+        if (required_role == null) throw new IllegalStateException("null arg. role");
+        role = role == null ? Role.NONE : role;
+        return role.ordinal() >= required_role.ordinal();
+    }
+
     @Override
     public void clearFields() {
         role = Role.NONE;
@@ -81,13 +87,13 @@ public final class LocalUser extends G6Datatype<LocalUser> {
             throw new Exception("JSON to LocalUser: Missing one or more fields");
 
         try {
-            Integer accountID = (Integer) accountIDObject;
-            Integer roleOrdinal = (Integer) roleObject;
+            Number accountID = (Number) accountIDObject;
+            Number roleOrdinal = (Number) roleObject;
             String encodedUserNameString = (String) userNameObject;
             byte[] decodedUserName = Base64.getDecoder().decode(encodedUserNameString);
             this.userName = new String(decodedUserName);
-            this.role = Role.getByOrdinal(roleOrdinal);
-            this.accountID = accountID;
+            this.role = Role.getByOrdinal(roleOrdinal.intValue());
+            this.accountID = accountID.intValue();
 
             ensureFieldsNotNull();
         } catch (ClassCastException e) {
@@ -127,5 +133,19 @@ public final class LocalUser extends G6Datatype<LocalUser> {
         } return 0;
     }
 
+    @Override
+    public String toString() {
+        return "User {" +
+                " account = " + accountID +
+                ", username = '" + userName + '\'' +
+                ", role = " + role +
+                '}';
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof LocalUser user) {
+            return accountID == user.accountID;
+        } return false;
+    }
 }

@@ -12,7 +12,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import no.hiof.set.g6.dt.old.JsonUtils;
+import no.hiof.set.g6.dt.deprecated.JsonUtils;
 import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
@@ -21,9 +21,7 @@ import java.util.List;
 /**
  *
  * AppInterface acts as the interface between application and the network layer.
- * ClientInstance and ServerInstance shares a decent amount of similar functionality inherited from AppInterface.
- *
- *
+ * ClientInstance and ServerInstance shares similar functionality.
  *
  * @author Frederik Dahl
  * 13/10/2024
@@ -86,17 +84,11 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     public abstract void shutDown();
     
     protected abstract void onPacketReceived(JsonPacket packet) throws Exception;
-    
     protected void onPipelineException(Channel channel) { /*...*/}
-    
     protected void onChannelRegistered(Channel channel) throws Exception { /*...*/ };
-    
     protected void onChannelUnregistered(Channel channel) throws Exception { /*...*/ };
-    
     protected void onChannelActive(Channel channel) throws Exception { /*...*/ };
-    
     protected void onChannelInactive(Channel channel) throws Exception { /*...*/ };
-    
     protected void onChannelReadComplete(Channel channel) throws Exception { /*...*/ };
     
     @Override

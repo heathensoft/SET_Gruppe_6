@@ -24,10 +24,10 @@ public interface LocalSystemDB {
 
     /**
      * Attempt to delete user from DB
-     * @param user_id id of user to delete
+     * @param account_id of user to delete
      * @return true if user was successfully deleted from DB
      */
-    boolean deleteUser(int user_id);
+    boolean deleteUser(int account_id);
 
     /**
      * Fetch user by account ID
@@ -48,10 +48,11 @@ public interface LocalSystemDB {
     /**
      * Attempt to add lock to DB.
      * The lock will not be added if a lock already exist with the same serial number
-     * @param lock lock to add
+     * @param serial_number product serial number
+     * @param name name of door
      * @return true if lock was successfully added to DB
      */
-    boolean addLock(Lock lock);
+    boolean addLock(int serial_number, String name);
 
     /**
      * Attempt to delete lock from DB

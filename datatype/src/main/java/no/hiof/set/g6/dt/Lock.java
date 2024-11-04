@@ -51,8 +51,8 @@ public final class Lock extends G6Datatype<Lock> implements Product {
 
     public int id;                              // corresponds to lock_id INT
     public int serialNumber;
-    public String doorName;                     // corresponds to door_name VARCHAR(50)
     public float batteryStatus;                 // corresponds to battery_status INT
+    public String doorName;                     // corresponds to door_name VARCHAR(50)
     public LockStatus lockStatus;               // corresponds to lock_status ENUM('Locked', 'Unlocked')
     public MechanicalStatus mechanicalStatus;   // corresponds to mechanical_status ENUM('OK', 'Fault')
 
@@ -115,19 +115,19 @@ public final class Lock extends G6Datatype<Lock> implements Product {
         )) throw new Exception("JSON to Locks: Missing one or more fields");
 
         try {
-            Integer id = (Integer) lockIdObject;
+            Number id = (Number) lockIdObject;
             String doorName = (String) doorNameObject;
-            Float batteryStatus = (Float) batteryStatusObject;
-            Integer serialNumber = (Integer) serialNumberObject;
-            Integer LockStatusOrdinal = (Integer) lockStatusObject;
-            Integer mechanicalOrdinal = (Integer) mechanicalStatusObject;
+            Number batteryStatus = (Number) batteryStatusObject;
+            Number serialNumber = (Number) serialNumberObject;
+            Number LockStatusOrdinal = (Number) lockStatusObject;
+            Number mechanicalOrdinal = (Number) mechanicalStatusObject;
 
-            this.id = id;
+            this.id = id.intValue();
             this.doorName = doorName;
-            this.serialNumber = serialNumber;
-            this.batteryStatus = batteryStatus;
-            this.lockStatus = LockStatus.getByOrdinal(LockStatusOrdinal);
-            this.mechanicalStatus = MechanicalStatus.getByOrdinal(mechanicalOrdinal);
+            this.serialNumber = serialNumber.intValue();
+            this.batteryStatus = batteryStatus.floatValue();
+            this.lockStatus = LockStatus.getByOrdinal(LockStatusOrdinal.intValue());
+            this.mechanicalStatus = MechanicalStatus.getByOrdinal(mechanicalOrdinal.intValue());
 
             ensureFieldsNotNull();
             clampBattery();
@@ -171,5 +171,16 @@ public final class Lock extends G6Datatype<Lock> implements Product {
         } return 0;
     }
 
+    @Override
+    public String toString() {
+        return "Lock {" +
+                " id = " + id +
+                ", serial-number = " + serialNumber +
+                ", door = '" + doorName + '\'' +
+                ", battery = " + batteryStatus +
+                ", lock-status = " + lockStatus +
+                ", mechanical-status = " + mechanicalStatus +
+                '}';
+    }
 
 }
