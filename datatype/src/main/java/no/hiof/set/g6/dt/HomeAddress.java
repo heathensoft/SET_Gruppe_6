@@ -123,4 +123,16 @@ public final class HomeAddress extends G6Datatype<HomeAddress> {
         }
         return 0;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        HomeAddress that = (HomeAddress) obj;
+        return postalCode == that.postalCode &&
+                country.equals(that.country) &&
+                state.equals(that.state) &&
+                city.equals(that.city) &&
+                street.equals(that.street);
+    }
 }

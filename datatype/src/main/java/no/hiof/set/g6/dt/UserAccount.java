@@ -22,7 +22,8 @@ public final class UserAccount extends G6Datatype<UserAccount> {
     public String lastName;             // corresponds to last_name VARCHAR(100)
     public String email;                // corresponds to email VARCHAR(150)
     public String phoneNumber;          //
-    private HomeAddress address;        // corresponds to address_id INT (Foreign Key)
+
+    public HomeAddress address;        // corresponds to address_id INT (Foreign Key)
 
     public UserAccount() { super(true); }
 
