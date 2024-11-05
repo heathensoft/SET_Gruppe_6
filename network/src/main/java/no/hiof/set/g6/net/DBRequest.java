@@ -5,15 +5,14 @@ import org.json.simple.JSONObject;
 
 public class DBRequest extends RequestADT {
 
+    public static final String JSON_KEY_LOCK = "Lock";
     public static final String JSON_KEY_CLIENT = "Client";
     public static final String JSON_KEY_USER_ADD = "Add User";
     public static final String JSON_KEY_USER_DEL = "Delete User";
-    public static final String JSON_KEY_LOCK = "Lock";
     public static final String JSON_KEY_LOCK_TOGGLE = "Toggle";
 
     /** The user who sent the request */
     public int client_account;
-
 
     public static DBRequest build_request_user_add(int client_account, LocalUser user) {
         if (user == null) throw new IllegalStateException("null arg. user");
@@ -88,11 +87,4 @@ public class DBRequest extends RequestADT {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        DBRequest request = build_request_lock_toggle(343,4,true);
-        JSONObject jsonObject = request.toJson();
-        DBRequest request1 = new DBRequest();
-        request1.fromJson(jsonObject);
-        int y = 0;
-    }
 }

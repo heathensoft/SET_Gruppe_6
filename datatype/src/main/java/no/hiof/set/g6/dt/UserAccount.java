@@ -28,9 +28,6 @@ public final class UserAccount extends G6Datatype<UserAccount> {
     public UserAccount() { super(true); }
 
 
-    public HomeAddress address() {
-        return address;
-    }
 
     @Override
     public void clearFields() {

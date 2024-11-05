@@ -2,6 +2,7 @@ package no.hiof.set.g6.dt;
 
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,6 +61,43 @@ public class UserAccountTest {
     }
 
     @Test
+    @DisplayName("Assert UserAccount converted to Json, converts back correctly")
+    public void testJsonConversion() throws Exception {
+        // Create account and set the fields
+        UserAccount account1 = new UserAccount();
+        account1.id = 1;
+        account1.firstName = "John";
+        account1.lastName = "Doe";
+        account1.email = "john.doe@example.com";
+        account1.phoneNumber = "12345678";
+        account1.address = new HomeAddress();
+        account1.address.country = "Norway";
+        account1.address.state = "Viken";
+        account1.address.city = "Oslo";
+        account1.address.street = "Testveien 1";
+        account1.address.postalCode = 1234;
+        // convert account to json
+        JSONObject jsonObject = account1.toJson();
+
+        // covert back from json (new account object so we can compare)
+        UserAccount account2 = new UserAccount();
+        account2.fromJson(jsonObject);
+
+        // test to make sure the two accounts are equal
+        assertEquals(account1.id, account2.id);
+        assertEquals(account1.firstName, account2.firstName);
+        assertEquals(account1.lastName, account2.lastName);
+        assertEquals(account1.email, account2.email);
+        assertEquals(account1.phoneNumber, account2.phoneNumber);
+        assertEquals(account1.address.country, account2.address.country);
+        assertEquals(account1.address.state, account2.address.state);
+        assertEquals(account1.address.city, account2.address.city);
+        assertEquals(account1.address.street, account2.address.street);
+        assertEquals(account1.address.postalCode, account2.address.postalCode);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testFromJson() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(UserAccount.JSON_KEY_ID, 1);
@@ -84,11 +122,11 @@ public class UserAccountTest {
         assertEquals("Doe", userAccount.lastName);
         assertEquals("john.doe@example.com", userAccount.email);
         assertEquals("12345678", userAccount.phoneNumber);
-        assertEquals("Norway", userAccount.address().country);
-        assertEquals("Viken", userAccount.address().state);
-        assertEquals("Oslo", userAccount.address().city);
-        assertEquals("Testveien 1", userAccount.address().street);
-        assertEquals(1234, userAccount.address().postalCode);
+        assertEquals("Norway", userAccount.address.country);
+        assertEquals("Viken", userAccount.address.state);
+        assertEquals("Oslo", userAccount.address.city);
+        assertEquals("Testveien 1", userAccount.address.street);
+        assertEquals(1234, userAccount.address.postalCode);
     }
 
     @Test
