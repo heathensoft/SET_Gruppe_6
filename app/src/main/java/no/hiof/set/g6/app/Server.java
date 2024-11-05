@@ -54,11 +54,11 @@ public class Server extends G6App {
         // HANDLE INCOMING & OUTGOING PACKETS
         flushInternalLogsToLogger();
         if (server_instance.isConnected()) {
-            server_instance.collectIncomingPackets(incoming_packets);
-            while (!incoming_packets.isEmpty()) handle_incoming_packet(incoming_packets.removeFirst());
-            while (!outgoing_packets.isEmpty()) server_instance.sendPacket(outgoing_packets.removeFirst());
+            processIncomingPackets();
+            processOutgoingPackets();
         } else { Logger.warn("server disconnected. program signaled to exit");
             Engine.get().exit();
+            return;
         } // HANDLE INPUT EVENTS
         Keyboard keys = Engine.get().input().keys();
         if (keys.just_pressed(GLFW.GLFW_KEY_ESCAPE)) {
@@ -82,7 +82,7 @@ public class Server extends G6App {
     @Override
     protected AppInterface appInterface() { return server_instance; }
 
-    private void handle_incoming_packet(JsonPacket incoming_packet) {
+    private void handleIncomingPacket(JsonPacket incoming_packet) {
         Channel client_channel = incoming_packet.channel();
         PacketWrapper wrapper;
         try { wrapper = PacketWrapper.unwrap(incoming_packet.get());
@@ -120,5 +120,14 @@ public class Server extends G6App {
     private void queueInvalidPacketResponse(String message, Channel channel, int packet_id) {
         JSONObject payload = PacketWrapper.invalidResponse(packet_id,message);
         outgoing_packets.add(new JsonPacket(payload,channel));
+    }
+
+    private void processIncomingPackets() {
+        server_instance.collectIncomingPackets(incoming_packets);
+        while (!incoming_packets.isEmpty()) handleIncomingPacket(incoming_packets.removeFirst());
+    }
+
+    private void processOutgoingPackets() {
+        while (!outgoing_packets.isEmpty()) server_instance.sendPacket(outgoing_packets.removeFirst());
     }
 }
