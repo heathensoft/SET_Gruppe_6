@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * We are testing that the client account id and the request type are
  * the same before and after json conversion. We are not checking the request content for each.
  */
-public class DBRequestTest {
+class DBRequestTest {
 
     DBRequest request_from;
     final int client_account_id = 12345;
