@@ -30,6 +30,7 @@ public class LockTest {
 
     @Test
     @DisplayName("Test JSON deserialization into lock object")
+    @SuppressWarnings("unchecked")
     public void testFromJson() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Lock.JSON_KEY_LOCK_ID, 1);
