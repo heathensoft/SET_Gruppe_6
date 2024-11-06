@@ -1,12 +1,14 @@
 package no.hiof.set.g6.dt;
 
 import org.json.simple.JSONObject;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LockTest {
 
     @Test
+    @DisplayName("Test JSON serialization of Lock object")
     public void testToJson() {
         Lock lock = new Lock();
         lock.id = 1;
@@ -27,6 +29,7 @@ public class LockTest {
     }
 
     @Test
+    @DisplayName("Test JSON deserialization into lock object")
     public void testFromJson() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Lock.JSON_KEY_LOCK_ID, 1);
@@ -48,8 +51,9 @@ public class LockTest {
     }
 
     @Test
+    @DisplayName("Test JSON serialization and deserialization for Lock object equality")
     public void testJsonConversion() throws Exception {
-        // Oppretter et lock objekt
+        // Creating lock object
         Lock originalLock = new Lock();
         originalLock.id = 1;
         originalLock.doorName = "Main Entrance";
@@ -58,14 +62,14 @@ public class LockTest {
         originalLock.lockStatus = Lock.LockStatus.UNLOCKED;
         originalLock.mechanicalStatus = Lock.MechanicalStatus.OK;
 
-        // Konverter til JSON
+        // converting to JSON
         JSONObject jsonObject = originalLock.toJson();
 
-        // Opprett et nytt Lock-objekt og konverter tilbake fra JSON
+        // Creating a new lock object
         Lock newLock = new Lock();
         newLock.fromJson(jsonObject);
 
-        // Sjekk at de to objektene er like
+        // Checking that the two objects are alike
         assertEquals(originalLock.id, newLock.id);
         assertEquals(originalLock.doorName, newLock.doorName);
         assertEquals(originalLock.serialNumber, newLock.serialNumber);
@@ -74,6 +78,70 @@ public class LockTest {
         assertEquals(originalLock.mechanicalStatus, newLock.mechanicalStatus);
     }
 
+    @Test
+    @DisplayName("Test clamping battery status between 0.0 and 1.0")
+    public void testClampBattery() {
+        Lock lock = new Lock();
+        lock.batteryStatus = 1.2f;
+        lock.clampBattery();
+        assertEquals(1.0f, lock.batteryStatus);
+
+        lock.batteryStatus = -0.5f;
+        lock.clampBattery();
+        assertEquals(0.0f, lock.batteryStatus);
+    }
+
+    @Test
+    @DisplayName("Test ensuring non-null default values for fields in Lock")
+    public void testEnsureFieldsNotNull() {
+        Lock lock = new Lock();
+        lock.doorName = null;
+        lock.lockStatus = null;
+        lock.mechanicalStatus = null;
+
+        lock.ensureFieldsNotNull();
+
+        assertEquals(Lock.NULL_STRING, lock.doorName);
+        assertEquals(Lock.LockStatus.LOCKED, lock.lockStatus);
+        assertEquals(Lock.MechanicalStatus.OK, lock.mechanicalStatus);
+    }
+
+    @Test
+    @DisplayName("Test Lock compareTo method for sorting by door name and battery status")
+    public void testCompareTo() {
+        Lock lock1 = new Lock();
+        lock1.doorName = "Back Door";
+        lock1.batteryStatus = 0.7f;
+
+        Lock lock2 = new Lock();
+        lock2.doorName = "Back Door";
+        lock2.batteryStatus = 0.5f;
+
+        Lock lock3 = new Lock();
+        lock3.doorName = "Garage Door";
+        lock3.batteryStatus = 0.9f;
+
+        // Testing the same door name, higher battery status
+        assertTrue(lock1.compareTo(lock2) < 0);
+        // Testing a different door name
+        assertTrue(lock1.compareTo(lock3) < 0);
+    }
+
+    @Test
+    @DisplayName("Test LockStatus enum getByOrdinal method")
+    public void testEnumLockStatusGetByOrdinal() {
+        assertEquals(Lock.LockStatus.LOCKED, Lock.LockStatus.getByOrdinal(0));
+        assertEquals(Lock.LockStatus.UNLOCKED, Lock.LockStatus.getByOrdinal(1));
+        assertNull(Lock.LockStatus.getByOrdinal(3));  // Out of bounds check
+    }
+
+    @Test
+    @DisplayName("Test MechanicalStatus enum getByOrdinal method")
+    public void testEnumMechanicalStatusGetByOrdinal() {
+        assertEquals(Lock.MechanicalStatus.OK, Lock.MechanicalStatus.getByOrdinal(0));
+        assertEquals(Lock.MechanicalStatus.FAULT, Lock.MechanicalStatus.getByOrdinal(1));
+        assertNull(Lock.MechanicalStatus.getByOrdinal(3));  // Out of bounds check
+    }
 
 
 }
