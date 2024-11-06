@@ -42,14 +42,14 @@ public class PacketWrapper {
                 contentObject
         )) throw new Exception("Unable to unwrap packet, missing fields");
         try {
-            Integer type_ordinal = (Integer) typeObject;
-            PacketType packet_type = PacketType.getByOrdinal(type_ordinal);
+            Number type_ordinal = (Number) typeObject;
+            PacketType packet_type = PacketType.getByOrdinal(type_ordinal.intValue());
             if (packet_type == null) {
                 throw new Exception("Invalid packet type");
-            } Integer packet_id = (Integer) idObject;
+            } Number packet_id = (Number) idObject;
             JSONObject packet_content = (JSONObject) contentObject;
             packetWrapper = new PacketWrapper();
-            packetWrapper.id = packet_id;
+            packetWrapper.id = packet_id.intValue();
             packetWrapper.type = packet_type;
             packetWrapper.content = packet_content;
         } catch (ClassCastException e) {
