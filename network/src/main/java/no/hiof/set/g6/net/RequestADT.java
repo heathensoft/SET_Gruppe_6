@@ -68,7 +68,7 @@ public abstract class RequestADT implements JsonSerializable {
         if (content != null) jsonObject.put(JSON_KEY_CONTENT,content);
     }
 
-    protected RequestType getRequestType(JSONObject jsonObject) throws Exception {
+    protected static RequestType getRequestType(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
         Object typeObject = jsonObject.get(JSON_KEY_REQUEST_TYPE);
         if (typeObject == null) throw new Exception("JSON to RequestType: Type not found");
@@ -82,7 +82,7 @@ public abstract class RequestADT implements JsonSerializable {
     }
 
     /** Fetch the content of the DB request / response. Content can be null */
-    protected JSONObject getContent(JSONObject jsonObject) throws Exception {
+    protected static JSONObject getContent(JSONObject jsonObject) throws Exception {
         if (jsonObject == null) throw new Exception("JSONObject is null");
         Object contentObject = jsonObject.get(JSON_KEY_CONTENT);
         if (contentObject != null) {
