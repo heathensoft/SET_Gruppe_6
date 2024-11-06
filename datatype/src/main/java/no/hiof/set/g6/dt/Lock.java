@@ -21,33 +21,38 @@ public final class Lock extends G6Datatype<Lock> implements Product {
 
 
 
-    public enum LockStatus { // ENUM for lock_status ('Locked', 'Unlocked')
+    public enum LockStatus {
         LOCKED("Locked"),
         UNLOCKED("Unlocked");
+
         LockStatus(String descriptor) { this.descriptor = descriptor; }
         public final String descriptor;
-        private static final LockStatus[] all;
-        static { all = values(); }
+        private static final LockStatus[] all = values();
+
         public static LockStatus getByOrdinal(int ordinal) {
-            if (ordinal < all.length && ordinal > 0) {
+            if (ordinal >= 0 && ordinal < all.length) {  // Fix: allow ordinal == 0
                 return all[ordinal];
-            } return null;
+            }
+            return null;
         }
     }
 
-    public enum MechanicalStatus { // ENUM for mechanical_status ('OK', 'Fault')
+    public enum MechanicalStatus {
         OK("OK"),
         FAULT("Fault");
+
         MechanicalStatus(String descriptor) { this.descriptor = descriptor; }
         public final String descriptor;
-        private static final MechanicalStatus[] all;
-        static { all = values(); }
+        private static final MechanicalStatus[] all = values();
+
         public static MechanicalStatus getByOrdinal(int ordinal) {
-            if (ordinal < all.length && ordinal > 0) {
+            if (ordinal >= 0 && ordinal < all.length) {  // Fix: allow ordinal == 0
                 return all[ordinal];
-            } return null;
+            }
+            return null;
         }
     }
+
 
     public int id;                              // corresponds to lock_id INT
     public int serialNumber;
