@@ -13,7 +13,7 @@ public class DatabaseTest {
 
 
 
-
+    private final String test_db_dir = "db/test";
     private Database database;
     private LocalUser owner;
     private LocalUser guest;
@@ -22,7 +22,7 @@ public class DatabaseTest {
 
 
     @BeforeEach
-    protected void setUpDB() {
+    protected void setUp() {
 
         // Make sure the DB and owner stays the same before each test.
         // We add 3 users of different roles and one lock
@@ -30,7 +30,7 @@ public class DatabaseTest {
         // We have to add the object directly into the DB tables.
         // and auto increment lock id manually
 
-        String test_db_dir = "app/db/test";
+
         database = new Database(test_db_dir);
 
         owner = new LocalUser();
@@ -100,12 +100,80 @@ public class DatabaseTest {
     public void testGetUsers() {
         int count = database.users_table.size();
         DatatypeArray<LocalUser> users = database.getUsers();
+        assertTrue(count >= 1);
         assertNotNull(users);
         assertEquals(count, users.size());
     }
 
+    @Test
+    @DisplayName("Assert addLock is working as intended")
+    public void testAddLock() {
+        String lock_name = "Town Portal";
+        int size_before = database.locks_table.size();
+        int auto_increment_before = database.lock_auto_increment;
 
+        // First try to add lock with existing serial number
+        boolean added = database.addLock(test_lock.serialNumber,lock_name);
+        assertFalse(added);
+        assertEquals(auto_increment_before,database.lock_auto_increment);
+        assertEquals(size_before,database.locks_table.size());
 
+        // Then add lock with a new serial number
+        added = database.addLock(44444444,lock_name);
+        assertTrue(added);
+        assertEquals(auto_increment_before + 1,database.lock_auto_increment);
+        assertEquals(size_before + 1,database.locks_table.size());
 
+    }
+
+    @Test
+    @DisplayName("Assert deleteLock is working as intended")
+    public void testDeleteLock() {
+        int size_before = database.locks_table.size();
+        boolean deleted = database.deleteLock(test_lock.id);
+        assertTrue(deleted);
+        assertEquals(size_before - 1,database.locks_table.size());
+    }
+
+    @Test
+    @DisplayName("Assert openLock and closeLock is working as intended")
+    public void testOpenCloseLock() {
+        test_lock.lockStatus = Lock.LockStatus.LOCKED;
+        boolean opened = database.openLock(test_lock.id);
+        assertTrue(opened);
+        assertEquals(Lock.LockStatus.UNLOCKED, test_lock.lockStatus);
+        boolean closed = database.closeLock(test_lock.id);
+        assertTrue(closed);
+        assertEquals(Lock.LockStatus.LOCKED, test_lock.lockStatus);
+    }
+
+    @Test
+    @DisplayName("Assert getLocks is working as intended")
+    public void testGetLocks() {
+        int count = database.locks_table.size();
+        DatatypeArray<Lock> locks = database.getLocks();
+        assertTrue(count >= 1);
+        assertNotNull(locks);
+        assertEquals(count, locks.size());
+    }
+
+    @Test
+    @DisplayName("Assert save and load  is working as intended")
+    public void testSaveLoad() throws Exception {
+
+        int locks_count = database.locks_table.size();
+        int users_count = database.users_table.size();
+        int lock_auto_increment = database.lock_auto_increment;
+        assertTrue(locks_count >= 1);
+        assertTrue(users_count >= 1);
+        assertTrue(lock_auto_increment >= 1);
+        database.save();
+        Database loaded_database = new Database(test_db_dir);
+        loaded_database.load();
+        assertEquals(locks_count,loaded_database.locks_table.size());
+        assertEquals(users_count,loaded_database.users_table.size());
+        assertEquals(lock_auto_increment,loaded_database.lock_auto_increment);
+
+    }
 
 }
