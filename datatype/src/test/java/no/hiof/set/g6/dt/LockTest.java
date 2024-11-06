@@ -47,6 +47,33 @@ public class LockTest {
         assertEquals(Lock.MechanicalStatus.OK, lock.mechanicalStatus);
     }
 
+    @Test
+    public void testJsonConversion() throws Exception {
+        // Oppretter et lock objekt
+        Lock originalLock = new Lock();
+        originalLock.id = 1;
+        originalLock.doorName = "Main Entrance";
+        originalLock.serialNumber = 98765;
+        originalLock.batteryStatus = 0.9f;
+        originalLock.lockStatus = Lock.LockStatus.UNLOCKED;
+        originalLock.mechanicalStatus = Lock.MechanicalStatus.OK;
+
+        // Konverter til JSON
+        JSONObject jsonObject = originalLock.toJson();
+
+        // Opprett et nytt Lock-objekt og konverter tilbake fra JSON
+        Lock newLock = new Lock();
+        newLock.fromJson(jsonObject);
+
+        // Sjekk at de to objektene er like
+        assertEquals(originalLock.id, newLock.id);
+        assertEquals(originalLock.doorName, newLock.doorName);
+        assertEquals(originalLock.serialNumber, newLock.serialNumber);
+        assertEquals(originalLock.batteryStatus, newLock.batteryStatus, 0.001);
+        assertEquals(originalLock.lockStatus, newLock.lockStatus);
+        assertEquals(originalLock.mechanicalStatus, newLock.mechanicalStatus);
+    }
+
 
 
 }
