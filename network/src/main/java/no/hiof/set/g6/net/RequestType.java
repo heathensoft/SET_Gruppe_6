@@ -25,7 +25,7 @@ public enum RequestType {
     private static final RequestType[] all;
     static { all = values(); }
     public static RequestType getByOrdinal(int ordinal) {
-        if (ordinal < all.length && ordinal > 0) {
+        if (ordinal < all.length && ordinal >= 0) {
             return all[ordinal];
         } return null;
     }
