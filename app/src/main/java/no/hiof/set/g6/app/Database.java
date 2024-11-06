@@ -20,11 +20,11 @@ public class Database implements LocalSystemDB {
     private static final String JSON_KEY_LOCKS_AUTO_INCREMENT = "Locks Auto-inc";
 
     private final Path path;
-    private final Map<Integer,Lock> locks_table;
-    private final Map<Integer,LocalUser> users_table;
+    protected final Map<Integer,Lock> locks_table;
+    protected final Map<Integer,LocalUser> users_table;
 
     /** simulating auto inc */
-    private int lock_auto_increment;
+    protected int lock_auto_increment;
 
     public Database(String directory) {
         this.path = Path.of(directory).resolve(FILE_NAME);
