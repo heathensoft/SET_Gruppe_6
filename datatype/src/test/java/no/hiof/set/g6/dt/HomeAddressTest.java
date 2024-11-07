@@ -64,11 +64,11 @@ public class HomeAddressTest {
         // Converting to JSON
         JSONObject jsonObject = originalAddress.toJson();
 
-        // Oppretter et nytt HomeAddress-objekt
+        // Creating new HomeAdress object
         HomeAddress newAddress = new HomeAddress();
         newAddress.fromJson(jsonObject);
 
-        // Sjekker at de to objektene er like
+        // Checking that the two objects are alike
         assertEquals(originalAddress.country, newAddress.country);
         assertEquals(originalAddress.state, newAddress.state);
         assertEquals(originalAddress.city, newAddress.city);
