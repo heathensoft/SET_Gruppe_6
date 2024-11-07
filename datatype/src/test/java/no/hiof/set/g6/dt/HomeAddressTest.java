@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HomeAddressTest {
 
-
     @Test
     @DisplayName("Test JSON serialization and deserialization for HomeAddress object equality")
     public void testJsonConversion() throws Exception {
@@ -35,5 +34,23 @@ public class HomeAddressTest {
         assertEquals(originalAddress.city, newAddress.city);
         assertEquals(originalAddress.street, newAddress.street);
         assertEquals(originalAddress.postalCode, newAddress.postalCode);
+    }
+    @Test
+    @DisplayName("Test ensureFieldsNotNull sets null fields to default values")
+    public void testEnsureFieldsNotNull() {
+        HomeAddress address = new HomeAddress();
+        address.country = null;
+        address.state = null;
+        address.city = null;
+        address.street = null;
+
+        // Ensure fields are not null
+        address.ensureFieldsNotNull();
+
+        // Assert that null fields are replaced by the default value "null"
+        Assertions.assertEquals("null", address.country);
+        Assertions.assertEquals("null", address.state);
+        Assertions.assertEquals("null", address.city);
+        Assertions.assertEquals("null", address.street);
     }
 }
