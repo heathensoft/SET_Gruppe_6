@@ -135,4 +135,34 @@ public class HomeAddressTest {
         address2.postalCode = 7000;
         Assertions.assertFalse(address1.equals(address2));
     }
+
+
+    @Test
+    @DisplayName("Test set method updates fields correctly")
+    public void testSetMethod() {
+        HomeAddress address1 = new HomeAddress();
+        address1.country = "Norway";
+        address1.state = "Oslo";
+        address1.city = "Oslo";
+        address1.street = "Main Street 1";
+        address1.postalCode = 1234;
+
+        HomeAddress address2 = new HomeAddress();
+        address2.set(address1);
+
+        // Verify that the fields in address2 have been updated to match address1
+        assertEquals("Norway", address2.country);
+        assertEquals("Oslo", address2.state);
+        assertEquals("Oslo", address2.city);
+        assertEquals("Main Street 1", address2.street);
+        assertEquals(1234, address2.postalCode);
+
+        // Verify that calling set with null clears the fields
+        address2.set(null);
+        assertEquals(HomeAddress.NULL_STRING, address2.country);
+        assertEquals(HomeAddress.NULL_STRING, address2.state);
+        assertEquals(HomeAddress.NULL_STRING, address2.city);
+        assertEquals(HomeAddress.NULL_STRING, address2.street);
+        assertEquals(HomeAddress.NULL, address2.postalCode);
+    }
 }
