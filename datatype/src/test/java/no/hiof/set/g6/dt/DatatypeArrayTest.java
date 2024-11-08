@@ -38,4 +38,54 @@ public class DatatypeArrayTest {
         userArray.add(user1);
         userArray.add(user2);
     }
+
+    /**
+     * Tests that the toJson() method correctly converts the DatatypeArray to a JSON object.
+     */
+    @Test
+    public void testToJson() {
+        // Convert the DatatypeArray to JSON
+        JSONObject jsonObject = userArray.toJson();
+
+        // Validate that the JSON object is not null
+        assertNotNull(jsonObject);
+
+        // Check that the required keys exist in the JSON object
+        assertTrue(jsonObject.containsKey(DatatypeArray.JSON_KEY_ARRAY));
+        assertTrue(jsonObject.containsKey(DatatypeArray.JSON_KEY_ARRAY_TYPE));
+
+        // Validate that the type string is correct
+        String typeString = (String) jsonObject.get(DatatypeArray.JSON_KEY_ARRAY_TYPE);
+        assertEquals("Local User", typeString);
+
+        // Check that the array content is present
+        assertNotNull(jsonObject.get(DatatypeArray.JSON_KEY_ARRAY));
+    }
+
+    /**
+     * Tests that the fromJson() method correctly reconstructs a DatatypeArray from JSON.
+     * @throws Exception if there are any errors during JSON deserialization.
+     */
+    @Test
+    public void testFromJson() throws Exception {
+        // Convert the original array to JSON
+        JSONObject jsonObject = userArray.toJson();
+
+        // Initialize a new DatatypeArray and populate it with data from JSON
+        DatatypeArray<LocalUser> newArray = new DatatypeArray<>(LocalUser.class);
+        newArray.fromJson(jsonObject);
+
+        // Validate that the size of the array is correct
+        assertEquals(2, newArray.size());
+
+        // Check that the data is correct for the first user
+        assertEquals(user1.accountID, newArray.get(0).accountID);
+        assertEquals(user1.userName, newArray.get(0).userName);
+        assertEquals(user1.role, newArray.get(0).role);
+
+        // Check that the data is correct for the second user
+        assertEquals(user2.accountID, newArray.get(1).accountID);
+        assertEquals(user2.userName, newArray.get(1).userName);
+        assertEquals(user2.role, newArray.get(1).role);
+    }
 }
