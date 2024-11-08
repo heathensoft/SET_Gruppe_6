@@ -116,4 +116,31 @@ public class LocalUserTest {
         assertTrue(user2.compareTo(user1) > 0); // RESIDENT is lower priority than OWNER
     }
 
+    @Test
+    @DisplayName("Test set method updates fields correctly in LocalUser")
+    public void testSetMethod() {
+        // Create the first LocalUser object with test data
+        LocalUser user1 = new LocalUser();
+        user1.accountID = 101;
+        user1.userName = "Alice";
+        user1.role = LocalUser.Role.OWNER;
+
+        // Create the second LocalUser object
+        LocalUser user2 = new LocalUser();
+
+        // Call the set method
+        user2.set(user1);
+
+        // Verify that user2 has been updated to match user1
+        assertEquals(user1.accountID, user2.accountID);
+        assertEquals(user1.userName, user2.userName);
+        assertEquals(user1.role, user2.role);
+
+        // Verify that calling set with null clears the fields
+        user2.set(null);
+        assertEquals(G6Datatype.NULL, user2.accountID);
+        assertEquals(G6Datatype.NULL_STRING, user2.userName);
+        assertEquals(LocalUser.Role.NONE, user2.role);
+    }
+
 }
