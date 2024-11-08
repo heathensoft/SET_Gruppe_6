@@ -38,4 +38,26 @@ public class LocalUserTest {
         assertEquals("JohnDoe", user.userName);
         assertEquals(LocalUser.Role.RESIDENT, user.role);
     }
+
+    @Test
+    @DisplayName("Test JSON serialization and deserialization for LocalUser object equality")
+    public void testJsonConversion() throws Exception {
+        // Opprett et originalt LocalUser-objekt
+        LocalUser originalUser = new LocalUser();
+        originalUser.accountID = 101;
+        originalUser.userName = "JohnDoe";
+        originalUser.role = LocalUser.Role.OWNER;
+
+        // Converting to lock
+        JSONObject jsonObject = originalUser.toJson();
+
+        // Creating a new lock object from json
+        LocalUser newUser = new LocalUser();
+        newUser.fromJson(jsonObject);
+
+        // Check that the fields in the new object correlates with the original one
+        assertEquals(originalUser.accountID, newUser.accountID);
+        assertEquals(originalUser.userName, newUser.userName);
+        assertEquals(originalUser.role, newUser.role);
+    }
 }
