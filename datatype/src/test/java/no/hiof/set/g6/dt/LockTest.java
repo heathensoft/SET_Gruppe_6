@@ -144,5 +144,41 @@ public class LockTest {
         assertNull(Lock.MechanicalStatus.getByOrdinal(3));  // Out of bounds check
     }
 
+    @Test
+    @DisplayName("Test set method updates fields correctly")
+    public void testSetMethod() {
+        // Create the first Lock object with test data
+        Lock lock1 = new Lock();
+        lock1.id = 1;
+        lock1.serialNumber = 12345;
+        lock1.batteryStatus = 0.8f;
+        lock1.doorName = "Front Door";
+        lock1.lockStatus = Lock.LockStatus.UNLOCKED;
+        lock1.mechanicalStatus = Lock.MechanicalStatus.OK;
+
+        // Create the second Lock object
+        Lock lock2 = new Lock();
+
+        // Call the set method
+        lock2.set(lock1);
+
+        // Verify that lock2 has been updated to match lock1
+        assertEquals(lock1.id, lock2.id);
+        assertEquals(lock1.serialNumber, lock2.serialNumber);
+        assertEquals(lock1.batteryStatus, lock2.batteryStatus);
+        assertEquals(lock1.doorName, lock2.doorName);
+        assertEquals(lock1.lockStatus, lock2.lockStatus);
+        assertEquals(lock1.mechanicalStatus, lock2.mechanicalStatus);
+
+        // Verify that calling set with null clears the fields
+        lock2.set(null);
+        assertEquals(G6Datatype.NULL, lock2.id);
+        assertEquals(G6Datatype.NULL, lock2.serialNumber);
+        assertEquals(Lock.FULLY_CHARGED, lock2.batteryStatus);
+        assertEquals(G6Datatype.NULL_STRING, lock2.doorName);
+        assertEquals(Lock.LockStatus.LOCKED, lock2.lockStatus);
+        assertEquals(Lock.MechanicalStatus.OK, lock2.mechanicalStatus);
+    }
+
 
 }
