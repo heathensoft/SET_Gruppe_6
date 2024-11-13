@@ -15,17 +15,15 @@ import java.util.List;
 /**
  * This is simply an application. It starts, runs and exits. (Hopefully)
  * How it works is not important. Any type of application could run our
- * network module.
+ * network api.
  */
 abstract class G6App extends Application {
 
     /** This is you */
     public static final LocalUser CLIENT_USER;
     static {
-        // If you change your role you'll lose access to some functionality
-        // Do not change your account ID
         CLIENT_USER = new LocalUser();
-        CLIENT_USER.role = LocalUser.Role.OWNER;
+        CLIENT_USER.role = LocalUser.Role.RESIDENT;
         CLIENT_USER.userName = "Eddie";
         CLIENT_USER.accountID = 35345235;
     }

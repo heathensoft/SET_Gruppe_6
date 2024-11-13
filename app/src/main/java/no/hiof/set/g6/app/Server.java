@@ -15,8 +15,8 @@ import org.tinylog.Logger;
 import java.util.LinkedList;
 
 /**
- * PROOF OF CONCEPT
- * A server program with a database.
+ * PROOF OF CONCEPT: A server program using our network api to handle client requests.
+ *
  * The program is multithreaded in that the main thread handles the DB,
  * and another group of threads handles incoming / outgoing packages.
  * We won't attempt to reconnect server for this example.
