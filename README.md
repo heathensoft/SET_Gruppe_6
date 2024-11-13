@@ -10,6 +10,19 @@
 * Språk: Java (JDK 23)
 * Build Tool: Gradle
 
+Prototypen er "proof of concept" for hvordan klient og server applikasjoner kan
+benytte vårt nettverks API til å kommunisere med hverandre.
+
+Med ferdig definerte datatyper og vår "in-house" nettverksprotokoll, har vi tilrettelagt for en felles
+standard for kommunikasjon.
+
+Nettverks API'et ar agnostisk iforhold til database og utvikling av brukergrensesnitt.
+Dette er helt opp til fremtidige utviklere av systemet.
+
+Vi kaller det "proof of concept" da mye av det grunnleggende er implementert men mye funksjonalitet
+fortsatt mangler.
+
+
 ## Hvordan kjøre prototypen
 
 Under app-modulen i prosjekt strukturen:
@@ -62,6 +75,9 @@ Poenget er at vi har en klient og server som kommuniserer med hverandre med vår
 ## Hvordan teste prototypen
 
 ...
+
+## ALT UNDER ER FRA ET TIDLIGERE STADIET I PROSJEKTET
+(Ikke nødvendig å lese, men viser tankegangen rundt oppstart)
 
 ### Hovedfokus i prosjektet (Teknisk implementasjon)
 
