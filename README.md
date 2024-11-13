@@ -1,8 +1,83 @@
-# Software Engineering & Testing - Group 6 Project Repo
+# SecureHome
 
 
 * **Mahmad**
 * **Frederik**
+
+## Prototypen
+
+* IDE: Intellij IDE
+* Språk: Java (JDK 23)
+* Build Tool: Gradle
+
+Prototypen er "proof of concept" for hvordan klient og server applikasjoner kan
+benytte vårt nettverks API til å kommunisere med hverandre.
+
+Med ferdig definerte datatyper og vår "in-house" nettverksprotokoll, har vi tilrettelagt for en felles
+standard for kommunikasjon.
+
+Nettverks API'et ar agnostisk iforhold til database og utvikling av brukergrensesnitt.
+Dette er helt opp til fremtidige utviklere av systemet.
+
+Vi kaller det "proof of concept" da mye av det grunnleggende er implementert men mye funksjonalitet
+fortsatt mangler.
+
+
+## Hvordan kjøre prototypen
+
+Under app-modulen i prosjekt strukturen:
+
+```
+Project/
+├─ app/
+│  ├─ Server.java
+│  ├─ Client.java
+├─ datatype/
+├─ network/
+│  ├─ core/
+```
+Er det to programfiler: Server og Client.
+
+1. Start Server.java. Dette starter en server på port: 8080 og laster databasen fra fil.
+2. Start Client.java. Dette starter et klient program som kobler opp mot server.
+3. Når begge programmene kjører, skal to vinduer være åpne. Pass på at "Client Application" vinduet er i fokus.
+4. Programmet er tekst basert så pass på at output feltet i IDE er synlig.
+
+MERK: Programmene burde kjøre på MAC men vi har kun testet og kjøre programmene på PC.
+
+Hvis "Client Application" vinduet har fokus, kan appen lese input.
+
+Når klient starter og hvert tiende sekund sender klient en request til server for en oppdatert oversikt over
+alle brukere og låser i systemet. Vi satt ti sekunder slik at output blir lettere å lese.
+
+Klient programmet reagerer på følgende input:
+
+| Input  | Funksjon           |
+|--------|--------------------|
+| Escape | Close              |
+| P      | Pause Refresh      |
+| 1      | Print Users        |
+| 2      | Print Locks        |
+| 3      | Toggle Random Lock |
+
+* "Pause Refresh" stopper klient fra å bli automatisk oppdatert. Kan gjøre det lettere og lese output.
+* "Print Users" printer ut en oversikt over alle brukere i systemet.
+* "Print Locks" printer ut en oversikt over alle låsene i systemet.
+* "Toggle Random Lock" velger en tilfeldig lås blandt oversikten og sender en request om å "toggle" open / close.
+
+Alle endringer blir lagret i databasen. Starter du programmene på ny, kommer endringene med.
+
+Det er annen funksjonalitet som vi har implementert, men som egner seg bedre med brukergrensesnitt.
+F.eks. Legge til / fjerne bruker, endre bruker rolle m.m.
+
+Poenget er at vi har en klient og server som kommuniserer med hverandre med vårt nettverks API.
+
+## Hvordan teste prototypen
+
+...
+
+## ALT UNDER ER FRA ET TIDLIGERE STADIET I PROSJEKTET
+(Ikke nødvendig å lese, men viser tankegangen rundt oppstart)
 
 ### Hovedfokus i prosjektet (Teknisk implementasjon)
 
