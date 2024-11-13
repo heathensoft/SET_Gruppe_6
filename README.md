@@ -12,13 +12,10 @@
 
 Prototypen er "proof of concept" for hvordan klient og server applikasjoner kan
 benytte vårt nettverks API til å kommunisere med hverandre.
-
 Med ferdig definerte datatyper og vår "in-house" nettverksprotokoll, har vi tilrettelagt for en felles
 standard for kommunikasjon.
-
 Nettverks API'et ar agnostisk iforhold til database og utvikling av brukergrensesnitt.
 Dette er helt opp til fremtidige utviklere av systemet.
-
 Vi kaller det "proof of concept" da mye av det grunnleggende er implementert men mye funksjonalitet
 fortsatt mangler.
 
@@ -43,10 +40,9 @@ Er det to programfiler: Server og Client.
 3. Når begge programmene kjører, skal to vinduer være åpne. Pass på at "Client Application" vinduet er i fokus.
 4. Programmet er tekst basert så pass på at output feltet i IDE er synlig.
 
-MERK: Programmene burde kjøre på MAC men vi har kun testet og kjøre programmene på PC.
+*Programmene burde kjøre på MAC men vi har kun testet og kjøre programmene på PC.*
 
 Hvis "Client Application" vinduet har fokus, kan appen lese input.
-
 Når klient starter og hvert tiende sekund sender klient en request til server for en oppdatert oversikt over
 alle brukere og låser i systemet. Vi satt ti sekunder slik at output blir lettere å lese.
 
@@ -66,10 +62,9 @@ Klient programmet reagerer på følgende input:
 * "Toggle Random Lock" velger en tilfeldig lås blandt oversikten og sender en request om å "toggle" open / close.
 
 Alle endringer blir lagret i databasen. Starter du programmene på ny, kommer endringene med.
-
 Det er annen funksjonalitet som vi har implementert, men som egner seg bedre med brukergrensesnitt.
 F.eks. Legge til / fjerne bruker, endre bruker rolle m.m.
-
+(Vi har testet å kjøre server og klient programmene på hver sin PC, og det fungerer.)
 Poenget er at vi har en klient og server som kommuniserer med hverandre med vårt nettverks API.
 
 ## Hvordan teste prototypen
