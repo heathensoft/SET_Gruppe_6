@@ -20,6 +20,17 @@ Vi kaller det "proof of concept" da mye av det grunnleggende er implementert men
 fortsatt mangler.
 
 
+## Eventuelle feilmeldinger etter kloning
+
+Could not create task ':buildSrc:compileTestKotlin'.
+
+```
+SET_Gruppe_6/
+├─ buildSRC/
+│  ├─ build.gradle.kts
+```
+Gå til filen ovenfor. Prøv å trykk på Refresh symbolet.
+
 ## Hvordan kjøre prototypen
 
 Under app-modulen i prosjekt strukturen:
