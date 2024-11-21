@@ -1,7 +1,7 @@
 package no.hiof.set.g6.net;
 
 import no.hiof.set.g6.dt.JsonSerializable;
-import no.hiof.set.g6.dt.deprecated.JsonUtils;
+import no.hiof.set.g6.dt.JsonUtils;
 import org.json.simple.JSONObject;
 
 /**

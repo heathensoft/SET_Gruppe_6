@@ -69,7 +69,24 @@ Poenget er at vi har en klient og server som kommuniserer med hverandre med vår
 
 ## Hvordan teste prototypen
 
-...
+Trykk på Gradle (Elefant) ikonet oppe i høyre hjørnet i Intellij.
+```
+SET_Gruppe_6/
+├─ tasks/
+│  ├─ verification/
+│  │  ├─ test
+
+```
+Naviger build strukturen ovenfor og dobbeltklikk på "test".
+Dette vil kjøre tester for alle modulene: datatype, network, app.
+
+Hvis du skulle få: "Test events were not received" må man kjøre tester for hver enkelt klasse isteden.
+Vi er usikre på hvorfor dette skjer, men det kom først opp helt i slutten av prosjektet.
+
+Kjøre tester på hver enkelt klasse:
+
+Under prosjektstrukturen for hver modul er det en tilsvarende test-struktur. Åpne hver enkelt klasse
+og trykk på run Test (I margen helt øverst ved klasse definisjonen)
 
 ## ALT UNDER ER FRA ET TIDLIGERE STADIET I PROSJEKTET
 (Ikke nødvendig å lese, men viser tankegangen rundt oppstart)
