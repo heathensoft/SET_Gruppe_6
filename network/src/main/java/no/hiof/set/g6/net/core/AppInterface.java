@@ -12,22 +12,16 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import no.hiof.set.g6.dt.deprecated.JsonUtils;
+import no.hiof.set.g6.dt.JsonUtils;
 import org.json.simple.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
  * AppInterface acts as the interface between application and the network layer.
  * ClientInstance and ServerInstance shares similar functionality.
- *
- * @author Frederik Dahl
- * 13/10/2024
  */
-
-
 public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     
     protected final LinkedList<JsonPacket> incoming = new LinkedList<>();
@@ -40,7 +34,6 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     protected int num_discarded_incoming;
     protected final int incoming_packets_capacity;
     
-    
     protected AppInterface(int incoming_packet_capacity) {
         this.incoming_packets_capacity = incoming_packet_capacity;
     }
@@ -52,6 +45,13 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
             num_collected++;
         }
     }
+
+    /**
+     * Attempt to send packet.
+     * @param packet packet
+     * @return returns true if the packet is valid
+     */
+    public abstract boolean sendPacket(JsonPacket packet);
     
     public EventLog eventLog() { return eventLog; }
     
@@ -68,12 +68,7 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     protected synchronized void incrementCollectedPackets(int count) { num_collected += count; }
     
     
-    /**
-     * Attempt to send packet.
-     * @param packet packet
-     * @return returns true if the packet is valid
-     */
-    public abstract boolean sendPacket(JsonPacket packet);
+
     
     public abstract boolean isConnected();
     
@@ -95,6 +90,8 @@ public abstract class AppInterface extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel channel) throws Exception {
         // For context: https://netty.io/4.0/api/io/netty/channel/ChannelPipeline.html
         ChannelPipeline pipeline = channel.pipeline();
+        // pipeline.addLast(new SSLDecryptor);
+        // pipeline.addLast(new SSLEncryptor);
         pipeline.addLast(new LengthFieldBasedFrameDecoder(
         256 * 1024, 0, Integer.BYTES, 0, Integer.BYTES));
         pipeline.addLast(new LengthFieldPrepender(Integer.BYTES));
